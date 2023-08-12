@@ -1,17 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class StickGenerator : MonoBehaviour
 {
     [SerializeField]
     private GameObject _stickPrefab;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        GenerateStick();
-    }
 
     // Update is called once per frame
     void Update()
@@ -24,11 +19,12 @@ public class StickGenerator : MonoBehaviour
 
     private void GenerateStick()
     {
-        for (int z = 0; z < 10; z++)
+        for (int z = -5; z < 5; z++)
         {
-            for (int x = 0; x < 10; x++)
+            for (int x = -5; x < 5; x++)
             {
-                Instantiate(_stickPrefab, new Vector3(x* 10, 0, z * 8), new Quaternion());
+                GameObject stick = Instantiate(_stickPrefab, new Vector3(x* 10, 0, z * 8), new Quaternion());
+                stick.GetComponent<NetworkObject>().Spawn();
             }
         } 
     }

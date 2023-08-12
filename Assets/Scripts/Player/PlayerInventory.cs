@@ -49,7 +49,16 @@ public class PlayerInventory : NetworkBehaviour
         if (IsServer)
         {
             _equippedItem.Value = itemToEquip;
-            GetNetworkObject(_equippedItem.Value.NetworkObjectId).TrySetParent(transform);
+
+            NetworkObject equipped = GetNetworkObject(_equippedItem.Value.NetworkObjectId);
+            equipped.TrySetParent(transform);
+
+            foreach(Transform child in equipped.GameObject().transform)
+            {
+                child.gameObject.layer = 6;
+            }
+
+            GetNetworkObject(_equippedItem.Value.NetworkObjectId).GameObject().GetComponent<Rigidbody>().isKinematic = true;
         }
         else
         {
@@ -61,8 +70,16 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (IsServer)
         {
+            NetworkObject unequipped = GetNetworkObject(_equippedItem.Value.NetworkObjectId);
             GetNetworkObject(_equippedItem.Value.NetworkObjectId).TryRemoveParent();
             _equippedItem.Value = _emptyItem;
+
+            foreach (Transform child in unequipped.GameObject().transform)
+            {
+                child.gameObject.layer = 0;
+            }
+
+            unequipped.GameObject().GetComponent<Rigidbody>().isKinematic = false;
         }
         else
         {
@@ -90,12 +107,26 @@ public class PlayerInventory : NetworkBehaviour
 
             n.GameObject().transform.SetParent(transform);
             n.GameObject().GetComponent<NetworkTransform>().enabled = false;
+            n.GetComponent<Rigidbody>().isKinematic = true;
+
+            foreach (Transform child in n.GameObject().transform)
+            {
+                child.gameObject.layer = 6;
+            }
+
         }
         else
         {
             NetworkObject prev = GetNetworkObject(previousItem.NetworkObjectId);
 
+            prev.GameObject().transform.SetParent(null);
             prev.GameObject().GetComponent<NetworkTransform>().enabled = true;
+            prev.GetComponent<Rigidbody>().isKinematic = false;
+
+            foreach (Transform child in prev.GameObject().transform)
+            {
+                child.gameObject.layer = 0;
+            }
         }
     }
 

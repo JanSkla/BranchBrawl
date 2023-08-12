@@ -69,15 +69,6 @@ public class Stick : NetworkBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Destroy(gameObject);
-        }
-    }
-
     private void GenerateStickParts() //generates first stick part then starts recursion
     {
         float width = Random.Range(_minInitialLength, _maxInitialLength);
