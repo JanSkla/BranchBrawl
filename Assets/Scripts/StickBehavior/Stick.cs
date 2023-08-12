@@ -1,14 +1,17 @@
 using Microsoft.Win32.SafeHandles;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using Unity.Burst.CompilerServices;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
-public class Stick : MonoBehaviour
+public class Stick : NetworkBehaviour
 {
     [SerializeField]
     private GameObject _stickPartPrefab;
@@ -35,6 +38,8 @@ public class Stick : MonoBehaviour
     private int _maximalStickLevel = 11;
     [SerializeField]
     private float _maximalJointRadian = 0.5f;
+    [SerializeField]
+    private float _sizeMultiplier = 0.5f;
 
     private enum BranchSplit
     {
@@ -55,9 +60,13 @@ public class Stick : MonoBehaviour
     private int i;
 
     // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
-        GenerateStickParts();
+        if (NetworkManager.IsServer)
+        {
+            GenerateStickParts();
+            transform.localScale = new Vector3(_sizeMultiplier, _sizeMultiplier, _sizeMultiplier);
+        }
     }
 
     // Update is called once per frame
@@ -75,12 +84,14 @@ public class Stick : MonoBehaviour
         float length = Random.Range(_minInitialLength, _maxInitialLength);
 
         _verticles.Add(new Vector3(0, 0, 0));
-        Vector3 newVerticle = new Vector3(length, 0, 0);
+        Vector3 newVerticle = new Vector3(0, 0, length);
         _verticles.Add(newVerticle);
 
         GameObject newStickPart = Instantiate(_stickPartPrefab, transform.position + Vector3.Lerp(_verticles.ElementAt(0), _verticles.ElementAt(1), 0.5f), Quaternion.LookRotation(newVerticle));
         newStickPart.transform.localScale = new Vector3(newStickPart.transform.localScale.x * width, newStickPart.transform.localScale.y * width, newStickPart.transform.localScale.z * length);
-        newStickPart.transform.parent = transform;
+        //newStickPart.transform.parent = transform;
+        newStickPart.GetComponent<NetworkObject>().Spawn();
+        newStickPart.GetComponent<NetworkObject>().TrySetParent(GetComponent<NetworkObject>());
         _stickParts.Add(newStickPart);
 
         i = 1;
@@ -98,12 +109,12 @@ public class Stick : MonoBehaviour
                 break;
             case BranchSplit.MainExtra:
                 NewStickPartRecursive(level + 1, previousVerticleIndex, length, width);
-                NewStickPartRecursive(level + 1, previousVerticleIndex, length, width, BranchType.Extra);
+                NewStickPartRecursive(level + 1, previousVerticleIndex, length / 2, width, BranchType.Extra);
                 break;
             case BranchSplit.MainExtraExtra:
                 NewStickPartRecursive(level + 1, previousVerticleIndex, length, width);
-                NewStickPartRecursive(level + 1, previousVerticleIndex, length, width, BranchType.Extra);
-                NewStickPartRecursive(level + 1, previousVerticleIndex, length, width, BranchType.Extra);
+                NewStickPartRecursive(level + 1, previousVerticleIndex, length / 2, width, BranchType.Extra);
+                NewStickPartRecursive(level + 1, previousVerticleIndex, length / 2, width, BranchType.Extra);
                 break;
             case BranchSplit.End:
                 break;
@@ -166,7 +177,9 @@ public class Stick : MonoBehaviour
 
         GameObject newStickPart = Instantiate(_stickPartPrefab, transform.position + Vector3.Lerp(previousVerticle, newVerticle, 0.5f), Quaternion.LookRotation(newVerticle - previousVerticle));
         newStickPart.transform.localScale = new Vector3(newStickPart.transform.localScale.x * width, newStickPart.transform.localScale.y * width, newStickPart.transform.localScale.z * length);
-        newStickPart.transform.parent = transform;
+        //newStickPart.transform.SetParent(transform);
+        newStickPart.GetComponent<NetworkObject>().Spawn();
+        newStickPart.GetComponent<NetworkObject>().TrySetParent(GetComponent<NetworkObject>());
         _stickParts.Add(newStickPart);
         i++;
 
