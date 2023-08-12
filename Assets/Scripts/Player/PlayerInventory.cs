@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Netcode.Components;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerInventory : NetworkBehaviour
@@ -16,34 +18,25 @@ public class PlayerInventory : NetworkBehaviour
         if (IsServer)
         {
             GameObject go = Instantiate(StickPrefab);
+            go.GetComponent<NetworkObject>().AutoObjectParentSync = true;
             go.GetComponent<NetworkObject>().Spawn();
-
-            if (!go.GetComponent<NetworkObject>().AutoObjectParentSync)
+            _equippedItem.Value = new Item()
             {
-                Debug.Log("1");
-                go.GetComponent<NetworkObject>().AutoObjectParentSync = true;
-                Debug.Log(go.GetComponent<NetworkObject>().AutoObjectParentSync);
-            }
-
-            if (go.GetComponent<NetworkObject>().NetworkManager == null || !go.GetComponent<NetworkObject>().NetworkManager.IsListening)
-            {
-                Debug.Log("2");
-            }
-
-            if (!go.GetComponent<NetworkObject>().NetworkManager.IsServer)
-            {
-                Debug.Log("3");
-            }
-
-            if (!go.GetComponent<NetworkObject>().IsSpawned)
-            {
-                Debug.Log("4");
-            }
-            if (GetComponent<NetworkObject>() != null && !GetComponent<NetworkObject>().IsSpawned)
-            {
-                Debug.Log("5");
-            }
+                Id = 0,
+                NetworkObjectId = go.GetComponent<NetworkObject>().NetworkObjectId,
+            };
             Debug.Log(go.GetComponent<NetworkObject>().TrySetParent(GetComponent<NetworkObject>()));
+        }
+        else if (IsClient)
+        {
+            NetworkObject go = GetNetworkObject(_equippedItem.Value.NetworkObjectId);
+
+            
+            Debug.Log(_equippedItem.Value.NetworkObjectId);
+            Debug.Log("sssssssssssss");
+            Debug.Log(GetNetworkObject(_equippedItem.Value.NetworkObjectId).TrySetParent(transform));
+            go.GameObject().transform.SetParent(transform);
+            go.GameObject().GetComponent<NetworkTransform>().enabled = false;
         }
         //if (IsServer)
         //{
