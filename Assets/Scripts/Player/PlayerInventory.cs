@@ -13,6 +13,8 @@ public class PlayerInventory : NetworkBehaviour
 
     [SerializeField]
     private GameObject StickPrefab;
+
+    private Item _emptyItem = new Item();
     void Start()
     {
         if (IsServer)
@@ -20,38 +22,91 @@ public class PlayerInventory : NetworkBehaviour
             GameObject go = Instantiate(StickPrefab);
             go.GetComponent<NetworkObject>().AutoObjectParentSync = true;
             go.GetComponent<NetworkObject>().Spawn();
-            _equippedItem.Value = new Item()
+            EquipItem(new Item()
             {
                 Id = 0,
                 NetworkObjectId = go.GetComponent<NetworkObject>().NetworkObjectId,
-            };
-            Debug.Log(go.GetComponent<NetworkObject>().TrySetParent(GetComponent<NetworkObject>()));
+            });
         }
-        else if (IsClient)
+        else if (IsClient) //equip item on load
         {
             NetworkObject go = GetNetworkObject(_equippedItem.Value.NetworkObjectId);
 
-            
-            Debug.Log(_equippedItem.Value.NetworkObjectId);
-            Debug.Log("sssssssssssss");
-            Debug.Log(GetNetworkObject(_equippedItem.Value.NetworkObjectId).TrySetParent(transform));
             go.GameObject().transform.SetParent(transform);
             go.GameObject().GetComponent<NetworkTransform>().enabled = false;
         }
-        //if (IsServer)
-        //{
-        //    _equippedItem.Value = new Item() { Id = 0, NetworkObjectId = Instantiate(StickPrefab).GetComponent<NetworkObject>().NetworkObjectId };
-        //    NetworkObject i = GetNetworkObject(_equippedItem.Value.NetworkObjectId);
-        //    i.Spawn();
-        //    GetNetworkObject(_equippedItem.Value.NetworkObjectId).TrySetParent(GetComponent<NetworkObject>());
-        //}
+    }
+    void Update()
+    {
+        if (IsLocalPlayer && Input.GetKeyDown(KeyCode.Q) && !_equippedItem.Value.Equals(_emptyItem))
+        {
+            UnequipItem();
+        }
     }
 
-    //public void EquipItem(Item itemToEquip)
-    //{
-    //    _equippedItem.Value = itemToEquip;
-    //    GetNetworkObject(_equippedItem.Value.NetworkObjectId).TrySetParent(transform);
-    //}
+    public void EquipItem(Item itemToEquip)
+    {
+        if (IsServer)
+        {
+            _equippedItem.Value = itemToEquip;
+            GetNetworkObject(_equippedItem.Value.NetworkObjectId).TrySetParent(transform);
+        }
+        else
+        {
+            EquipItemServerRpc(itemToEquip);
+        }
+    }
 
+    public void UnequipItem()
+    {
+        if (IsServer)
+        {
+            GetNetworkObject(_equippedItem.Value.NetworkObjectId).TryRemoveParent();
+            _equippedItem.Value = _emptyItem;
+        }
+        else
+        {
+            UnequipItemServerRpc();
+        }
+    }
 
+    public override void OnNetworkSpawn()
+    {
+        _equippedItem.OnValueChanged += OnEquippedItemChange;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        _equippedItem.OnValueChanged -= OnEquippedItemChange;
+    }
+
+    private void OnEquippedItemChange(Item previousItem, Item newItem)
+    {
+        if (IsServer) return;
+
+        if (!newItem.Equals(_emptyItem))
+        {
+            NetworkObject n = GetNetworkObject(newItem.NetworkObjectId);
+
+            n.GameObject().transform.SetParent(transform);
+            n.GameObject().GetComponent<NetworkTransform>().enabled = false;
+        }
+        else
+        {
+            NetworkObject prev = GetNetworkObject(previousItem.NetworkObjectId);
+
+            prev.GameObject().GetComponent<NetworkTransform>().enabled = true;
+        }
+    }
+
+    [ServerRpc]
+    private void EquipItemServerRpc(Item itemToEquip)
+    {
+        EquipItem(itemToEquip);
+    }
+    [ServerRpc]
+    private void UnequipItemServerRpc()
+    {
+        UnequipItem();
+    }
 }
