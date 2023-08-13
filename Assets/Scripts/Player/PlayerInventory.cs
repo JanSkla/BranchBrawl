@@ -38,6 +38,18 @@ public class PlayerInventory : NetworkBehaviour
     }
     void Update()
     {
+        if (IsLocalPlayer && Input.GetKeyDown(KeyCode.E) && _equippedItem.Value.Equals(_emptyItem))
+        {
+            GameObject pickableObject = GetComponent<PlayerCamera>().GetFacingPickable();
+            if (pickableObject != null)
+            {
+                EquipItem(new Item()
+                {
+                    Id = 0,
+                    NetworkObjectId = pickableObject.GetComponent<NetworkObject>().NetworkObjectId,
+                });
+            }
+        }
         if (IsLocalPlayer && Input.GetKeyDown(KeyCode.Q) && !_equippedItem.Value.Equals(_emptyItem))
         {
             UnequipItem();
@@ -53,7 +65,7 @@ public class PlayerInventory : NetworkBehaviour
             NetworkObject equipped = GetNetworkObject(_equippedItem.Value.NetworkObjectId);
             equipped.TrySetParent(transform);
 
-            foreach(Transform child in equipped.GameObject().transform)
+            foreach (Transform child in equipped.GameObject().transform)
             {
                 child.gameObject.layer = 6;
             }
