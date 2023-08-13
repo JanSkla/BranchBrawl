@@ -70,7 +70,12 @@ public class PlayerInventory : NetworkBehaviour
                 child.gameObject.layer = 6;
             }
 
-            GetNetworkObject(_equippedItem.Value.NetworkObjectId).GameObject().GetComponent<Rigidbody>().isKinematic = true;
+            GameObject equipGO = GetNetworkObject(_equippedItem.Value.NetworkObjectId).GameObject();
+
+            equipGO.transform.transform.position = transform.position;
+            equipGO.transform.transform.rotation = transform.rotation;
+            equipGO.transform.transform.localPosition += new Vector3(0.5f, 0, 0);
+            equipGO.GetComponent<Rigidbody>().isKinematic = true;
         }
         else
         {

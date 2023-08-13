@@ -18,10 +18,11 @@ public class PlayerCamera : NetworkBehaviour
     {
         if (IsOwner)
         {
-            fpsCam = Instantiate(FirstPersonCameraPrefab);
+            fpsCam = Instantiate(FirstPersonCameraPrefab, new Vector3(0, 0.5f, 0.3f), new Quaternion());
             fpsCam.transform.SetParent(transform);
         }
         InGameUI = GameObject.Find("InGameUI");
+        InGameUI.SetActive(true);
     }
 
     // Update is called once per frame
