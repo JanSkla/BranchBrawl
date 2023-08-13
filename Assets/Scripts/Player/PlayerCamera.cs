@@ -9,6 +9,9 @@ public class PlayerCamera : NetworkBehaviour
     [SerializeField]
     private Camera FirstPersonCameraPrefab;
 
+    [SerializeField]
+    private Vector3 CameraOffset = new Vector3(0, 0.5f, 0.3f);
+
     private GameObject InGameUI;
 
     private Camera fpsCam;
@@ -18,7 +21,7 @@ public class PlayerCamera : NetworkBehaviour
     {
         if (IsOwner)
         {
-            fpsCam = Instantiate(FirstPersonCameraPrefab, new Vector3(0, 0.5f, 0.3f), new Quaternion());
+            fpsCam = Instantiate(FirstPersonCameraPrefab, CameraOffset, new Quaternion());
             fpsCam.transform.SetParent(transform);
         }
         InGameUI = GameObject.Find("InGameUI");
