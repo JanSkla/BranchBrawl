@@ -76,7 +76,7 @@ public class PlayerInventory : NetworkBehaviour
 
             foreach (Transform child in unequipped.GameObject().transform)
             {
-                child.gameObject.layer = 0;
+                child.gameObject.layer = 7;
             }
 
             unequipped.GameObject().GetComponent<Rigidbody>().isKinematic = false;
