@@ -122,6 +122,10 @@ public class PlayerInventory : NetworkBehaviour
         {
             NetworkObject n = GetNetworkObject(newItem.NetworkObjectId);
 
+
+            n.GameObject().transform.transform.position = transform.position;
+            n.GameObject().transform.transform.rotation = transform.rotation;
+            n.GameObject().transform.transform.localPosition += new Vector3(0.5f, 0, 0);
             n.GameObject().transform.SetParent(transform);
             n.GameObject().GetComponent<NetworkTransform>().enabled = false;
             n.GetComponent<Rigidbody>().isKinematic = true;
@@ -142,7 +146,7 @@ public class PlayerInventory : NetworkBehaviour
 
             foreach (Transform child in prev.GameObject().transform)
             {
-                child.gameObject.layer = 0;
+                child.gameObject.layer = 7;
             }
         }
     }
