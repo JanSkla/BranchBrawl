@@ -36,10 +36,6 @@ public class Stick : NetworkBehaviour
     private float _extraBranchWidthDownfall = 0.3f;
     [SerializeField]
     private int _maximalStickLevel = 11;
-    [SerializeField]
-    private float _maximalJointRadian = 0.5f;
-    [SerializeField]
-    private float _sizeMultiplier = 0.5f;
 
     private enum BranchSplit
     {
@@ -65,7 +61,6 @@ public class Stick : NetworkBehaviour
         if (NetworkManager.IsServer)
         {
             GenerateStickParts();
-            transform.localScale = new Vector3(_sizeMultiplier, _sizeMultiplier, _sizeMultiplier);
         }
     }
 

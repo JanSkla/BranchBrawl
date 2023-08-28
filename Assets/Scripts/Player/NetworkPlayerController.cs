@@ -83,7 +83,6 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void TeleportPlayer(TransformState state)
     {
-        Debug.Log(state.Tick);
         transform.position = state.Position;
         transform.rotation = state.Rotation;
 

@@ -8,7 +8,10 @@ using UnityEngine;
 
 public class PlayerInventory : NetworkBehaviour
 {
-    private Item[] _inventory;
+    [SerializeField]
+    private static int _inventorySize = 3;
+
+    private Item[] _inventory = new Item[_inventorySize];
     private NetworkVariable<Item> _equippedItem = new NetworkVariable<Item>();
 
     [SerializeField]
@@ -19,21 +22,24 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (IsServer)
         {
-            GameObject go = Instantiate(StickPrefab);
-            go.GetComponent<NetworkObject>().AutoObjectParentSync = true;
-            go.GetComponent<NetworkObject>().Spawn();
-            EquipItem(new Item()
-            {
-                Id = 0,
-                NetworkObjectId = go.GetComponent<NetworkObject>().NetworkObjectId,
-            });
+            //GameObject go = Instantiate(StickPrefab);
+            //go.GetComponent<NetworkObject>().AutoObjectParentSync = true;
+            //go.GetComponent<NetworkObject>().Spawn();
+            //EquipItem(new Item()
+            //{
+            //    Id = 0,
+            //    NetworkObjectId = go.GetComponent<NetworkObject>().NetworkObjectId,
+            //});
         }
         else if (IsClient) //equip item on load
         {
             NetworkObject go = GetNetworkObject(_equippedItem.Value.NetworkObjectId);
 
-            go.GameObject().transform.SetParent(transform);
-            go.GameObject().GetComponent<NetworkTransform>().enabled = false;
+            if (go != null)
+            {
+                go.GameObject().transform.SetParent(transform);
+                go.GameObject().GetComponent<NetworkTransform>().enabled = false;
+            }
         }
     }
     void Update()
