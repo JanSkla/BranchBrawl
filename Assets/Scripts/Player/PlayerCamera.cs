@@ -13,7 +13,7 @@ public class PlayerCamera : NetworkBehaviour
     [SerializeField]
     private Vector3 CameraOffset = new Vector3(0, 0.5f, 0.3f);
 
-    private GameObject InGameUI;
+    private GameObject _inGameUI;
 
     private Camera fpsCam;
 
@@ -24,8 +24,7 @@ public class PlayerCamera : NetworkBehaviour
         {
             fpsCam = Instantiate(FirstPersonCameraPrefab, CameraOffset, new Quaternion());
             fpsCam.transform.SetParent(transform);
-            InGameUI = GameObject.Find("InGameUI");
-            InGameUI.SetActive(true);
+            _inGameUI = GameObject.Find("InGameUI");
         }
     }
 
@@ -45,11 +44,11 @@ public class PlayerCamera : NetworkBehaviour
             RaycastHit hit = new RaycastHit();
             if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.TransformDirection(Vector3.forward), out hit, 4, LayerMask.GetMask("Pickable")))
             {
-                InGameUI.GetComponent<InGameUI>().ChangeCursorColor(Color.cyan);
+                _inGameUI.GetComponent<InGameUI>().ChangeCursorColor(Color.cyan);
             }
             else
             {
-                InGameUI.GetComponent<InGameUI>().ChangeCursorColor(Color.black);
+                _inGameUI.GetComponent<InGameUI>().ChangeCursorColor(Color.black);
             }
         }
     }

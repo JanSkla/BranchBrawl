@@ -139,6 +139,7 @@ public class NetworkPlayerController : NetworkBehaviour
                     Tick = _tick,
                     Position = transform.position,
                     Rotation = transform.rotation,
+                    Facing = head.transform.rotation,
                     HasStartedMoving = true
                 };
 
@@ -147,8 +148,10 @@ public class NetworkPlayerController : NetworkBehaviour
             }
             else
             {
+                Debug.Log("preRpcCallInitiated");
                 HandleMovement(moveInput, rotationInput);
                 MovePlayerRequestServerRpc(moveInput, rotationInput);
+                Debug.Log("RpcCallInitiated");
 
                 //transform.position = ServerTransformState.Value.Position;
                 //transform.rotation = ServerTransformState.Value.Rotation;
@@ -186,6 +189,11 @@ public class NetworkPlayerController : NetworkBehaviour
             transform.position = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, Time.deltaTime * _speed);
             transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, Time.deltaTime * _speed);
             head.transform.rotation = Quaternion.Lerp(head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
+
+            if (!GetComponent<PlayerInventory>().EquippedItem.Equals(null))
+            {
+                GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject.transform.rotation = Quaternion.Lerp(head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
+            }        
         }
 
         if (_tickDeltaTime > _tickRate)
@@ -198,17 +206,26 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void HandleMovement(Vector3 moveInput, Vector3 rotationInput)
     {
+        Debug.Log("1");
         transform.Translate(moveInput * _speed * _tickRate);
+        Debug.Log("2");
         transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate); ;
+        Debug.Log("3");
         head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
 
+        Debug.Log("4");
+
         //handhelditem rotation
-        GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+        if (!GetComponent<PlayerInventory>().EquippedItem.Value.Equals(PlayerInventory._emptyItem)){
+            GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+        }
+        Debug.Log("5");
     }
 
     [ServerRpc]
     private void MovePlayerRequestServerRpc(Vector3 moveInput, Vector3 rotationInput)
     {
+        Debug.Log("RpcThrough");
         HandleMovement(moveInput, rotationInput);
 
         TransformState state = new TransformState()

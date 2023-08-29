@@ -17,7 +17,7 @@ public class PlayerInventory : NetworkBehaviour
     [SerializeField]
     private GameObject StickPrefab;
 
-    private Item _emptyItem = new Item();
+    public static Item _emptyItem = new Item();
     void Start()
     {
         if (IsServer)
