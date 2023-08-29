@@ -200,7 +200,10 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         transform.Translate(moveInput * _speed * _tickRate);
         transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate); ;
-        head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate); ;
+        head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+
+        //handhelditem rotation
+        GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
     }
 
     [ServerRpc]

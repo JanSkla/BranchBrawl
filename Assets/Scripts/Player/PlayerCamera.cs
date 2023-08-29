@@ -57,8 +57,6 @@ public class PlayerCamera : NetworkBehaviour
     public GameObject GetFacingPickable()
     {
         RaycastHit hit = new RaycastHit();
-        Debug.Log(fpsCam);
-        Debug.DrawRay(fpsCam.transform.position, fpsCam.transform.TransformDirection(Vector3.forward), Color.yellow, 4);
         if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.TransformDirection(Vector3.forward), out hit, 4, LayerMask.GetMask("Pickable")))
         {
             Debug.Log(hit.collider.gameObject.name);
