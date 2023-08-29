@@ -14,6 +14,8 @@ public class NetworkPlayerController : NetworkBehaviour
     private float _speed = 10;
     [SerializeField]
     private float _turnSpeed = 150;
+    [SerializeField]
+    private GameObject head;
 
     private int _tick = 0;
     private float _tickRate = 1.0f / 60.0f;
@@ -66,6 +68,7 @@ public class NetworkPlayerController : NetworkBehaviour
                     Tick = inputState.Tick,
                     Position = transform.position,
                     Rotation = transform.rotation,
+                    Facing = head.transform.rotation,
                     HasStartedMoving = true
                 };
 
@@ -85,6 +88,7 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         transform.position = state.Position;
         transform.rotation = state.Rotation;
+        head.transform.rotation = state.Facing;
 
         for (int i = 0; i < _transformStates.Length; i++)
         {
@@ -110,7 +114,7 @@ public class NetworkPlayerController : NetworkBehaviour
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
 
-            Vector3 rotationInput = new Vector3(0, mouseX, 0);
+            Vector3 rotationInput = new Vector3(mouseY, mouseX, 0);
 
             ProcessLocalPlayerMovement(moveInput, rotationInput);
         }
@@ -161,6 +165,7 @@ public class NetworkPlayerController : NetworkBehaviour
                 Tick = _tick,
                 Position = transform.position,
                 Rotation = transform.rotation,
+                Facing = head.transform.rotation,
                 HasStartedMoving = true
             };
 
@@ -180,6 +185,7 @@ public class NetworkPlayerController : NetworkBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, Time.deltaTime * _speed);
             transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, Time.deltaTime * _speed);
+            head.transform.rotation = Quaternion.Lerp(head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
         }
 
         if (_tickDeltaTime > _tickRate)
@@ -192,8 +198,9 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void HandleMovement(Vector3 moveInput, Vector3 rotationInput)
     {
-        transform.Translate(moveInput * _speed * _tickRate); 
-        transform.Rotate(rotationInput * _turnSpeed * _tickRate);
+        transform.Translate(moveInput * _speed * _tickRate);
+        transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate); ;
+        head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate); ;
     }
 
     [ServerRpc]
@@ -206,6 +213,7 @@ public class NetworkPlayerController : NetworkBehaviour
             Tick = _tick,
             Position = transform.position,
             Rotation = transform.rotation,
+            Facing = head.transform.rotation,
             HasStartedMoving = true
         };
 

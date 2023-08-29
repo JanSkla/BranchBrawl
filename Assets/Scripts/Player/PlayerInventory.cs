@@ -46,7 +46,7 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (IsLocalPlayer && Input.GetKeyDown(KeyCode.E) && _equippedItem.Value.Equals(_emptyItem))
         {
-            GameObject pickableObject = GetComponent<PlayerCamera>().GetFacingPickable();
+            GameObject pickableObject = transform.Find("Head").GetComponent<PlayerCamera>().GetFacingPickable();
             if (pickableObject != null)
             {
                 EquipItem(new Item()
