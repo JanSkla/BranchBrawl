@@ -36,10 +36,6 @@ public class Stick : NetworkBehaviour
     private float _extraBranchWidthDownfall = 0.3f;
     [SerializeField]
     private int _maximalStickLevel = 11;
-    [SerializeField]
-    private float _maximalJointRadian = 0.5f;
-    [SerializeField]
-    private float _sizeMultiplier = 0.5f;
 
     private enum BranchSplit
     {
@@ -65,7 +61,6 @@ public class Stick : NetworkBehaviour
         if (NetworkManager.IsServer)
         {
             GenerateStickParts();
-            transform.localScale = new Vector3(_sizeMultiplier, _sizeMultiplier, _sizeMultiplier);
         }
     }
 
@@ -172,6 +167,31 @@ public class Stick : NetworkBehaviour
         newStickPart.GetComponent<NetworkObject>().Spawn();
         newStickPart.GetComponent<NetworkObject>().TrySetParent(GetComponent<NetworkObject>());
         _stickParts.Add(newStickPart);
+
+        GameObject prevObject = _stickParts.ElementAt(previousVerticleIndex - 1);
+
+        ulong newNwId = newStickPart.GetComponent<NetworkObject>().NetworkObjectId;
+        newStickPart.GetComponent<StickPart>().ConnectedEdgeNwIds.Add(prevObject.GetComponent<NetworkObject>().NetworkObjectId);
+
+        for (int i = 0; i < prevObject.GetComponent<StickPart>().ConnectedEdgeNwIds.Count; i++)
+        {
+            ulong nwId = prevObject.GetComponent<StickPart>().ConnectedEdgeNwIds[i];
+            if (nwId > prevObject.GetComponent<NetworkObject>().NetworkObjectId) //higher ids than newId are children of previous stick
+            {
+                GameObject adjescentObject = GetNetworkObject(nwId).gameObject;
+                newStickPart.GetComponent<StickPart>().ConnectedEdgeNwIds.Add(nwId);
+                adjescentObject.GetComponent<StickPart>().ConnectedEdgeNwIds.Add(newNwId);
+            }
+        }
+
+        prevObject.GetComponent<StickPart>().ConnectedEdgeNwIds.Add(newNwId);
+
+        //foreach (ulong prevId in prevObject.GetComponent<StickPart>().ConnectedEdgeNwIds)
+        //{
+        //    Debug.Log(prevId);
+        //    prevObject.GetComponent<StickPart>().ConnectedEdgeNwIds.Add(prevId);
+        //}
+
         i++;
 
         previousVerticleIndex = i;

@@ -19,13 +19,15 @@ public class StickGenerator : MonoBehaviour
 
     private void GenerateStick()
     {
-        for (int z = -5; z < 5; z++)
-        {
-            for (int x = -5; x < 5; x++)
-            {
-                GameObject stick = Instantiate(_stickPrefab, new Vector3(x* 10, 0, z * 8), new Quaternion());
-                stick.GetComponent<NetworkObject>().Spawn();
-            }
-        } 
+        GameObject stick = Instantiate(_stickPrefab, new Vector3(10, 0,8), new Quaternion());
+        stick.GetComponent<NetworkObject>().Spawn();
+        //for (int z = -5; z < 5; z++)
+        //{
+        //    for (int x = -5; x < 5; x++)
+        //    {
+        //        GameObject stick = Instantiate(_stickPrefab, new Vector3(x* 10, 0, z * 8), new Quaternion());
+        //        stick.GetComponent<NetworkObject>().Spawn();
+        //    }
+        //} 
     }
 }

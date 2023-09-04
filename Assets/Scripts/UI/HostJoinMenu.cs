@@ -6,18 +6,18 @@ using UnityEngine;
 public class HostJoinMenu : MonoBehaviour
 {
     [SerializeField]
-    private GameObject InGameUI;
+    private GameObject _inGameUI;
     public void OnHostClick()
     {
         NetworkManager.Singleton.StartHost();
         gameObject.SetActive(false);
-        InGameUI.SetActive(true);
+        _inGameUI.SetActive(true);
     }
 
     public void OnJoinClick()
     {
         NetworkManager.Singleton.StartClient();
         gameObject.SetActive(false);
-        InGameUI.SetActive(true);
+        _inGameUI.SetActive(true);
     }
 }

@@ -8,39 +8,45 @@ using UnityEngine;
 
 public class PlayerInventory : NetworkBehaviour
 {
-    private Item[] _inventory;
-    private NetworkVariable<Item> _equippedItem = new NetworkVariable<Item>();
+    [SerializeField]
+    private static int _inventorySize = 3;
+
+    private Item[] _inventory = new Item[_inventorySize];
+    public NetworkVariable<Item> EquippedItem = new NetworkVariable<Item>();
 
     [SerializeField]
     private GameObject StickPrefab;
 
-    private Item _emptyItem = new Item();
+    public static Item _emptyItem = new Item();
     void Start()
     {
         if (IsServer)
         {
-            GameObject go = Instantiate(StickPrefab);
-            go.GetComponent<NetworkObject>().AutoObjectParentSync = true;
-            go.GetComponent<NetworkObject>().Spawn();
-            EquipItem(new Item()
-            {
-                Id = 0,
-                NetworkObjectId = go.GetComponent<NetworkObject>().NetworkObjectId,
-            });
+            //GameObject go = Instantiate(StickPrefab);
+            //go.GetComponent<NetworkObject>().AutoObjectParentSync = true;
+            //go.GetComponent<NetworkObject>().Spawn();
+            //EquipItem(new Item()
+            //{
+            //    Id = 0,
+            //    NetworkObjectId = go.GetComponent<NetworkObject>().NetworkObjectId,
+            //});
         }
         else if (IsClient) //equip item on load
         {
-            NetworkObject go = GetNetworkObject(_equippedItem.Value.NetworkObjectId);
+            NetworkObject go = GetNetworkObject(EquippedItem.Value.NetworkObjectId);
 
-            go.GameObject().transform.SetParent(transform);
-            go.GameObject().GetComponent<NetworkTransform>().enabled = false;
+            if (go != null)
+            {
+                go.GameObject().transform.SetParent(transform);
+                go.GameObject().GetComponent<NetworkTransform>().enabled = false;
+            }
         }
     }
     void Update()
     {
-        if (IsLocalPlayer && Input.GetKeyDown(KeyCode.E) && _equippedItem.Value.Equals(_emptyItem))
+        if (IsLocalPlayer && Input.GetKeyDown(KeyCode.E) && EquippedItem.Value.Equals(_emptyItem))
         {
-            GameObject pickableObject = GetComponent<PlayerCamera>().GetFacingPickable();
+            GameObject pickableObject = transform.Find("Head").GetComponent<PlayerCamera>().GetFacingPickable();
             if (pickableObject != null)
             {
                 EquipItem(new Item()
@@ -50,7 +56,7 @@ public class PlayerInventory : NetworkBehaviour
                 });
             }
         }
-        if (IsLocalPlayer && Input.GetKeyDown(KeyCode.Q) && !_equippedItem.Value.Equals(_emptyItem))
+        if (IsLocalPlayer && Input.GetKeyDown(KeyCode.Q) && !EquippedItem.Value.Equals(_emptyItem))
         {
             UnequipItem();
         }
@@ -60,20 +66,30 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (IsServer)
         {
-            _equippedItem.Value = itemToEquip;
+            EquippedItem.Value = itemToEquip;
 
-            NetworkObject equipped = GetNetworkObject(_equippedItem.Value.NetworkObjectId);
+            NetworkObject equipped = GetNetworkObject(EquippedItem.Value.NetworkObjectId);
             equipped.TrySetParent(transform);
+
+            int changeLayer = IsLocalPlayer ? 8 : 6;
 
             foreach (Transform child in equipped.GameObject().transform)
             {
-                child.gameObject.layer = 6;
+                child.gameObject.layer = changeLayer;
             }
 
-            GameObject equipGO = GetNetworkObject(_equippedItem.Value.NetworkObjectId).GameObject();
+            GameObject equipGO = GetNetworkObject(EquippedItem.Value.NetworkObjectId).GameObject();
 
-            equipGO.transform.transform.position = transform.position;
-            equipGO.transform.transform.rotation = transform.rotation;
+            if (equipGO.CompareTag("Stick"))
+            {
+                equipGO.transform.transform.position = transform.position;
+            }
+            else
+            {
+                equipGO.transform.transform.position = transform.position;
+            }
+
+            equipGO.transform.transform.rotation = transform.Find("Head").transform.rotation;
             equipGO.transform.transform.localPosition += new Vector3(0.5f, 0, 0);
             equipGO.GetComponent<Rigidbody>().isKinematic = true;
         }
@@ -87,9 +103,9 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (IsServer)
         {
-            NetworkObject unequipped = GetNetworkObject(_equippedItem.Value.NetworkObjectId);
-            GetNetworkObject(_equippedItem.Value.NetworkObjectId).TryRemoveParent();
-            _equippedItem.Value = _emptyItem;
+            NetworkObject unequipped = GetNetworkObject(EquippedItem.Value.NetworkObjectId);
+            GetNetworkObject(EquippedItem.Value.NetworkObjectId).TryRemoveParent();
+            EquippedItem.Value = _emptyItem;
 
             foreach (Transform child in unequipped.GameObject().transform)
             {
@@ -106,12 +122,12 @@ public class PlayerInventory : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        _equippedItem.OnValueChanged += OnEquippedItemChange;
+        EquippedItem.OnValueChanged += OnEquippedItemChange;
     }
 
     public override void OnNetworkDespawn()
     {
-        _equippedItem.OnValueChanged -= OnEquippedItemChange;
+        EquippedItem.OnValueChanged -= OnEquippedItemChange;
     }
 
     private void OnEquippedItemChange(Item previousItem, Item newItem)
@@ -130,9 +146,11 @@ public class PlayerInventory : NetworkBehaviour
             n.GameObject().GetComponent<NetworkTransform>().enabled = false;
             n.GetComponent<Rigidbody>().isKinematic = true;
 
+            int changeLayer = IsLocalPlayer ? 8 : 6;
+
             foreach (Transform child in n.GameObject().transform)
             {
-                child.gameObject.layer = 6;
+                child.gameObject.layer = changeLayer;
             }
 
         }

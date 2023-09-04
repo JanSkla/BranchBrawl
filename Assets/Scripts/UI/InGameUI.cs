@@ -1,25 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InGameUI : MonoBehaviour
 {
     [SerializeField]
-    private Image cursor;
+    private GameObject _cursor;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
+    [SerializeField]
+    private GameObject _menu;
+
+    [SerializeField]
+    private GameObject _hostJoinMenu;
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            _cursor.SetActive(false);
+            _menu.SetActive(true);
+        }
     }
 
     public void ChangeCursorColor(Color color)
     {
-        cursor.color = color;
+        _cursor.GetComponent<Image>().color = color;
+    }
+
+    //menu control
+    public void CloseMenu()
+    {
+        _cursor.SetActive(true);
+        _menu.SetActive(false);
+    }
+
+    public void Disconect()
+    {
+        NetworkManager.Singleton.Shutdown();
+        gameObject.SetActive(false);
+        _hostJoinMenu.SetActive(true);
     }
 }

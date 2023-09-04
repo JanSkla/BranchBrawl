@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -4239013394559177406}
   m_Layer: 0
   m_Name: Stick
-  m_TagString: Untagged
+  m_TagString: Stick
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49,16 +49,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stickPartPrefab: {fileID: 3268425756383058752, guid: 54a5772a057f5c044a0e07ba1afaf78f, type: 3}
-  _minInitialLength: 1
-  _maxInitialLength: 2
+  _minInitialLength: 0.1
+  _maxInitialLength: 1
   _minInitialWidth: 2
   _maxInitialWidth: 8
   _lengthDownfall: 0.8
   _widthDownfall: 0.9
   _extraBranchWidthDownfall: 0.6
   _maximalStickLevel: 6
-  _maximalJointRadian: 0.3
-  _sizeMultiplier: 0.5
 --- !u!114 &132081069377141241
 MonoBehaviour:
   m_ObjectHideFlags: 0
