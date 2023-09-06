@@ -8,30 +8,26 @@ using UnityEngine;
 public class PlayerCamera : NetworkBehaviour
 {
     [SerializeField]
-    private Camera FirstPersonCameraPrefab;
+    private GameObject FirstPersonCameraPrefab;
 
     [SerializeField]
     private Vector3 CameraOffset = new Vector3(0, 0.5f, 0.3f);
 
     private GameObject _inGameUI;
 
-    private Camera fpsCam;
+    private GameObject fpsCam;
 
-    // Start is called before the first frame update
     void Start()
     {
         if (IsOwner)
         {
-            fpsCam = Instantiate(FirstPersonCameraPrefab, CameraOffset, new Quaternion());
-            fpsCam.transform.SetParent(transform);
-            _inGameUI = GameObject.Find("InGameUI");
+            LoadCamera();
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (fpsCam != null)
+        if (!fpsCam && !_inGameUI)
         {
             //if (fpsCam && IsLocalPlayer)
             //{
@@ -67,5 +63,34 @@ public class PlayerCamera : NetworkBehaviour
             return facingPickable;
         }
         return null;
+    }
+
+    public void LoadCamera()
+    {
+        fpsCam = Instantiate(FirstPersonCameraPrefab, CameraOffset, new Quaternion());
+        fpsCam.transform.SetParent(transform);
+    }
+    public void OnGameStart()
+    {
+        if (!_inGameUI)
+        {
+            FindInGameUI();
+        }
+        EnableFirstCamera();
+    }
+
+    private void DisableFirstCamera()
+    {
+        fpsCam.SetActive(false);
+    }
+
+    private void EnableFirstCamera()
+    {
+        fpsCam.SetActive(true);
+    }
+
+    private void FindInGameUI()
+    {
+        _inGameUI = GameObject.Find("InGameUI");
     }
 }

@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48061199977a0a34e8100d78e2631d9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FirstPersonCameraPrefab: {fileID: 9099976011083996020, guid: 167ab319e1654734b84c1593dfd4d884, type: 3}
+  FirstPersonCameraPrefab: {fileID: 1793215923367635377, guid: 167ab319e1654734b84c1593dfd4d884, type: 3}
   CameraOffset: {x: 0, y: 0.5, z: 0.3}
 --- !u!1 &2629741725660291994
 GameObject:
