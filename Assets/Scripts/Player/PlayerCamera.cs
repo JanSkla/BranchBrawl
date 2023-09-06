@@ -27,7 +27,7 @@ public class PlayerCamera : NetworkBehaviour
 
     void Update()
     {
-        if (!fpsCam && !_inGameUI)
+        if (fpsCam && _inGameUI)
         {
             //if (fpsCam && IsLocalPlayer)
             //{
