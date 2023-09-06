@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class InGameUI : MonoBehaviour
@@ -40,7 +41,6 @@ public class InGameUI : MonoBehaviour
     public void Disconect()
     {
         NetworkManager.Singleton.Shutdown();
-        gameObject.SetActive(false);
-        _hostJoinMenu.SetActive(true);
+        SceneManager.LoadScene("Menu");
     }
 }
