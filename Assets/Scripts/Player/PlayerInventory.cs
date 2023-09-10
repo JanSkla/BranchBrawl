@@ -107,13 +107,17 @@ public class PlayerInventory : NetworkBehaviour
                     child.localPosition = child.localPosition - itemToEquip.PositionOffset;
                 }
             }
-            Debug.Log(equipGO);
 
             equipGO.transform.transform.position = transform.position;
 
             equipGO.transform.transform.rotation = transform.Find("Head").transform.rotation;
             equipGO.transform.transform.localPosition += new Vector3(0.5f, 0, 0);
             equipGO.GetComponent<Rigidbody>().isKinematic = true;
+
+            if (equipGO.CompareTag("Stick"))
+            {
+                Stick.FindGunBarrels(GetNetworkObject(EquippedItem.Value.NetworkObjectId).gameObject.GetComponent<StickPart>());
+            }
         }
         else
         {

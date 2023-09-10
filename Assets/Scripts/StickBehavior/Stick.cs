@@ -19,15 +19,13 @@ public class Stick : NetworkBehaviour
     private List<GameObject> _stickParts = new List<GameObject>();
     private List<Vector3> _verticles = new List<Vector3>();
 
+    private Dictionary<ulong, int> _gunBarrels = new Dictionary<ulong, int>();
+
     //Stick generation specs
     [SerializeField]
     private float _minInitialLength = 1.0f;
     [SerializeField]
     private float _maxInitialLength = 3.0f;
-    [SerializeField]
-    private float _minInitialWidth = 1.0f;
-    [SerializeField]
-    private float _maxInitialWidth = 3.0f;
     [SerializeField]
     private float _lengthDownfall = 0.6f;
     [SerializeField]
@@ -51,7 +49,7 @@ public class Stick : NetworkBehaviour
         Main,
         Extra
     }
-    
+
     //Stick genereation util props
     private int i;
 
@@ -119,10 +117,12 @@ public class Stick : NetworkBehaviour
 
         Vector3 previousVerticle = _verticles[previousVerticleIndex];
 
-        Vector3 previousPart = _stickParts.ElementAt(previousVerticleIndex - 1).transform.eulerAngles;
+        GameObject prevObject = _stickParts.ElementAt(previousVerticleIndex - 1);
+
+        Vector3 previousPart = prevObject.transform.eulerAngles;
 
         float alpha = (branchType == BranchType.Main ? Random.Range(0.0f, 50.0f) : Random.Range(20.0f, 100.0f));  //alpha angle
-        float o = length * Mathf.Cos(alpha * Mathf.PI / 180); 
+        float o = length * Mathf.Cos(alpha * Mathf.PI / 180);
         float r = length * Mathf.Sin(alpha * Mathf.PI / 180);
 
         Vector3 partPos = Quaternion.Euler(previousPart.x, previousPart.y, previousPart.z) * Vector3.forward * o;
@@ -139,23 +139,23 @@ public class Stick : NetworkBehaviour
         newStickPart.GetComponent<NetworkObject>().TrySetParent(GetComponent<NetworkObject>());
         _stickParts.Add(newStickPart);
 
-        GameObject prevObject = _stickParts.ElementAt(previousVerticleIndex - 1);
+        //
 
         ulong newNwId = newStickPart.GetComponent<NetworkObject>().NetworkObjectId;
-        newStickPart.GetComponent<StickPart>().ConnectedEdgeNwIds.Add(prevObject.GetComponent<NetworkObject>().NetworkObjectId);
+        ulong prevNwId = prevObject.GetComponent<NetworkObject>().NetworkObjectId;
 
-        for (int i = 0; i < prevObject.GetComponent<StickPart>().ConnectedEdgeNwIds.Count; i++)
+        newStickPart.GetComponent<StickPart>().ConnectedEdgeNwIdsN.Add(prevNwId);
+
+        for (int i = 0; i < prevObject.GetComponent<StickPart>().ConnectedEdgeNwIdsP.Count; i++)
         {
-            ulong nwId = prevObject.GetComponent<StickPart>().ConnectedEdgeNwIds[i];
-            if (nwId > prevObject.GetComponent<NetworkObject>().NetworkObjectId) //higher ids than newId are children of previous stick
-            {
-                GameObject adjescentObject = GetNetworkObject(nwId).gameObject;
-                newStickPart.GetComponent<StickPart>().ConnectedEdgeNwIds.Add(nwId);
-                adjescentObject.GetComponent<StickPart>().ConnectedEdgeNwIds.Add(newNwId);
-            }
+            ulong adjescentNwId = prevObject.GetComponent<StickPart>().ConnectedEdgeNwIdsP[i];
+            GameObject adjescentObject = GetNetworkObject(adjescentNwId).gameObject;
+
+            newStickPart.GetComponent<StickPart>().ConnectedEdgeNwIdsN.Add(adjescentNwId);
+            adjescentObject.GetComponent<StickPart>().ConnectedEdgeNwIdsN.Add(newNwId);
         }
 
-        prevObject.GetComponent<StickPart>().ConnectedEdgeNwIds.Add(newNwId);
+        prevObject.GetComponent<StickPart>().ConnectedEdgeNwIdsP.Add(newNwId);
 
         //foreach (ulong prevId in prevObject.GetComponent<StickPart>().ConnectedEdgeNwIds)
         //{
@@ -196,16 +196,86 @@ public class Stick : NetworkBehaviour
 
         int randomizer = Random.Range(0, 100);
 
-        if (randomizer < percentageLeft * 0.45f)         return BranchSplit.Main;
-        else if (randomizer < percentageLeft * 0.70f)    return BranchSplit.MainMain;
-        else if (randomizer < percentageLeft * 0.90f)    return BranchSplit.MainExtra;
-        else if (randomizer < percentageLeft * 1.00f)    return BranchSplit.MainExtraExtra;
+        if (randomizer < percentageLeft * 0.45f) return BranchSplit.Main;
+        else if (randomizer < percentageLeft * 0.70f) return BranchSplit.MainMain;
+        else if (randomizer < percentageLeft * 0.90f) return BranchSplit.MainExtra;
+        else if (randomizer < percentageLeft * 1.00f) return BranchSplit.MainExtraExtra;
 
         else return BranchSplit.End;
     }
-    //
-    public static Transform GetEquipTransform(StickPart stickPart)
+
+    public static void FindGunBarrels(StickPart originPart)
     {
-        return stickPart.gameObject.transform;
+        originPart.gameObject.transform.parent.gameObject.GetComponent<Stick>().SetGunBarrels(originPart);
+    }
+    private void SetGunBarrels(StickPart originPart)
+    {
+        Dictionary<ulong, int> endingsN = new Dictionary<ulong, int>(); //ulong NwId, int strength(distance from origin)
+        Dictionary<ulong, int> endingsP = new Dictionary<ulong, int>(); //ulong NwId, int strength(distance from origin)
+
+        if (originPart.ConnectedEdgeNwIdsP.Count + originPart.ConnectedEdgeNwIdsN.Count == 0)
+        {
+            endingsP.Add(originPart.gameObject.GetComponent<NetworkObject>().NetworkObjectId, 0);
+            return;
+        }
+
+        ulong[] searched = new ulong[_stickParts.Count];
+        bool isN = true;
+        int j = 0;
+        FindEndings(originPart, 0);
+
+        void FindEndings(StickPart originPart, int strength)
+        {
+            Debug.Log(j);
+            ulong originNwId = originPart.gameObject.GetComponent<NetworkObject>().NetworkObjectId;
+            Debug.Log(originNwId);
+            Debug.Log(strength);
+            searched[j] = originNwId;
+            j++;
+            if (originPart.ConnectedEdgeNwIdsN.Count == 0 || originPart.ConnectedEdgeNwIdsP.Count == 0)
+            {
+                if (isN)
+                {
+                    endingsN.Add(originNwId, strength);
+                }
+                else
+                {
+                    endingsP.Add(originNwId, strength);
+                }
+                if (strength != 0) return;
+            }
+            foreach (ulong conENwId in originPart.ConnectedEdgeNwIdsN)
+            {
+                if(!searched.Contains(conENwId))
+                {
+                    StickPart subPart = GetNetworkObject(conENwId).gameObject.GetComponent<StickPart>();
+                    FindEndings(subPart, strength + 1);
+                }
+            }
+            isN = false;
+            foreach (ulong conENwId in originPart.ConnectedEdgeNwIdsP)
+            {
+                if (!searched.Contains(conENwId))
+                {
+                    StickPart subPart = GetNetworkObject(conENwId).gameObject.GetComponent<StickPart>();
+                    FindEndings(subPart, strength + 1);
+                }
+            }
+        }
+
+        int N = 0;
+        int P = 0;
+        foreach (var value in endingsN)
+        {
+            N += value.Value;
+            GetNetworkObject(value.Key).gameObject.GetComponent<Renderer>().material.color = Color.red;
+        }
+
+        foreach (var value in endingsP)
+        {
+            P += value.Value;
+            GetNetworkObject(value.Key).gameObject.GetComponent<Renderer>().material.color = Color.blue;
+        }
+        _gunBarrels = N > P ? endingsN : endingsP;
     }
 }
