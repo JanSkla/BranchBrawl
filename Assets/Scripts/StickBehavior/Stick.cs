@@ -203,4 +203,9 @@ public class Stick : NetworkBehaviour
 
         else return BranchSplit.End;
     }
+    //
+    public static Transform GetEquipTransform(StickPart stickPart)
+    {
+        return stickPart.gameObject.transform;
+    }
 }

@@ -49,11 +49,35 @@ public class PlayerInventory : NetworkBehaviour
             GameObject pickableObject = transform.Find("Head").GetComponent<PlayerCamera>().GetFacingPickable();
             if (pickableObject != null)
             {
-                EquipItem(new Item()
+                if (pickableObject.CompareTag("Stick"))
                 {
-                    Id = 0,
-                    NetworkObjectId = pickableObject.GetComponent<NetworkObject>().NetworkObjectId,
-                });
+                    Transform stickPartTransform = pickableObject.transform;
+                    while (pickableObject.transform.parent != null)
+                    {
+                        pickableObject = pickableObject.transform.parent.gameObject;
+                    }
+
+                    EquipItem(new Item()
+                        {
+                            Id = 0,
+                            NetworkObjectId = pickableObject.GetComponent<NetworkObject>().NetworkObjectId,
+                        },
+                        stickPartTransform
+                    );
+                }
+                else
+                {
+                    while (pickableObject.transform.parent != null)
+                    {
+                        pickableObject = pickableObject.transform.parent.gameObject;
+                    }
+
+                    EquipItem(new Item()
+                    {
+                        Id = 0,
+                        NetworkObjectId = pickableObject.GetComponent<NetworkObject>().NetworkObjectId,
+                    });
+                }
             }
         }
         if (IsLocalPlayer && Input.GetKeyDown(KeyCode.Q) && !EquippedItem.Value.Equals(_emptyItem))
@@ -69,6 +93,7 @@ public class PlayerInventory : NetworkBehaviour
             EquippedItem.Value = itemToEquip;
 
             NetworkObject equipped = GetNetworkObject(EquippedItem.Value.NetworkObjectId);
+
             equipped.TrySetParent(transform);
 
             int changeLayer = IsLocalPlayer ? 8 : 6;
@@ -80,14 +105,7 @@ public class PlayerInventory : NetworkBehaviour
 
             GameObject equipGO = GetNetworkObject(EquippedItem.Value.NetworkObjectId).GameObject();
 
-            if (equipGO.CompareTag("Stick"))
-            {
-                equipGO.transform.transform.position = transform.position;
-            }
-            else
-            {
-                equipGO.transform.transform.position = transform.position;
-            }
+            equipGO.transform.transform.position = transform.position;
 
             equipGO.transform.transform.rotation = transform.Find("Head").transform.rotation;
             equipGO.transform.transform.localPosition += new Vector3(0.5f, 0, 0);
@@ -96,6 +114,42 @@ public class PlayerInventory : NetworkBehaviour
         else
         {
             EquipItemServerRpc(itemToEquip);
+        }
+    }
+
+    public void EquipItem(Item itemToEquip, Transform customTransform)
+    {
+        if (IsServer)
+        {
+            EquippedItem.Value = itemToEquip;
+
+            NetworkObject equipped = GetNetworkObject(EquippedItem.Value.NetworkObjectId);
+
+            equipped.TrySetParent(transform);
+
+            int changeLayer = IsLocalPlayer ? 8 : 6;
+
+            Vector3 customPositionOffset = customTransform.localPosition;
+
+            foreach (Transform child in equipped.gameObject.transform)
+            {
+                child.gameObject.layer = changeLayer;
+                Debug.Log(child.localPosition);
+                child.localPosition = child.localPosition - customPositionOffset;
+                Debug.Log(child.localPosition);
+            }
+
+            GameObject equipGO = GetNetworkObject(EquippedItem.Value.NetworkObjectId).GameObject();
+
+            equipGO.transform.transform.position = transform.position;
+
+            equipGO.transform.transform.rotation = transform.Find("Head").transform.rotation;
+            equipGO.transform.transform.localPosition += new Vector3(0.5f, 0, 0);
+            equipGO.GetComponent<Rigidbody>().isKinematic = true;
+        }
+        else
+        {
+            EquipItemServerRpc(itemToEquip, customTransform.gameObject.GetComponent<NetworkObject>().NetworkObjectId);
         }
     }
 
@@ -173,6 +227,12 @@ public class PlayerInventory : NetworkBehaviour
     private void EquipItemServerRpc(Item itemToEquip)
     {
         EquipItem(itemToEquip);
+    }
+    [ServerRpc]
+    private void EquipItemServerRpc(Item itemToEquip, ulong customTransformNWid)
+    {
+        Transform customTransform = GetNetworkObject(customTransformNWid).gameObject.transform;
+        EquipItem(itemToEquip, customTransform);
     }
     [ServerRpc]
     private void UnequipItemServerRpc()

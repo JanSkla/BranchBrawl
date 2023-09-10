@@ -206,26 +206,19 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void HandleMovement(Vector3 moveInput, Vector3 rotationInput)
     {
-        Debug.Log("1");
         transform.Translate(moveInput * _speed * _tickRate);
-        Debug.Log("2");
         transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate); ;
-        Debug.Log("3");
         head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
-
-        Debug.Log("4");
 
         //handhelditem rotation
         if (!GetComponent<PlayerInventory>().EquippedItem.Value.Equals(PlayerInventory._emptyItem)){
             GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
         }
-        Debug.Log("5");
     }
 
     [ServerRpc]
     private void MovePlayerRequestServerRpc(Vector3 moveInput, Vector3 rotationInput)
     {
-        Debug.Log("RpcThrough");
         HandleMovement(moveInput, rotationInput);
 
         TransformState state = new TransformState()

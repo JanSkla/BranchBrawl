@@ -55,12 +55,7 @@ public class PlayerCamera : NetworkBehaviour
         if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.TransformDirection(Vector3.forward), out hit, 4, LayerMask.GetMask("Pickable")))
         {
             Debug.Log(hit.collider.gameObject.name);
-            GameObject facingPickable = hit.collider.gameObject;
-            while(facingPickable.transform.parent != null)
-            {
-                facingPickable = facingPickable.transform.parent.gameObject;
-            }
-            return facingPickable;
+            return hit.collider.gameObject;
         }
         return null;
     }
