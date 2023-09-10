@@ -51,7 +51,7 @@ public class PlayerInventory : NetworkBehaviour
             {
                 if (pickableObject.CompareTag("Stick"))
                 {
-                    Transform stickPartTransform = pickableObject.transform;
+                    Vector3 stickPartLocalPos = pickableObject.transform.localPosition;
                     while (pickableObject.transform.parent != null)
                     {
                         pickableObject = pickableObject.transform.parent.gameObject;
@@ -61,8 +61,8 @@ public class PlayerInventory : NetworkBehaviour
                         {
                             Id = 0,
                             NetworkObjectId = pickableObject.GetComponent<NetworkObject>().NetworkObjectId,
-                        },
-                        stickPartTransform
+                            PositionOffset = stickPartLocalPos,
+                        }
                     );
                 }
                 else
@@ -101,6 +101,10 @@ public class PlayerInventory : NetworkBehaviour
             foreach (Transform child in equipped.GameObject().transform)
             {
                 child.gameObject.layer = changeLayer;
+                if (itemToEquip.PositionOffset != null)
+                {
+                    child.localPosition = child.localPosition - itemToEquip.PositionOffset;
+                }
             }
 
             GameObject equipGO = GetNetworkObject(EquippedItem.Value.NetworkObjectId).GameObject();
@@ -114,42 +118,6 @@ public class PlayerInventory : NetworkBehaviour
         else
         {
             EquipItemServerRpc(itemToEquip);
-        }
-    }
-
-    public void EquipItem(Item itemToEquip, Transform customTransform)
-    {
-        if (IsServer)
-        {
-            EquippedItem.Value = itemToEquip;
-
-            NetworkObject equipped = GetNetworkObject(EquippedItem.Value.NetworkObjectId);
-
-            equipped.TrySetParent(transform);
-
-            int changeLayer = IsLocalPlayer ? 8 : 6;
-
-            Vector3 customPositionOffset = customTransform.localPosition;
-
-            foreach (Transform child in equipped.gameObject.transform)
-            {
-                child.gameObject.layer = changeLayer;
-                Debug.Log(child.localPosition);
-                child.localPosition = child.localPosition - customPositionOffset;
-                Debug.Log(child.localPosition);
-            }
-
-            GameObject equipGO = GetNetworkObject(EquippedItem.Value.NetworkObjectId).GameObject();
-
-            equipGO.transform.transform.position = transform.position;
-
-            equipGO.transform.transform.rotation = transform.Find("Head").transform.rotation;
-            equipGO.transform.transform.localPosition += new Vector3(0.5f, 0, 0);
-            equipGO.GetComponent<Rigidbody>().isKinematic = true;
-        }
-        else
-        {
-            EquipItemServerRpc(itemToEquip, customTransform.gameObject.GetComponent<NetworkObject>().NetworkObjectId);
         }
     }
 
@@ -192,19 +160,19 @@ public class PlayerInventory : NetworkBehaviour
         {
             NetworkObject n = GetNetworkObject(newItem.NetworkObjectId);
 
-
-            n.GameObject().transform.transform.position = transform.position;
-            n.GameObject().transform.transform.rotation = transform.rotation;
-            n.GameObject().transform.transform.localPosition += new Vector3(0.5f, 0, 0);
-            n.GameObject().transform.SetParent(transform);
-            n.GameObject().GetComponent<NetworkTransform>().enabled = false;
+            n.gameObject.transform.transform.position = transform.position;
+            n.gameObject.transform.transform.rotation = transform.rotation;
+            n.gameObject.transform.transform.localPosition += new Vector3(0.5f, 0, 0);
+            n.gameObject.transform.SetParent(transform);
+            n.gameObject.GetComponent<NetworkTransform>().enabled = false;
             n.GetComponent<Rigidbody>().isKinematic = true;
 
             int changeLayer = IsLocalPlayer ? 8 : 6;
 
-            foreach (Transform child in n.GameObject().transform)
+            foreach (Transform child in n.gameObject.transform)
             {
                 child.gameObject.layer = changeLayer;
+                child.localPosition = child.localPosition - newItem.PositionOffset;
             }
 
         }
@@ -227,12 +195,6 @@ public class PlayerInventory : NetworkBehaviour
     private void EquipItemServerRpc(Item itemToEquip)
     {
         EquipItem(itemToEquip);
-    }
-    [ServerRpc]
-    private void EquipItemServerRpc(Item itemToEquip, ulong customTransformNWid)
-    {
-        Transform customTransform = GetNetworkObject(customTransformNWid).gameObject.transform;
-        EquipItem(itemToEquip, customTransform);
     }
     [ServerRpc]
     private void UnequipItemServerRpc()

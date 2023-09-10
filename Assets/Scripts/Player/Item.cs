@@ -7,6 +7,7 @@ public struct Item : INetworkSerializable
 {
     public int Id;
     public ulong NetworkObjectId;
+    public Vector3 PositionOffset;
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         if (serializer.IsReader)
@@ -14,12 +15,14 @@ public struct Item : INetworkSerializable
             var reader = serializer.GetFastBufferReader();
             reader.ReadValueSafe(out Id);
             reader.ReadValueSafe(out NetworkObjectId);
+            reader.ReadValueSafe(out PositionOffset);
         }
         else
         {
             var writer = serializer.GetFastBufferWriter();
             writer.WriteValueSafe(Id);
             writer.WriteValueSafe(NetworkObjectId);
+            writer.WriteValueSafe(PositionOffset);
         }
     }
 }
