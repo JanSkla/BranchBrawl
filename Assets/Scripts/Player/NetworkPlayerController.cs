@@ -210,9 +210,17 @@ public class NetworkPlayerController : NetworkBehaviour
         transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate); ;
         head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
 
-        //handhelditem rotation
+        //handheldItem rotation
         if (!GetComponent<PlayerInventory>().EquippedItem.Value.Equals(PlayerInventory._emptyItem)){
-            GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+
+            GameObject handheldGO = GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject;
+
+            if (handheldGO.CompareTag("Stick") && handheldGO.transform.parent.gameObject)
+            {
+                handheldGO = handheldGO.transform.parent.gameObject;
+            }
+
+            handheldGO.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
         }
     }
 
