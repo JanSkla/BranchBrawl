@@ -278,4 +278,72 @@ public class Stick : NetworkBehaviour
         }
         _gunBarrels = N > P ? endingsN : endingsP;
     }
+    /////////??????????????????????? fix, nefunguje
+    //private void SetGunBarrels(StickPart originPart)
+    //{
+    //    Dictionary<ulong, int> endingsN = new Dictionary<ulong, int>(); //ulong NwId, int strength(distance from origin)
+    //    Dictionary<ulong, int> endingsP = new Dictionary<ulong, int>(); //ulong NwId, int strength(distance from origin)
+
+    //    if (originPart.ConnectedEdgeNwIdsP.Count + originPart.ConnectedEdgeNwIdsN.Count == 0)
+    //    {
+    //        endingsP.Add(originPart.gameObject.GetComponent<NetworkObject>().NetworkObjectId, 0);
+    //        return;
+    //    }
+
+    //    ulong[] searched = new ulong[_stickParts.Count];
+    //    bool isN = true;
+    //    int j = 0;
+    //    FindEndings(originPart, 0);
+
+    //    void FindEndings(StickPart originPart, int strength)
+    //    {
+    //        ulong originNwId = originPart.gameObject.GetComponent<NetworkObject>().NetworkObjectId;
+
+    //        searched[j] = originNwId;
+    //        j++;
+    //        if ((originPart.ConnectedEdgeNwIdsN.Count == 0 || originPart.ConnectedEdgeNwIdsP.Count == 0) && strength != 0)
+    //        {
+    //            if (isN)
+    //            {
+    //                endingsN.Add(originNwId, strength);
+    //            }
+    //            else
+    //            {
+    //                endingsP.Add(originNwId, strength);
+    //            }
+    //        }
+    //        foreach (ulong conENwId in originPart.ConnectedEdgeNwIdsN)
+    //        {
+    //            if (!searched.Contains(conENwId))
+    //            {
+    //                StickPart subPart = GetNetworkObject(conENwId).gameObject.GetComponent<StickPart>();
+    //                FindEndings(subPart, strength + 1);
+    //            }
+    //        }
+    //        isN = false;
+    //        foreach (ulong conENwId in originPart.ConnectedEdgeNwIdsP)
+    //        {
+    //            if (!searched.Contains(conENwId))
+    //            {
+    //                StickPart subPart = GetNetworkObject(conENwId).gameObject.GetComponent<StickPart>();
+    //                FindEndings(subPart, strength + 1);
+    //            }
+    //        }
+    //    }
+
+    //    int N = 0;
+    //    int P = 0;
+    //    foreach (var value in endingsN)
+    //    {
+    //        N += value.Value;
+    //        GetNetworkObject(value.Key).gameObject.GetComponent<Renderer>().material.color = Color.red;
+    //    }
+
+    //    foreach (var value in endingsP)
+    //    {
+    //        P += value.Value;
+    //        GetNetworkObject(value.Key).gameObject.GetComponent<Renderer>().material.color = Color.blue;
+    //    }
+    //    _gunBarrels = N > P ? endingsN : endingsP;
+    //}
 }

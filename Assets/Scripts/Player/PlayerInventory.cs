@@ -90,12 +90,14 @@ public class PlayerInventory : NetworkBehaviour
 
             GameObject equipGO = GetNetworkObject(EquippedItem.Value.NetworkObjectId).gameObject;
 
+            Transform handTransform = transform.Find("Hand").transform;
+
             while (equipGO.transform.parent != null)
             {
                 equipGO = equipGO.transform.parent.gameObject;
             }
 
-            equipGO.GetComponent<NetworkObject>().TrySetParent(transform);
+            equipGO.GetComponent<NetworkObject>().TrySetParent(handTransform);
 
             int changeLayer = IsLocalPlayer ? 8 : 6;
 
@@ -108,10 +110,9 @@ public class PlayerInventory : NetworkBehaviour
                 }
             }
 
-            equipGO.transform.transform.position = transform.position;
+            equipGO.transform.position = handTransform.position;
 
-            equipGO.transform.transform.rotation = transform.Find("Head").transform.rotation;
-            equipGO.transform.transform.localPosition += new Vector3(0.5f, 0, 0);
+            equipGO.transform.rotation = handTransform.rotation;
             equipGO.GetComponent<Rigidbody>().isKinematic = true;
 
             if (equipGO.CompareTag("Stick"))

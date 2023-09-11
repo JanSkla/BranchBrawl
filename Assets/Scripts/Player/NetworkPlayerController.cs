@@ -16,6 +16,8 @@ public class NetworkPlayerController : NetworkBehaviour
     private float _turnSpeed = 150;
     [SerializeField]
     private GameObject head;
+    [SerializeField]
+    private GameObject hand;
 
     private int _tick = 0;
     private float _tickRate = 1.0f / 60.0f;
@@ -28,9 +30,16 @@ public class NetworkPlayerController : NetworkBehaviour
     public NetworkVariable<TransformState> ServerTransformState = new NetworkVariable<TransformState>();
     private TransformState _previousTransformState;
 
+    private void Start()
+    {
+        hand.layer = IsLocalPlayer ? 8 : 6;
+    }
+
     public override void OnNetworkSpawn()
     {
         ServerTransformState.OnValueChanged += OnServerStateChanged;
+        hand.GetComponent<NetworkObject>().Spawn();
+        hand.GetComponent<NetworkObject>().TrySetParent(transform);
     }
 
     public override void OnNetworkDespawn()
@@ -148,10 +157,8 @@ public class NetworkPlayerController : NetworkBehaviour
             }
             else
             {
-                Debug.Log("preRpcCallInitiated");
                 HandleMovement(moveInput, rotationInput);
                 MovePlayerRequestServerRpc(moveInput, rotationInput);
-                Debug.Log("RpcCallInitiated");
 
                 //transform.position = ServerTransformState.Value.Position;
                 //transform.rotation = ServerTransformState.Value.Rotation;
@@ -189,11 +196,21 @@ public class NetworkPlayerController : NetworkBehaviour
             transform.position = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, Time.deltaTime * _speed);
             transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, Time.deltaTime * _speed);
             head.transform.rotation = Quaternion.Lerp(head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
+            hand.transform.rotation = Quaternion.Lerp(head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
 
-            if (!GetComponent<PlayerInventory>().EquippedItem.Equals(null))
-            {
-                GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject.transform.rotation = Quaternion.Lerp(head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
-            }        
+            //if (!GetComponent<PlayerInventory>().EquippedItem.Equals(PlayerInventory._emptyItem))
+            //{
+            //    ulong Id = GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId;
+            //    NetworkObject d = GetNetworkObject(Id);
+            //    GameObject handheldGO = d.gameObject;
+
+            //    if (handheldGO.CompareTag("Stick") && handheldGO.transform.parent.gameObject)
+            //    {
+            //        handheldGO = handheldGO.transform.parent.gameObject;
+            //    }
+
+            //    handheldGO.transform.rotation = Quaternion.Lerp(head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
+            //}        
         }
 
         if (_tickDeltaTime > _tickRate)
@@ -209,19 +226,20 @@ public class NetworkPlayerController : NetworkBehaviour
         transform.Translate(moveInput * _speed * _tickRate);
         transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate); ;
         head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+        hand.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
 
         //handheldItem rotation
-        if (!GetComponent<PlayerInventory>().EquippedItem.Value.Equals(PlayerInventory._emptyItem)){
+        //if (!GetComponent<PlayerInventory>().EquippedItem.Value.Equals(PlayerInventory._emptyItem)){
 
-            GameObject handheldGO = GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject;
+        //    GameObject handheldGO = GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject;
 
-            if (handheldGO.CompareTag("Stick") && handheldGO.transform.parent.gameObject)
-            {
-                handheldGO = handheldGO.transform.parent.gameObject;
-            }
+        //    if (handheldGO.CompareTag("Stick") && handheldGO.transform.parent.gameObject)
+        //    {
+        //        handheldGO = handheldGO.transform.parent.gameObject;
+        //    }
 
-            handheldGO.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
-        }
+        //    handheldGO.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+        //}
     }
 
     [ServerRpc]
