@@ -13,6 +13,11 @@ public class PlayerInventory : NetworkBehaviour
     [SerializeField]
     private GameObject StickPrefab;
 
+    [SerializeField]
+    private GameObject head;
+    [SerializeField]
+    private GameObject hand;
+
     public static Item _emptyItem = new Item();
     void Start()
     {
@@ -29,12 +34,15 @@ public class PlayerInventory : NetworkBehaviour
         }
         else if (IsClient) //equip item on load
         {
+            if (EquippedItem.Value.Equals(_emptyItem)) return;
+
             GameObject go = GetNetworkObject(EquippedItem.Value.NetworkObjectId).gameObject;
 
             if (go != null)
             {
-                go.transform.SetParent(transform);
-                go.GetComponent<NetworkTransform>().enabled = false;
+                go.GetComponent<Rigidbody>().isKinematic = false;
+                //go.transform.SetParent(transform);
+                //go.GetComponent<NetworkTransform>().enabled = false;
             }
         }
     }
@@ -42,7 +50,7 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (IsLocalPlayer && Input.GetKeyDown(KeyCode.E) && EquippedItem.Value.Equals(_emptyItem))
         {
-            GameObject pickableObject = transform.Find("Head").GetComponent<PlayerCamera>().GetFacingPickable();
+            GameObject pickableObject = head.GetComponent<PlayerCamera>().GetFacingPickable();
             if (pickableObject != null)
             {
                 if (pickableObject.CompareTag("Stick"))
@@ -90,14 +98,14 @@ public class PlayerInventory : NetworkBehaviour
 
             GameObject equipGO = GetNetworkObject(EquippedItem.Value.NetworkObjectId).gameObject;
 
-            Transform handTransform = transform.Find("Hand").transform;
+            Transform handTransform = hand.transform;
 
             while (equipGO.transform.parent != null)
             {
                 equipGO = equipGO.transform.parent.gameObject;
             }
 
-            equipGO.GetComponent<NetworkObject>().TrySetParent(handTransform);
+            Debug.Log(equipGO.GetComponent<NetworkObject>().TrySetParent(handTransform).ToString() + "trysetparent");
 
             int changeLayer = IsLocalPlayer ? 8 : 6;
 
@@ -170,17 +178,18 @@ public class PlayerInventory : NetworkBehaviour
         if (!newItem.Equals(_emptyItem))
         {
             GameObject n = GetNetworkObject(newItem.NetworkObjectId).gameObject;
+            //Transform handTransform = hand.transform;
 
             if (n.CompareTag("Stick") && n.transform.parent.gameObject)
             {
                 n = n.transform.parent.gameObject;
             }
 
-            n.transform.transform.position = transform.position;
-            n.transform.transform.rotation = transform.rotation;
-            n.transform.transform.localPosition += new Vector3(0.5f, 0, 0);
-            n.transform.SetParent(transform);
-            n.GetComponent<NetworkTransform>().enabled = false;
+            //n.GetComponent<NetworkTransform>().enabled = false;
+            ////n.transform.transform.position = handTransform.position;
+            ////n.transform.transform.rotation = handTransform.rotation;
+            //n.transform.transform.localPosition += new Vector3(0.5f, 0, 0);
+            ////n.transform.SetParent(handTransform);
             n.GetComponent<Rigidbody>().isKinematic = true;
 
             int changeLayer = IsLocalPlayer ? 8 : 6;
@@ -201,8 +210,8 @@ public class PlayerInventory : NetworkBehaviour
                 prev = prev.transform.parent.gameObject;
             }
 
-            prev.transform.SetParent(null);
-            prev.GetComponent<NetworkTransform>().enabled = true;
+            //prev.transform.SetParent(null);
+            //prev.GetComponent<NetworkTransform>().enabled = true;
             prev.GetComponent<Rigidbody>().isKinematic = false;
 
             foreach (Transform child in prev.GameObject().transform)

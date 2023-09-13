@@ -38,8 +38,11 @@ public class NetworkPlayerController : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         ServerTransformState.OnValueChanged += OnServerStateChanged;
-        hand.GetComponent<NetworkObject>().Spawn();
-        hand.GetComponent<NetworkObject>().TrySetParent(transform);
+        if (IsServer)
+        {
+            hand.GetComponent<NetworkObject>().Spawn();
+            hand.GetComponent<NetworkObject>().TrySetParent(transform);
+        }
     }
 
     public override void OnNetworkDespawn()

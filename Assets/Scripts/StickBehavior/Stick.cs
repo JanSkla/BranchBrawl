@@ -226,10 +226,7 @@ public class Stick : NetworkBehaviour
 
         void FindEndings(StickPart originPart, int strength)
         {
-            Debug.Log(j);
             ulong originNwId = originPart.gameObject.GetComponent<NetworkObject>().NetworkObjectId;
-            Debug.Log(originNwId);
-            Debug.Log(strength);
             searched[j] = originNwId;
             j++;
             if (originPart.ConnectedEdgeNwIdsN.Count == 0 || originPart.ConnectedEdgeNwIdsP.Count == 0)
