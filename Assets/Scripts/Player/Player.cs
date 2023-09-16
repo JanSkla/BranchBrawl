@@ -24,6 +24,7 @@ public class Player : NetworkBehaviour
         if (IsClient)
         {
             hand = transform.Find("Hand(Clone)").gameObject;
+            hand.layer = IsLocalPlayer ? 8 : 6;
         }
     }
 }
