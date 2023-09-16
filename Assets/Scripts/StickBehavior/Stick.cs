@@ -219,16 +219,31 @@ public class Stick : NetworkBehaviour
             return;
         }
 
-        ulong[] searched = new ulong[_stickParts.Count];
-        bool isN = true;
-        int j = 0;
-        FindEndings(originPart, 0);
+        List<ulong> searched = new List<ulong>();
 
-        void FindEndings(StickPart originPart, int strength)
+        searched.Add(originPart.gameObject.GetComponent<NetworkObject>().NetworkObjectId);
+
+        foreach (ulong conENwId in originPart.ConnectedEdgeNwIdsN)
+        {
+            if (!searched.Contains(conENwId))
+            {
+                StickPart subPart = GetNetworkObject(conENwId).gameObject.GetComponent<StickPart>();
+                FindEndings(subPart, 1, true);
+            }
+        }
+        foreach (ulong conENwId in originPart.ConnectedEdgeNwIdsP)
+        {
+            if (!searched.Contains(conENwId))
+            {
+                StickPart subPart = GetNetworkObject(conENwId).gameObject.GetComponent<StickPart>();
+                FindEndings(subPart, 1, false);
+            }
+        }
+
+        void FindEndings(StickPart originPart, int strength, bool isN)
         {
             ulong originNwId = originPart.gameObject.GetComponent<NetworkObject>().NetworkObjectId;
-            searched[j] = originNwId;
-            j++;
+            searched.Add(originNwId);
             if (originPart.ConnectedEdgeNwIdsN.Count == 0 || originPart.ConnectedEdgeNwIdsP.Count == 0)
             {
                 if (isN)
@@ -246,16 +261,15 @@ public class Stick : NetworkBehaviour
                 if(!searched.Contains(conENwId))
                 {
                     StickPart subPart = GetNetworkObject(conENwId).gameObject.GetComponent<StickPart>();
-                    FindEndings(subPart, strength + 1);
+                    FindEndings(subPart, strength + 1, isN);
                 }
             }
-            isN = false;
             foreach (ulong conENwId in originPart.ConnectedEdgeNwIdsP)
             {
                 if (!searched.Contains(conENwId))
                 {
                     StickPart subPart = GetNetworkObject(conENwId).gameObject.GetComponent<StickPart>();
-                    FindEndings(subPart, strength + 1);
+                    FindEndings(subPart, strength + 1, isN);
                 }
             }
         }
