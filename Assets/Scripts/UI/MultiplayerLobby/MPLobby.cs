@@ -14,7 +14,7 @@ public class MPLobby : MonoBehaviour
     private NetworkManager nwManager;
     void Start()
     {
-        if (nwManager.IsHost)
+        if (nwManager.IsHost || nwManager.IsServer)
         {
             hostView.SetActive(true);
         }

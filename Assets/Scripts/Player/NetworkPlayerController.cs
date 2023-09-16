@@ -9,15 +9,11 @@ using UnityEngine.UIElements;
 public class NetworkPlayerController : NetworkBehaviour
 {
     [SerializeField]
-    private TextMeshPro _tag;
-    [SerializeField]
     private float _speed = 10;
     [SerializeField]
     private float _turnSpeed = 150;
-    [SerializeField]
-    private GameObject head;
-    [SerializeField]
-    private GameObject hand;
+
+    private Player player;
 
     private int _tick = 0;
     private float _tickRate = 1.0f / 60.0f;
@@ -32,17 +28,12 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void Start()
     {
-        hand.layer = IsLocalPlayer ? 8 : 6;
+        player = GetComponent<Player>();
     }
 
     public override void OnNetworkSpawn()
     {
         ServerTransformState.OnValueChanged += OnServerStateChanged;
-        if (IsServer)
-        {
-            hand.GetComponent<NetworkObject>().Spawn();
-            hand.GetComponent<NetworkObject>().TrySetParent(transform);
-        }
     }
 
     public override void OnNetworkDespawn()
@@ -80,7 +71,7 @@ public class NetworkPlayerController : NetworkBehaviour
                     Tick = inputState.Tick,
                     Position = transform.position,
                     Rotation = transform.rotation,
-                    Facing = head.transform.rotation,
+                    Facing = player.head.transform.rotation,
                     HasStartedMoving = true
                 };
 
@@ -100,7 +91,7 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         transform.position = state.Position;
         transform.rotation = state.Rotation;
-        head.transform.rotation = state.Facing;
+        player.head.transform.rotation = state.Facing;
 
         for (int i = 0; i < _transformStates.Length; i++)
         {
@@ -115,7 +106,6 @@ public class NetworkPlayerController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        _tag.text = ServerTransformState.Value.Tick + " " + ServerTransformState.Value.Position + " " + ServerTransformState.Value.Rotation;
         if (IsLocalPlayer)
         {
             float horizontalInput = Input.GetAxis("Horizontal");
@@ -127,7 +117,6 @@ public class NetworkPlayerController : NetworkBehaviour
             float mouseY = Input.GetAxis("Mouse Y");
 
             Vector3 rotationInput = new Vector3(mouseY, mouseX, 0);
-
             ProcessLocalPlayerMovement(moveInput, rotationInput);
         }
         else
@@ -151,7 +140,7 @@ public class NetworkPlayerController : NetworkBehaviour
                     Tick = _tick,
                     Position = transform.position,
                     Rotation = transform.rotation,
-                    Facing = head.transform.rotation,
+                    Facing = player.head.transform.rotation,
                     HasStartedMoving = true
                 };
 
@@ -178,7 +167,7 @@ public class NetworkPlayerController : NetworkBehaviour
                 Tick = _tick,
                 Position = transform.position,
                 Rotation = transform.rotation,
-                Facing = head.transform.rotation,
+                Facing = player.head.transform.rotation,
                 HasStartedMoving = true
             };
 
@@ -198,8 +187,8 @@ public class NetworkPlayerController : NetworkBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, Time.deltaTime * _speed);
             transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, Time.deltaTime * _speed);
-            head.transform.rotation = Quaternion.Lerp(head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
-            hand.transform.rotation = Quaternion.Lerp(head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
+            player.head.transform.rotation = Quaternion.Lerp(player.head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
+            player.hand.transform.rotation = Quaternion.Lerp(player.head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed) * Quaternion.Euler(-45, 0, 0);
 
             //if (!GetComponent<PlayerInventory>().EquippedItem.Equals(PlayerInventory._emptyItem))
             //{
@@ -228,8 +217,8 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         transform.Translate(moveInput * _speed * _tickRate);
         transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate); ;
-        head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
-        hand.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+        player.head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+        player.hand.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
 
         //handheldItem rotation
         //if (!GetComponent<PlayerInventory>().EquippedItem.Value.Equals(PlayerInventory._emptyItem)){
@@ -255,7 +244,7 @@ public class NetworkPlayerController : NetworkBehaviour
             Tick = _tick,
             Position = transform.position,
             Rotation = transform.rotation,
-            Facing = head.transform.rotation,
+            Facing = player.head.transform.rotation,
             HasStartedMoving = true
         };
 
