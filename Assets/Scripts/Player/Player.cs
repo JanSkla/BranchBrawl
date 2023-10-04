@@ -10,6 +10,7 @@ public class Player : NetworkBehaviour
     [SerializeField]
     public GameObject head;
 
+    [HideInInspector]
     public GameObject hand;
     // Start is called before the first frame update
     void Start()

@@ -20,6 +20,7 @@ public class Stick : NetworkBehaviour
     private List<Vector3> _verticles = new List<Vector3>();
 
     private Dictionary<ulong, int> _gunBarrels = new Dictionary<ulong, int>();
+    private NetworkVariable<Quaternion> _gunRotation = new NetworkVariable<Quaternion>();
 
     //Stick generation specs
     [SerializeField]
@@ -56,6 +57,7 @@ public class Stick : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
+       // _gunRotation.OnValueChanged += OnGunRotationChange;
         if (NetworkManager.IsServer)
         {
             GenerateStickParts();
@@ -288,6 +290,32 @@ public class Stick : NetworkBehaviour
             GetNetworkObject(value.Key).gameObject.GetComponent<Renderer>().material.color = Color.blue;
         }
         _gunBarrels = N > P ? endingsN : endingsP;
+
+        FindGunRotation();
+    }
+    private void FindGunRotation()
+    {
+        Transform[] barrelTransforms = new Transform[_gunBarrels.Count()];
+        int strongest = 0;
+        Quaternion rotation;
+
+        for (int i = 0; i < barrelTransforms.Length; i++)
+        {
+            barrelTransforms[i] = GetNetworkObject(_gunBarrels.ElementAt(i).Key).gameObject.transform;
+            if (_gunBarrels.ElementAt(i).Value > strongest)
+            {
+                strongest = i;
+            }
+        }
+
+
+        rotation = barrelTransforms[strongest].localRotation;
+        rotation = Quaternion.Euler(-rotation.eulerAngles);
+        Debug.Log(rotation.eulerAngles);
+        Debug.Log(transform.rotation.eulerAngles);
+        transform.localRotation = rotation;
+        _gunRotation.Value = rotation;
+        barrelTransforms[strongest].gameObject.GetComponent<Renderer>().material.color = Color.green;
     }
     /////////??????????????????????? fix, nefunguje
     //private void SetGunBarrels(StickPart originPart)
