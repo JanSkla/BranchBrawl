@@ -57,7 +57,7 @@ public class Gun : NetworkBehaviour
         SimulatedShoot();
         ulong[] ignoreClients = { rserverRpcParams.Receive.SenderClientId };
         var clientIds = NetworkManager.ConnectedClientsIds.Except(ignoreClients);
-        //doesnt read on other clients
+        //wont call origin client
         ClientRpcParams clientRpcParams = new ClientRpcParams()
         {
             Send = new ClientRpcSendParams()
