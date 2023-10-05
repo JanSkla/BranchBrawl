@@ -82,40 +82,19 @@ public class PlayerInventory : NetworkBehaviour
 
             GameObject equipGO = GetNetworkObject(EquippedItem.Value.NetworkObjectId).gameObject;
 
-            Transform handTransform = player.hand.transform;
-
             while (equipGO.transform.parent != null)
             {
                 equipGO = equipGO.transform.parent.gameObject;
             }
 
+            Transform handTransform = player.hand.transform;
             equipGO.GetComponent<NetworkObject>().TrySetParent(handTransform).ToString();
 
-            int changeLayer = IsLocalPlayer ? LayerMask.NameToLayer("LocalPlayer") : LayerMask.NameToLayer("Player");
-
-            equipGO.layer = changeLayer;
-            foreach (Transform child in equipGO.transform)
-            {
-                child.gameObject.layer = changeLayer;
-                if (itemToEquip.PositionOffset != null)
-                {
-                    child.localPosition = child.localPosition - itemToEquip.PositionOffset;
-                }
-            }
-
-            equipGO.transform.localPosition = new Vector3();
-            equipGO.transform.localRotation = new Quaternion();
-
-            //equipGO.transform.rotation = handTransform.rotation;
-            equipGO.GetComponent<Rigidbody>().isKinematic = true;
+            SharedServerClientEquipActions(equipGO, itemToEquip);
 
             if (equipGO.CompareTag("Stick"))
             {
                 Stick.FindGunBarrels(GetNetworkObject(EquippedItem.Value.NetworkObjectId).gameObject.GetComponent<StickPart>());
-            }
-            else if (equipGO.CompareTag("Gun"))
-            {
-                player.GetComponent<PlayerShoot>().shootInput += equipGO.GetComponent<Gun>().Shoot;
             }
         }
         else
@@ -130,16 +109,6 @@ public class PlayerInventory : NetworkBehaviour
         {
             GameObject unequippedGO = GetNetworkObject(EquippedItem.Value.NetworkObjectId).gameObject;
 
-            if (unequippedGO.CompareTag("Stick") && unequippedGO.transform.parent.gameObject)
-            {
-                unequippedGO = unequippedGO.transform.parent.gameObject;
-            }
-
-            if (unequippedGO.CompareTag("Gun"))
-            {
-                player.GetComponent<PlayerShoot>().shootInput -= unequippedGO.GetComponent<Gun>().Shoot;
-            }
-
             unequippedGO.GetComponent<NetworkObject>().TryRemoveParent();
             EquippedItem.Value = _emptyItem;
 
@@ -150,8 +119,7 @@ public class PlayerInventory : NetworkBehaviour
             {
                 child.gameObject.layer = changeLayer;
             }
-
-            unequippedGO.GetComponent<Rigidbody>().isKinematic = false;
+            SharedServerClientUnequipActions(unequippedGO);
         }
         else
         {
@@ -176,7 +144,6 @@ public class PlayerInventory : NetworkBehaviour
         if (!newItem.Equals(_emptyItem))
         {
             GameObject n = GetNetworkObject(newItem.NetworkObjectId).gameObject;
-            Transform handTransform = player.hand.transform;
 
             if (n.CompareTag("Stick") && n.transform.parent.gameObject)
             {
@@ -184,38 +151,16 @@ public class PlayerInventory : NetworkBehaviour
             }
 
             n.GetComponent<NetworkTransform>().enabled = false;
-            n.transform.transform.localPosition = new Vector3(0, 0, 0);
-            n.transform.transform.rotation = handTransform.rotation;
-            //n.transform.transform.localPosition += new Vector3(0.5f, 0, 0);
-            //n.transform.SetParent(handTransform);
-            n.GetComponent<Rigidbody>().isKinematic = true;
 
-            int changeLayer = IsLocalPlayer ? 8 : 6;
-
-            foreach (Transform child in n.gameObject.transform)
-            {
-                child.gameObject.layer = changeLayer;
-                child.localPosition = child.localPosition - newItem.PositionOffset;
-            }
-
+            SharedServerClientEquipActions(n, newItem);
         }
         else
         {
-            GameObject prev = GetNetworkObject(previousItem.NetworkObjectId).gameObject;
+            GameObject prevGO = GetNetworkObject(previousItem.NetworkObjectId).gameObject;
 
-            if (prev.CompareTag("Stick") && prev.transform.parent.gameObject)
-            {
-                prev = prev.transform.parent.gameObject;
-            }
+            prevGO.GetComponent<NetworkTransform>().enabled = true;
 
-            //prev.transform.SetParent(null);
-            prev.GetComponent<NetworkTransform>().enabled = true;
-            prev.GetComponent<Rigidbody>().isKinematic = false;
-
-            foreach (Transform child in prev.GameObject().transform)
-            {
-                child.gameObject.layer = 7;
-            }
+            SharedServerClientUnequipActions(prevGO);
         }
     }
 
@@ -228,5 +173,54 @@ public class PlayerInventory : NetworkBehaviour
     private void UnequipItemServerRpc()
     {
         UnequipItem();
+    }
+
+    //utils
+    private void SharedServerClientEquipActions(GameObject equipGO, Item itemToEquip)
+    {
+        equipGO.transform.localPosition = new Vector3();
+        equipGO.transform.localRotation = new Quaternion();
+
+        equipGO.GetComponent<Rigidbody>().isKinematic = true;
+
+        if (equipGO.CompareTag("Gun"))
+        {
+            player.GetComponent<PlayerShoot>().shootInput += equipGO.GetComponent<Gun>().Shoot;
+        }
+
+        int changeLayer = IsLocalPlayer ? LayerMask.NameToLayer("LocalPlayer") : LayerMask.NameToLayer("Player");
+
+        equipGO.layer = changeLayer;
+        foreach (Transform child in equipGO.transform)
+        {
+            child.gameObject.layer = changeLayer;
+            if (itemToEquip.PositionOffset != null)
+            {
+                child.localPosition -= itemToEquip.PositionOffset;
+            }
+        }
+    }
+
+    private void SharedServerClientUnequipActions(GameObject unequippedGO)
+    {
+        if (unequippedGO.CompareTag("Gun"))
+        {
+            player.GetComponent<PlayerShoot>().shootInput -= unequippedGO.GetComponent<Gun>().Shoot;
+        }
+
+        if (unequippedGO.CompareTag("Stick") && unequippedGO.transform.parent.gameObject)
+        {
+            unequippedGO = unequippedGO.transform.parent.gameObject;
+        }
+
+        int changeLayer = LayerMask.NameToLayer("Pickable");
+
+        unequippedGO.layer = changeLayer;
+        foreach (Transform child in unequippedGO.transform)
+        {
+            child.gameObject.layer = changeLayer;
+        }
+
+        unequippedGO.GetComponent<Rigidbody>().isKinematic = false;
     }
 }

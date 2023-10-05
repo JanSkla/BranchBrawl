@@ -14,7 +14,6 @@ public class PlayerShoot : MonoBehaviour
     {
         if (player.IsLocalPlayer && shootInput != null && Input.GetMouseButton(0))
         {
-            Debug.Log("tries to invoke shoot");
             shootInput.Invoke();
         }
     }
