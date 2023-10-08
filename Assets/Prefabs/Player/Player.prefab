@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 833656207677132889}
   - component: {fileID: 1834623567954249067}
   - component: {fileID: 3960852300993710299}
+  - component: {fileID: 7161183686093058736}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -216,6 +217,20 @@ MonoBehaviour:
   handPrefab: {fileID: 3375491625978825827, guid: a0fec42cab157a54c8ad1c799c7b45d0, type: 3}
   head: {fileID: 8587582023906205489}
   hand: {fileID: 0}
+--- !u!114 &7161183686093058736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3264913644830457048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a11e31d89ebebd4d8a81ae3b018c3e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health:
+    m_InternalValue: 100
 --- !u!1 &7804545093389861399
 GameObject:
   m_ObjectHideFlags: 0
