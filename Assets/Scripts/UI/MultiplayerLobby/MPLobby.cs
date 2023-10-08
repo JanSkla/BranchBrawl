@@ -4,17 +4,15 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MPLobby : MonoBehaviour
+public class MPLobby : NetworkBehaviour
 {
     [SerializeField]
     private GameObject hostView;
     [SerializeField]
     private GameObject clientView;
-    [SerializeField]
-    private NetworkManager nwManager;
     void Start()
     {
-        if (nwManager.IsHost || nwManager.IsServer)
+        if (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
         {
             hostView.SetActive(true);
         }
@@ -25,6 +23,8 @@ public class MPLobby : MonoBehaviour
     }
     public void StartGame()
     {
-        nwManager.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        Debug.Log(NetworkManager.Singleton);
+        Debug.Log(NetworkManager.Singleton.SceneManager);
+        NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
     }
 }
