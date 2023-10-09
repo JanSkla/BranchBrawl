@@ -14,10 +14,12 @@ public class MPLobby : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
         {
+            clientView.SetActive(false);
             hostView.SetActive(true);
         }
         else
         {
+            hostView.SetActive(false);
             clientView.SetActive(true);
         }
     }

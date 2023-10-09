@@ -19,6 +19,9 @@ public class HostJoinMenu : MonoBehaviour
     private GameObject mpLobby;
 
     [SerializeField]
+    private GameObject loadingView;
+
+    [SerializeField]
     private TMP_InputField joinInput;
 
     [SerializeField]
@@ -29,7 +32,7 @@ public class HostJoinMenu : MonoBehaviour
         StartCoroutine(Example_ConfigureTransportAndStartNgoAsHost());
         //NetworkManager.Singleton.StartHost();
         gameObject.SetActive(false);
-        mpLobby.gameObject.SetActive(true);
+        loadingView.SetActive(true);
     }
 
     public void OnJoinClick()
@@ -41,11 +44,11 @@ public class HostJoinMenu : MonoBehaviour
         }
         //NetworkManager.Singleton.StartClient();
         gameObject.SetActive(false);
-        mpLobby.gameObject.SetActive(true);
+        loadingView.SetActive(true);
     }
 
     //Host
-    public static async Task<RelayServerData> AllocateRelayServerAndGetJoinCode(int maxConnections, TextMeshProUGUI hostCodeDisplay, string region = null)
+    public static async Task<RelayServerData> AllocateRelayServerAndGetJoinCode(int maxConnections, TextMeshProUGUI hostCodeDisplay, GameObject mpLobbyView, GameObject loadingView, string region = null)
     {
         Allocation allocation;
         string createJoinCode;
@@ -81,6 +84,9 @@ public class HostJoinMenu : MonoBehaviour
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relaySeverData);
         NetworkManager.Singleton.StartHost();
 
+        loadingView.SetActive(false);
+        mpLobbyView.SetActive(true);
+
         return relaySeverData;
     }
 
@@ -88,7 +94,7 @@ public class HostJoinMenu : MonoBehaviour
     {
         hostCodeDisplay.text = "getting join code";
         Debug.Log($"fsfd");
-        var serverRelayUtilityTask = AllocateRelayServerAndGetJoinCode(m_MaxConnections, hostCodeDisplay);
+        var serverRelayUtilityTask = AllocateRelayServerAndGetJoinCode(m_MaxConnections, hostCodeDisplay, mpLobby, loadingView);
 
         while (!serverRelayUtilityTask.IsCompleted)
         {
@@ -97,7 +103,7 @@ public class HostJoinMenu : MonoBehaviour
     }
 
     //Client
-    public static async Task<RelayServerData> JoinRelayServerFromJoinCode(string joinCode)
+    public static async Task<RelayServerData> JoinRelayServerFromJoinCode(string joinCode, GameObject mpLobbyView, GameObject loadingView)
     {
         JoinAllocation allocation;
         try
@@ -119,13 +125,16 @@ public class HostJoinMenu : MonoBehaviour
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
         NetworkManager.Singleton.StartClient();
 
+        loadingView.SetActive(false);
+        mpLobbyView.SetActive(true);
+
         return relayServerData;
     }
 
     IEnumerator Example_ConfigureTransportAndStartNgoAsConnectingPlayer(string RelayJoinCode)
     {
         // Populate RelayJoinCode beforehand through the UI
-        var clientRelayUtilityTask = JoinRelayServerFromJoinCode(RelayJoinCode);
+        var clientRelayUtilityTask = JoinRelayServerFromJoinCode(RelayJoinCode, mpLobby, loadingView);
 
         while (!clientRelayUtilityTask.IsCompleted)
         {

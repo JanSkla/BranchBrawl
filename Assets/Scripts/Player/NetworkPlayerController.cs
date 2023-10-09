@@ -187,8 +187,9 @@ public class NetworkPlayerController : NetworkBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, Time.deltaTime * _speed);
             transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, Time.deltaTime * _speed);
-            player.head.transform.rotation = Quaternion.Lerp(player.head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
-            player.hand.transform.rotation = Quaternion.Lerp(player.head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed) * Quaternion.Euler(-45, 0, 0);
+            Quaternion facing = Quaternion.Lerp(player.head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
+            player.head.transform.rotation = facing;
+            player.hand.transform.rotation = facing;
 
             //if (!GetComponent<PlayerInventory>().EquippedItem.Equals(PlayerInventory._emptyItem))
             //{
