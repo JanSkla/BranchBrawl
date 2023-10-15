@@ -1,27 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
 public class Gun : NetworkBehaviour
 {
     [SerializeField] private GunData gunData;
-    private float timeSinceLastShot = 0f;
-
+    private float _timeSinceLastShot = 0f;
     void Start()
     {
+        GameObject newGO = new GameObject("myTextGO");
+        newGO.transform.SetParent(transform);
+
+        TextMeshPro myText = newGO.AddComponent<TextMeshPro>();
+        myText.text = "Ta-dah!";
     }
     void Update()
     {
-        timeSinceLastShot += Time.deltaTime;
+        _timeSinceLastShot += Time.deltaTime;
     }
 
-    public void Shoot()
+    public void Shoot(bool firstShot)
     {
         Debug.Log("tries to shoot");
+        if (!gunData.isAuto && !firstShot) return;
         if (!CanShoot() || gunData.currentAmmo <= 0) return;
-        Debug.Log(gunData.name + " Shoots");
 
         RaycastHit hit;
 
@@ -52,10 +57,10 @@ public class Gun : NetworkBehaviour
         }
 
         ShootSendNetworkRpc(hitData);
-        timeSinceLastShot = 0f;
+        _timeSinceLastShot = 0f;
     }
 
-    private bool CanShoot() => !gunData.reloading && timeSinceLastShot > 1f / gunData.firerate;
+    private bool CanShoot() => !gunData.reloading && _timeSinceLastShot > 1f / gunData.firerate;
 
     private void SimulatedShoot()
     {

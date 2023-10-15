@@ -6,15 +6,22 @@ using UnityEngine;
 
 public class PlayerShoot : MonoBehaviour
 {
-    public Action shootInput;
+    public Action<bool> shootInput; //true == first press in series
     [SerializeField]
     private Player player;
 
     void Update()
     {
-        if (player.IsLocalPlayer && shootInput != null && Input.GetMouseButton(0))
+        if (player.IsLocalPlayer && shootInput != null)
         {
-            shootInput.Invoke();
+            if (Input.GetMouseButtonDown(0))
+            {
+                shootInput.Invoke(true);
+            }
+            else if (Input.GetMouseButton(0))
+            {
+                shootInput.Invoke(false);
+            }
         }
     }
 }
