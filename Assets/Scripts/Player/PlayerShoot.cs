@@ -12,7 +12,7 @@ public class PlayerShoot : MonoBehaviour
 
     void Update()
     {
-        if (player.IsLocalPlayer && shootInput != null)
+        if (player.IsLocalPlayer && player.IsAlive && shootInput != null)
         {
             if (Input.GetMouseButtonDown(0))
             {

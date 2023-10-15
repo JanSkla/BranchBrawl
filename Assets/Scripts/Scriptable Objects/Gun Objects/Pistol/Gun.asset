@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Pistol
   damage: 123
   firerate: 123
-  isAuto: 0
+  isAuto: 1
   currentAmmo: 123
   magSize: 123
   reloadTime: 1

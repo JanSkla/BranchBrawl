@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,14 +8,7 @@ public class Gun : NetworkBehaviour
 {
     [SerializeField] private GunData gunData;
     private float _timeSinceLastShot = 0f;
-    void Start()
-    {
-        GameObject newGO = new GameObject("myTextGO");
-        newGO.transform.SetParent(transform);
 
-        TextMeshPro myText = newGO.AddComponent<TextMeshPro>();
-        myText.text = "Ta-dah!";
-    }
     void Update()
     {
         _timeSinceLastShot += Time.deltaTime;

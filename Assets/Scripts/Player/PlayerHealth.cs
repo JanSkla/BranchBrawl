@@ -51,7 +51,6 @@ public class PlayerHealth : NetworkBehaviour
 
     private void Die()
     {
-        gameObject.GetComponent<Renderer>().material.color = Color.red;
-        Debug.Log(gameObject.name + " died");
+        GetComponent<Player>().IsAlive = false;
     }
 }

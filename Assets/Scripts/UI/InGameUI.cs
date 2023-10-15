@@ -3,25 +3,32 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 
 public class InGameUI : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _cursor;
-
+    private GameObject _game;
     [SerializeField]
     private GameObject _menu;
 
+    //Game
     [SerializeField]
-    private GameObject _hostJoinMenu;
+    private GameObject _cursor;
+    [SerializeField]
+    private GameObject _deathScreen;
 
     // Update is called once per frame
+    private void Start()
+    {
+        GameObject.Find("Local Player").GetComponent<LocalPlayer>()._inGameUI = this;
+    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            _cursor.SetActive(false);
+            _game.SetActive(false);
             _menu.SetActive(true);
         }
     }
@@ -34,7 +41,7 @@ public class InGameUI : MonoBehaviour
     //menu control
     public void CloseMenu()
     {
-        _cursor.SetActive(true);
+        _game.SetActive(true);
         _menu.SetActive(false);
     }
 
@@ -42,5 +49,14 @@ public class InGameUI : MonoBehaviour
     {
         NetworkManager.Singleton.Shutdown();
         SceneManager.LoadScene("Menu");
+    }
+
+    public void UpdateScreen(bool isAlive)
+    {
+        Debug.Log("2");
+        _deathScreen.SetActive(!isAlive);
+
+        Debug.Log("3");
+        _cursor.SetActive(isAlive);
     }
 }
