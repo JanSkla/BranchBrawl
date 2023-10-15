@@ -717,7 +717,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4b0e36f28d6dad45af3e6a076a6f1fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mpLobby: {fileID: 0}
+  m_MaxConnections: 5
+  mpLobby: {fileID: 0}
+  loadingView: {fileID: 0}
+  joinInput: {fileID: 0}
+  hostCodeDisplay: {fileID: 0}
 --- !u!1 &579744228
 GameObject:
   m_ObjectHideFlags: 0

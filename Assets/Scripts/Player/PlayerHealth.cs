@@ -27,19 +27,31 @@ public class PlayerHealth : NetworkBehaviour
         }
     }
 
-    private void Damage(int amount)
+    public void Damage(int amount)
     {
         Health.Value -= amount;
-        Die();
+        if (Health.Value <= 0)
+        {
+            Die();
+        }
     }
 
     private void Heal(int amount)
     {
-        Health.Value += amount;
+        int currentHealth = Health.Value;
+        if (currentHealth + amount >= maxHealth)
+        {
+            Health.Value = maxHealth;
+        }
+        else
+        {
+            Health.Value += amount;
+        }
     }
 
     private void Die()
     {
+        gameObject.GetComponent<Renderer>().material.color = Color.red;
         Debug.Log(gameObject.name + " died");
     }
 }

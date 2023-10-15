@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName="Gun", menuName = "Weapons")]
+[CreateAssetMenu(fileName = "Gun", menuName = "Weapons")]
 public class GunData : ScriptableObject
 {
     [Header("Info")]
     public new string name;
 
     [Header("Shooting")]
-    public float damage;
+    public int damage;
     public float firerate;
     public bool isAuto;
 
