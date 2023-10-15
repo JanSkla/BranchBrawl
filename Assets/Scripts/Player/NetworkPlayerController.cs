@@ -108,6 +108,7 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         if (IsLocalPlayer)
         {
+            if (!CanMove()) return;
             float horizontalInput = Input.GetAxis("Horizontal");
             float verticalInput = Input.GetAxis("Vertical");
 
@@ -234,6 +235,8 @@ public class NetworkPlayerController : NetworkBehaviour
         //    handheldGO.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
         //}
     }
+
+    private bool CanMove() => player.IsAlive;
 
     [ServerRpc]
     private void MovePlayerRequestServerRpc(Vector3 moveInput, Vector3 rotationInput)
