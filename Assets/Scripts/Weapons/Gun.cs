@@ -6,8 +6,13 @@ using UnityEngine;
 
 public class Gun : NetworkBehaviour
 {
-    [SerializeField] private GunData gunData;
+    [SerializeField]
+    private GunData gunData;
+    [SerializeField]
+    private GameObject muzzle;
+
     private float _timeSinceLastShot = 0f;
+
 
     void Update()
     {
@@ -24,7 +29,9 @@ public class Gun : NetworkBehaviour
 
         HitData hitData = new HitData();
 
-        if(Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity, LayerMask.GetMask("Player")))
+        Vector3 shootOriginPos = muzzle.transform.position;
+
+        if (Physics.Raycast(shootOriginPos, transform.forward, out hit, Mathf.Infinity, LayerMask.GetMask("Player")))
         {
             hitData.IsHit = true;
             GameObject hitTarget = hit.collider.gameObject;
@@ -35,7 +42,7 @@ public class Gun : NetworkBehaviour
             }
 
             hitData.HitNwID = hitTarget.GetComponent<NetworkObject>().NetworkObjectId;
-            Debug.DrawRay(transform.position, transform.forward * hit.distance, Color.green, 1);
+            Debug.DrawRay(shootOriginPos, transform.forward * hit.distance, Color.green, 1);
 
             if (IsServer)
             {
@@ -45,7 +52,7 @@ public class Gun : NetworkBehaviour
         else
         {
             hitData.IsHit = false;
-            Debug.DrawRay(transform.position, transform.forward * 100, Color.red, 1);
+            Debug.DrawRay(shootOriginPos, transform.forward * 100, Color.red, 1);
         }
 
         ShootSendNetworkRpc(hitData);
@@ -57,7 +64,7 @@ public class Gun : NetworkBehaviour
     private void SimulatedShoot()
     {
         Debug.Log(gunData.name + " Shoots //simulated");
-        Debug.DrawRay(transform.position, transform.forward * 100, Color.red, 1);
+        Debug.DrawRay(muzzle.transform.position, transform.forward * 100, Color.red, 1);
     }
 
     private void ShootSendNetworkRpc(HitData hit)

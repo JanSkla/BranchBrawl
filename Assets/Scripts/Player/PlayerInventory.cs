@@ -190,15 +190,17 @@ public class PlayerInventory : NetworkBehaviour
 
         int changeLayer = IsLocalPlayer ? LayerMask.NameToLayer("LocalPlayer") : LayerMask.NameToLayer("Player");
 
-        equipGO.layer = changeLayer;
-        foreach (Transform child in equipGO.transform)
-        {
-            child.gameObject.layer = changeLayer;
-            if (itemToEquip.PositionOffset != null)
-            {
-                child.localPosition -= itemToEquip.PositionOffset;
-            }
-        }
+
+        ChangeLayerWithChildren(equipGO, changeLayer);
+        //equipGO.layer = changeLayer;
+        //foreach (Transform child in equipGO.transform)
+        //{
+        //    child.gameObject.layer = changeLayer;
+        //    if (itemToEquip.PositionOffset != null)
+        //    {
+        //        child.localPosition -= itemToEquip.PositionOffset;
+        //    }
+        //}
     }
 
     private void SharedServerClientUnequipActions(GameObject unequippedGO)
@@ -215,12 +217,17 @@ public class PlayerInventory : NetworkBehaviour
 
         int changeLayer = LayerMask.NameToLayer("Pickable");
 
-        unequippedGO.layer = changeLayer;
-        foreach (Transform child in unequippedGO.transform)
-        {
-            child.gameObject.layer = changeLayer;
-        }
+        ChangeLayerWithChildren(unequippedGO, changeLayer);
 
         unequippedGO.GetComponent<Rigidbody>().isKinematic = false;
+    }
+
+    private void ChangeLayerWithChildren(GameObject gameObject, LayerMask layerMask)
+    {
+        gameObject.layer = layerMask;
+        foreach (Transform child in gameObject.transform)
+        {
+            ChangeLayerWithChildren(child.gameObject, layerMask);
+        }
     }
 }
