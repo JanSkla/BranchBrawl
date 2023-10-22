@@ -25,8 +25,6 @@ public class MPLobby : NetworkBehaviour
     }
     public void StartGame()
     {
-        Debug.Log(NetworkManager.Singleton);
-        Debug.Log(NetworkManager.Singleton.SceneManager);
         NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
     }
 }

@@ -29,6 +29,7 @@ public class PlayerHealth : NetworkBehaviour
 
     public void Damage(int amount)
     {
+        if (!IsALive()) return;
         Health.Value -= amount;
         if (Health.Value <= 0)
         {
@@ -53,4 +54,6 @@ public class PlayerHealth : NetworkBehaviour
     {
         GetComponent<Player>().IsAlive = false;
     }
+
+    private bool IsALive() => Health.Value > 0;
 }
