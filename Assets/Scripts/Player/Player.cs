@@ -29,7 +29,7 @@ public class Player : NetworkBehaviour
             if (IsLocalPlayer)
             {
                 if(GetComponent<LocalPlayer>()._inGameUI != null)
-                    GetComponent<LocalPlayer>()._inGameUI.UpdateScreen(_isAlive);
+                    GetComponent<LocalPlayer>()._inGameUI.DeathScreen(_isAlive);
             }
         }
     }
@@ -57,6 +57,11 @@ public class Player : NetworkBehaviour
 
     public void Die()
     {
+        GameObject gameManager = GameObject.Find("GameManager");
+        if (gameManager)
+        {
+            gameManager.GetComponent<GameManager>().AlivePlayerCount--;
+        }
         GetComponent<Renderer>().material.color = Color.red;
         Debug.Log(gameObject.name + " died");
     }

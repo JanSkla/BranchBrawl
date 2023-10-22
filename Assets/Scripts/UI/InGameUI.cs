@@ -14,6 +14,13 @@ public class InGameUI : MonoBehaviour
     private GameObject _menu;
 
     //Game
+
+    [SerializeField]
+    private GameObject _running;
+    [SerializeField]
+    private GameObject _over;
+
+    //Runngig
     [SerializeField]
     private GameObject _cursor;
     [SerializeField]
@@ -51,12 +58,15 @@ public class InGameUI : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
-    public void UpdateScreen(bool isAlive)
+    public void DeathScreen(bool isAlive)
     {
-        Debug.Log("2");
         _deathScreen.SetActive(!isAlive);
-
-        Debug.Log("3");
         _cursor.SetActive(isAlive);
+    }
+
+    public void UpdateGameScreen(bool isOver)
+    {
+        _running.SetActive(!isOver);
+        _over.SetActive(isOver);
     }
 }
