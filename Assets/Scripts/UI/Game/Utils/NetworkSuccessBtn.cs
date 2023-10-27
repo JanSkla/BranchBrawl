@@ -21,6 +21,14 @@ public class NetworkSuccessBtn : NetworkBehaviour
 
     private NetworkVariable<int> _readyCount = new NetworkVariable<int>();
 
+    void OnEnable()
+    {
+        if (IsServer)
+        {
+            _playerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
+        }
+    }
+
     public override void OnNetworkSpawn()
     {
         _readyCount.OnValueChanged += OnReadyCountChange;
@@ -72,7 +80,7 @@ public class NetworkSuccessBtn : NetworkBehaviour
     private void OnReadyCountChange(int prevCount, int newCount)
     {
         UpdateText(newCount);
-        if (newCount == _playerCount && IsServer)
+        if (NetworkManager.IsServer && newCount == _playerCount)
         {
             Fulfilled.Invoke();
         }

@@ -66,6 +66,7 @@ public class InGameUI : MonoBehaviour
 
     public void UpdateGameScreen(bool isOver)
     {
+        Debug.Log("Over");
         _running.SetActive(!isOver);
         _over.SetActive(isOver);
     }

@@ -31,10 +31,6 @@ public class PlayerHealth : NetworkBehaviour
     {
         if (!IsALive()) return;
         Health.Value -= amount;
-        if (Health.Value <= 0)
-        {
-            Die();
-        }
     }
 
     private void Heal(int amount)
