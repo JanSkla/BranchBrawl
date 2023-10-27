@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 7161183686093058736}
   - component: {fileID: 8263074692557498020}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PlayerObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -216,9 +216,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handPrefab: {fileID: 3375491625978825827, guid: a0fec42cab157a54c8ad1c799c7b45d0, type: 3}
-  head: {fileID: 8587582023906205489}
-  hand: {fileID: 0}
-  _isAlive: 1
+  Head: {fileID: 8587582023906205489}
+  Hand: {fileID: 0}
+  PlayerManager: {fileID: 0}
 --- !u!114 &7161183686093058736
 MonoBehaviour:
   m_ObjectHideFlags: 0

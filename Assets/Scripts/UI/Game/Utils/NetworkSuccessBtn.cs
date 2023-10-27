@@ -30,11 +30,9 @@ public class NetworkSuccessBtn : NetworkBehaviour
         {
             _readyCount.Value = 0;
             _playerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
-            UpdateText(_readyCount.Value);
         }
         else
         {
-            Debug.Log(1);
             FetchPlayerCountServerRpc();
         }
     }
@@ -45,7 +43,6 @@ public class NetworkSuccessBtn : NetworkBehaviour
 
     public void OnButtonPress()
     {
-        Debug.Log(1);
         if (NetworkManager.IsServer || NetworkManager.IsHost)
         {
             _isReady = !_isReady;
@@ -61,7 +58,6 @@ public class NetworkSuccessBtn : NetworkBehaviour
         }
         else
         {
-            Debug.Log(1);
             _isReady = !_isReady;
             UpdateText(_readyCount.Value + (_isReady ? 1 : -1)); //simulated count increase
             IsReadyServerRPC(_isReady);
@@ -70,13 +66,11 @@ public class NetworkSuccessBtn : NetworkBehaviour
 
     private void UpdateText(int readyCount)
     {
-        Debug.Log(12);
         text.text = $"Play again {readyCount}/{_playerCount}";
     }
 
     private void OnReadyCountChange(int prevCount, int newCount)
     {
-        Debug.Log(2);
         UpdateText(newCount);
         if (newCount == _playerCount && IsServer)
         {
@@ -87,7 +81,6 @@ public class NetworkSuccessBtn : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void IsReadyServerRPC(bool isReady)
     {
-        Debug.Log(1);
         if (isReady)
         {
             _readyCount.Value++;
@@ -100,14 +93,11 @@ public class NetworkSuccessBtn : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void FetchPlayerCountServerRpc()
     {
-        Debug.Log(1);
         SetPlayerCountClientRpc(NetworkManager.Singleton.ConnectedClientsIds.Count);
     }
     [ClientRpc]
     private void SetPlayerCountClientRpc(int playerCount)
     {
-        Debug.Log(1);
         _playerCount = playerCount;
-        UpdateText(_readyCount.Value);
     }
 }

@@ -16,7 +16,7 @@ public class PlayerInventory : NetworkBehaviour
     void Start()
     {
         player = GetComponent<Player>();
-        if (IsClient) //equip item on load
+        if (NetworkManager.IsClient) //equip item on load
         {
             if (EquippedItem.Value.Equals(_emptyItem)) return;
 
@@ -32,9 +32,9 @@ public class PlayerInventory : NetworkBehaviour
     }
     void Update()
     {
-        if (IsLocalPlayer && Input.GetKeyDown(KeyCode.E) && EquippedItem.Value.Equals(_emptyItem))
+        if (player.IsLocalPlayer && Input.GetKeyDown(KeyCode.E) && EquippedItem.Value.Equals(_emptyItem))
         {
-            GameObject pickableObject = player.head.GetComponent<PlayerCamera>().GetFacingPickable();
+            GameObject pickableObject = player.Head.GetComponent<PlayerCamera>().GetFacingPickable();
             if (pickableObject != null)
             {
                 if (pickableObject.CompareTag("Stick"))
@@ -68,7 +68,7 @@ public class PlayerInventory : NetworkBehaviour
                 }
             }
         }
-        if (IsLocalPlayer && Input.GetKeyDown(KeyCode.Q) && !EquippedItem.Value.Equals(_emptyItem))
+        if (player.IsLocalPlayer && Input.GetKeyDown(KeyCode.Q) && !EquippedItem.Value.Equals(_emptyItem))
         {
             UnequipItem();
         }
@@ -76,7 +76,7 @@ public class PlayerInventory : NetworkBehaviour
 
     public void EquipItem(Item itemToEquip)
     {
-        if (IsServer)
+        if (NetworkManager.IsServer)
         {
             EquippedItem.Value = itemToEquip;
 
@@ -84,10 +84,10 @@ public class PlayerInventory : NetworkBehaviour
 
             while (equipGO.transform.parent != null)
             {
-                equipGO = equipGO.transform.parent.gameObject;
+                equipGO = equipGO.transform.parent.gameObject; //TADY POKRACUJ ZITRA
             }
 
-            Transform handTransform = player.hand.transform;
+            Transform handTransform = player.Hand.transform;
             equipGO.GetComponent<NetworkObject>().TrySetParent(handTransform).ToString();
 
             SharedServerClientEquipActions(equipGO, itemToEquip);
@@ -105,7 +105,7 @@ public class PlayerInventory : NetworkBehaviour
 
     public void UnequipItem()
     {
-        if (IsServer)
+        if (NetworkManager.IsServer)
         {
             GameObject unequippedGO = GetNetworkObject(EquippedItem.Value.NetworkObjectId).gameObject;
 
@@ -139,7 +139,7 @@ public class PlayerInventory : NetworkBehaviour
 
     private void OnEquippedItemChange(Item previousItem, Item newItem)
     {
-        if (IsServer) return;
+        if (NetworkManager.IsServer) return;
 
         if (!newItem.Equals(_emptyItem))
         {
@@ -164,12 +164,12 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [ServerRpc (RequireOwnership = false)]
     private void EquipItemServerRpc(Item itemToEquip)
     {
         EquipItem(itemToEquip);
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void UnequipItemServerRpc()
     {
         UnequipItem();
@@ -188,7 +188,7 @@ public class PlayerInventory : NetworkBehaviour
             player.GetComponent<PlayerShoot>().shootInput += equipGO.GetComponent<Gun>().Shoot;
         }
 
-        int changeLayer = IsLocalPlayer ? LayerMask.NameToLayer("LocalPlayer") : LayerMask.NameToLayer("Player");
+        int changeLayer = player.IsLocalPlayer ? LayerMask.NameToLayer("LocalPlayer") : LayerMask.NameToLayer("Player");
 
 
         ChangeLayerWithChildren(equipGO, changeLayer);

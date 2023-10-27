@@ -12,8 +12,6 @@ public class GameManager : NetworkBehaviour
     [SerializeField]
     private GameObject playAgainBtn;
 
-    private NetworkObject _localPlayer;
-
     private int _alivePlayerCount;
     public int AlivePlayerCount
     {
@@ -49,17 +47,7 @@ public class GameManager : NetworkBehaviour
     }
     void Start()
     {
-        _localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
-        _localPlayer.transform.Find("Head").GetComponent<PlayerCamera>().OnGameStart();
-        _inGameUI = GameObject.Find("InGameUI").GetComponent<InGameUI>();
-
-        if (NetworkManager.IsServer || NetworkManager.IsHost)
-        {
-            _alivePlayerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
-            SetAlivePlayerCountClientRpc(AlivePlayerCount);
-        }
-
-        State = GameState.Running;
+        StartGame();
     }
     private void GameSetRunning()
     {
@@ -68,17 +56,32 @@ public class GameManager : NetworkBehaviour
     private void GameOver()
     {
         _inGameUI.UpdateGameScreen(true);
-        playAgainBtn.GetComponent<NetworkSuccessBtn>().Fulfilled += StartNewGame;
+        playAgainBtn.GetComponent<NetworkSuccessBtn>().Fulfilled += PlayAgain;
     }
-    private void StartNewGame()
+    private void StartGame()
+    {
+        if (NetworkManager.IsServer || NetworkManager.IsHost)
+        {
+            foreach (var client in NetworkManager.Singleton.ConnectedClients)
+            {
+                client.Value.PlayerObject.GetComponent<PlayerManager>().SpawnPlayerObject();
+            }
+            _alivePlayerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
+            SetAlivePlayerCountClientRpc(AlivePlayerCount);
+        }
+        _inGameUI = GameObject.Find("InGameUI").GetComponent<InGameUI>();
+
+        State = GameState.Running;
+    }
+    private void PlayAgain()
     {
         if (NetworkManager.IsServer)
         {
             foreach (var client in NetworkManager.Singleton.ConnectedClients)
             {
-                client.Value.PlayerObject.Despawn();
+                client.Value.PlayerObject.GetComponent<PlayerManager>().DespawnPlayerObject();
             }
-            //NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
         }
     }
     [ClientRpc]
