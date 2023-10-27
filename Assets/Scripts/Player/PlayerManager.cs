@@ -39,6 +39,7 @@ public class PlayerManager : NetworkBehaviour
     }
     public void DespawnPlayerObject()
     {
+        PlayerObject.GetComponent<Player>().Hand.GetComponent<NetworkObject>().Despawn();
         PlayerObject.GetComponent<NetworkObject>().Despawn();
     }
 

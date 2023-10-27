@@ -73,7 +73,7 @@ public class GameManager : NetworkBehaviour
 
         State = GameState.Running;
     }
-    private void PlayAgain()
+    public void PlayAgain()
     {
         if (NetworkManager.IsServer)
         {
