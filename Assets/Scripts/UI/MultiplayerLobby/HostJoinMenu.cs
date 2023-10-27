@@ -93,7 +93,6 @@ public class HostJoinMenu : MonoBehaviour
     IEnumerator Example_ConfigureTransportAndStartNgoAsHost()
     {
         hostCodeDisplay.text = "getting join code";
-        Debug.Log($"fsfd");
         var serverRelayUtilityTask = AllocateRelayServerAndGetJoinCode(m_MaxConnections, hostCodeDisplay, mpLobby, loadingView);
 
         while (!serverRelayUtilityTask.IsCompleted)
