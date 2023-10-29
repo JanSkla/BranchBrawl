@@ -25,13 +25,11 @@ public class Gun : NetworkBehaviour
         if (!gunData.isAuto && !firstShot) return;
         if (!CanShoot() || gunData.currentAmmo <= 0) return;
 
-        RaycastHit hit;
-
-        HitData hitData = new HitData();
+        HitData hitData = new();
 
         Vector3 shootOriginPos = muzzle.transform.position;
 
-        if (Physics.Raycast(shootOriginPos, transform.forward, out hit, Mathf.Infinity, LayerMask.GetMask("Player")))
+        if (Physics.Raycast(shootOriginPos, transform.forward, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Player")))
         {
             hitData.IsHit = true;
             GameObject hitTarget = hit.collider.gameObject;
