@@ -23,8 +23,7 @@ public class NetworkPlayerController : NetworkBehaviour
     private InputState[] _inputStates = new InputState[BUFFER_SIZE];
     private TransformState[] _transformStates = new TransformState[BUFFER_SIZE];
 
-    public NetworkVariable<TransformState> ServerTransformState = new NetworkVariable<TransformState>();
-    private TransformState _previousTransformState;
+    public NetworkVariable<TransformState> ServerTransformState = new();
 
     private void Start()
     {
@@ -43,45 +42,40 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void OnServerStateChanged(TransformState _previousState, TransformState serverState)
     {
+        Debug.Log(name + serverState.Position);
         if (NetworkManager.IsServer || !IsLocalPlayer) return;
 
-        if (_previousTransformState.IsUnityNull())
-        {
-            _previousTransformState = serverState;
-        }
 
         TransformState calculatedState = _transformStates.First(localState => localState.Tick == serverState.Tick);
-        if (calculatedState.Position != serverState.Position)
+        if (calculatedState.Position == serverState.Position) return;
+
+        Debug.Log("TP");
+        TeleportPlayer(serverState);
+
+
+
+        IEnumerable<InputState> inputs = _inputStates.Where(input => input.Tick > serverState.Tick);
+
+        inputs = from input in inputs orderby input.Tick select input;
+
+        foreach (InputState inputState in inputs)
         {
-            Debug.Log("TP");
-            TeleportPlayer(serverState); //here
+            HandleMovement(inputState.movementInput, inputState.rotationInput);
 
-
-
-            IEnumerable<InputState> inputs = _inputStates.Where(input => input.Tick > serverState.Tick);
-
-            inputs = from input in inputs orderby input.Tick select input;
-
-            foreach (InputState inputState in inputs)
+            TransformState newTransformState = new TransformState()
             {
-                HandleMovement(inputState.movementInput, inputState.rotationInput);
+                Tick = inputState.Tick,
+                Position = transform.position,
+                Rotation = transform.rotation,
+                Facing = player.Head.transform.rotation,
+            };
 
-                TransformState newTransformState = new TransformState()
+            for (int i = 0; i < _transformStates.Length; i++)
+            {
+                if (_transformStates[i].Tick == serverState.Tick)
                 {
-                    Tick = inputState.Tick,
-                    Position = transform.position,
-                    Rotation = transform.rotation,
-                    Facing = player.Head.transform.rotation,
-                    HasStartedMoving = true
-                };
-
-                for (int i = 0; i < _transformStates.Length; i++)
-                {
-                    if (_transformStates[i].Tick == serverState.Tick)
-                    {
-                        _transformStates[i] = newTransformState;
-                        break;
-                    }
+                    _transformStates[i] = newTransformState;
+                    break;
                 }
             }
         }
@@ -92,6 +86,7 @@ public class NetworkPlayerController : NetworkBehaviour
         transform.position = state.Position;
         transform.rotation = state.Rotation;
         player.Head.transform.rotation = state.Facing;
+        player.Hand.transform.rotation = state.Facing;
 
         for (int i = 0; i < _transformStates.Length; i++)
         {
@@ -106,6 +101,7 @@ public class NetworkPlayerController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        _tickDeltaTime += Time.deltaTime;
         if (IsLocalPlayer)
         {
             if (!CanMove()) return;
@@ -127,7 +123,6 @@ public class NetworkPlayerController : NetworkBehaviour
     }
     private void ProcessLocalPlayerMovement(Vector3 moveInput, Vector3 rotationInput)
     {
-        _tickDeltaTime += Time.deltaTime;
         if (_tickDeltaTime > _tickRate)
         {
             int bufferIndex = _tick % BUFFER_SIZE;
@@ -142,16 +137,14 @@ public class NetworkPlayerController : NetworkBehaviour
                     Position = transform.position,
                     Rotation = transform.rotation,
                     Facing = player.Head.transform.rotation,
-                    HasStartedMoving = true
                 };
 
-                _previousTransformState = ServerTransformState.Value;
                 ServerTransformState.Value = state;
             }
             else
             {
                 HandleMovement(moveInput, rotationInput);
-                MovePlayerRequestServerRpc(moveInput, rotationInput);
+                MovePlayerRequestServerRpc(_tick, moveInput, rotationInput);
 
                 //transform.position = ServerTransformState.Value.Position;
                 //transform.rotation = ServerTransformState.Value.Rotation;
@@ -169,7 +162,6 @@ public class NetworkPlayerController : NetworkBehaviour
                 Position = transform.position,
                 Rotation = transform.rotation,
                 Facing = player.Head.transform.rotation,
-                HasStartedMoving = true
             };
 
             _inputStates[bufferIndex] = inputState;
@@ -182,37 +174,16 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void ProcessSimulatedPlayerMovement()
     {
-        _tickDeltaTime += Time.deltaTime;
-
-        if (!NetworkManager.IsServer && ServerTransformState.Value.HasStartedMoving)
+        if (!NetworkManager.IsServer)
         {
-            transform.position = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, Time.deltaTime * _speed);
-            transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, Time.deltaTime * _speed);
-            Quaternion facing = Quaternion.Lerp(player.Head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
+            transform.position = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, _tickDeltaTime * _speed);
+            transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, _tickDeltaTime * _speed);
+            Quaternion facing = Quaternion.Lerp(player.Head.transform.rotation, ServerTransformState.Value.Facing, _tickDeltaTime * _speed);
             player.Head.transform.rotation = facing;
             player.Hand.transform.rotation = facing;
-
-            //if (!GetComponent<PlayerInventory>().EquippedItem.Equals(PlayerInventory._emptyItem))
-            //{
-            //    ulong Id = GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId;
-            //    NetworkObject d = GetNetworkObject(Id);
-            //    GameObject handheldGO = d.gameObject;
-
-            //    if (handheldGO.CompareTag("Stick") && handheldGO.transform.parent.gameObject)
-            //    {
-            //        handheldGO = handheldGO.transform.parent.gameObject;
-            //    }
-
-            //    handheldGO.transform.rotation = Quaternion.Lerp(head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
-            //}        
         }
 
-        if (_tickDeltaTime > _tickRate)
-        {
-            _tickDeltaTime -= _tickRate;
-            _tick++;
-        }
-
+        UpdateTick();
     }
 
     private void HandleMovement(Vector3 moveInput, Vector3 rotationInput)
@@ -221,38 +192,32 @@ public class NetworkPlayerController : NetworkBehaviour
         transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate); ;
         player.Head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
         player.Hand.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
-
-        //handheldItem rotation
-        //if (!GetComponent<PlayerInventory>().EquippedItem.Value.Equals(PlayerInventory._emptyItem)){
-
-        //    GameObject handheldGO = GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject;
-
-        //    if (handheldGO.CompareTag("Stick") && handheldGO.transform.parent.gameObject)
-        //    {
-        //        handheldGO = handheldGO.transform.parent.gameObject;
-        //    }
-
-        //    handheldGO.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
-        //}
     }
 
     private bool CanMove() => player.IsAlive;
 
+    private void UpdateTick()
+    {
+        if (_tickDeltaTime > _tickRate)
+        {
+            _tickDeltaTime -= _tickRate;
+            _tick++;
+        }
+    }
+
     [ServerRpc (RequireOwnership = false)]
-    private void MovePlayerRequestServerRpc(Vector3 moveInput, Vector3 rotationInput)
+    private void MovePlayerRequestServerRpc(int tick, Vector3 moveInput, Vector3 rotationInput)
     {
         HandleMovement(moveInput, rotationInput);
 
         TransformState state = new TransformState()
         {
-            Tick = _tick,
+            Tick = tick,
             Position = transform.position,
             Rotation = transform.rotation,
             Facing = player.Head.transform.rotation,
-            HasStartedMoving = true
         };
 
-        _previousTransformState = ServerTransformState.Value;
         ServerTransformState.Value = state;
     }
 
