@@ -9,7 +9,6 @@ public struct TransformState : INetworkSerializable
     public Vector3 Position;
     public Quaternion Rotation;
     public Quaternion Facing;
-    public bool HasStartedMoving;
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         if (serializer.IsReader)
@@ -19,7 +18,6 @@ public struct TransformState : INetworkSerializable
             reader.ReadValueSafe(out Position);
             reader.ReadValueSafe(out Rotation);
             reader.ReadValueSafe(out Facing);
-            reader.ReadValueSafe(out HasStartedMoving);
         }
         else
         {
@@ -28,7 +26,6 @@ public struct TransformState : INetworkSerializable
             writer.WriteValueSafe(Position);
             writer.WriteValueSafe(Rotation);
             writer.WriteValueSafe(Facing);
-            writer.WriteValueSafe(HasStartedMoving);
         }
     }
 }

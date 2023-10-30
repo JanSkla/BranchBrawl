@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class StickPart : NetworkBehaviour
 {
-    public NetworkList<ulong> ConnectedEdgeNwIds = new NetworkList<ulong>();
+    public NetworkList<ulong> ConnectedEdgeNwIdsP = new NetworkList<ulong>(); //positive
+    public NetworkList<ulong> ConnectedEdgeNwIdsN = new NetworkList<ulong>(); //negative
 
     //public override void OnNetworkSpawn()
     //{

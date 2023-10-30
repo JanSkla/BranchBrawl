@@ -9,13 +9,11 @@ using UnityEngine.UIElements;
 public class NetworkPlayerController : NetworkBehaviour
 {
     [SerializeField]
-    private TextMeshPro _tag;
-    [SerializeField]
     private float _speed = 10;
     [SerializeField]
     private float _turnSpeed = 150;
-    [SerializeField]
-    private GameObject head;
+
+    private Player player;
 
     private int _tick = 0;
     private float _tickRate = 1.0f / 60.0f;
@@ -25,8 +23,12 @@ public class NetworkPlayerController : NetworkBehaviour
     private InputState[] _inputStates = new InputState[BUFFER_SIZE];
     private TransformState[] _transformStates = new TransformState[BUFFER_SIZE];
 
-    public NetworkVariable<TransformState> ServerTransformState = new NetworkVariable<TransformState>();
-    private TransformState _previousTransformState;
+    public NetworkVariable<TransformState> ServerTransformState = new();
+
+    private void Start()
+    {
+        player = GetComponent<Player>();
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -40,45 +42,40 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void OnServerStateChanged(TransformState _previousState, TransformState serverState)
     {
-        if (!IsLocalPlayer || IsServer) return;
+        Debug.Log(name + serverState.Position);
+        if (NetworkManager.IsServer || !IsLocalPlayer) return;
 
-        if (_previousTransformState.IsUnityNull())
-        {
-            _previousTransformState = serverState;
-        }
 
         TransformState calculatedState = _transformStates.First(localState => localState.Tick == serverState.Tick);
-        if (calculatedState.Position != serverState.Position)
+        if (calculatedState.Position == serverState.Position) return;
+
+        Debug.Log("TP");
+        TeleportPlayer(serverState);
+
+
+
+        IEnumerable<InputState> inputs = _inputStates.Where(input => input.Tick > serverState.Tick);
+
+        inputs = from input in inputs orderby input.Tick select input;
+
+        foreach (InputState inputState in inputs)
         {
-            Debug.Log("TP");
-            TeleportPlayer(serverState); //here
+            HandleMovement(inputState.movementInput, inputState.rotationInput);
 
-
-
-            IEnumerable<InputState> inputs = _inputStates.Where(input => input.Tick > serverState.Tick);
-
-            inputs = from input in inputs orderby input.Tick select input;
-
-            foreach (InputState inputState in inputs)
+            TransformState newTransformState = new TransformState()
             {
-                HandleMovement(inputState.movementInput, inputState.rotationInput);
+                Tick = inputState.Tick,
+                Position = transform.position,
+                Rotation = transform.rotation,
+                Facing = player.Head.transform.rotation,
+            };
 
-                TransformState newTransformState = new TransformState()
+            for (int i = 0; i < _transformStates.Length; i++)
+            {
+                if (_transformStates[i].Tick == serverState.Tick)
                 {
-                    Tick = inputState.Tick,
-                    Position = transform.position,
-                    Rotation = transform.rotation,
-                    Facing = head.transform.rotation,
-                    HasStartedMoving = true
-                };
-
-                for (int i = 0; i < _transformStates.Length; i++)
-                {
-                    if (_transformStates[i].Tick == serverState.Tick)
-                    {
-                        _transformStates[i] = newTransformState;
-                        break;
-                    }
+                    _transformStates[i] = newTransformState;
+                    break;
                 }
             }
         }
@@ -88,7 +85,8 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         transform.position = state.Position;
         transform.rotation = state.Rotation;
-        head.transform.rotation = state.Facing;
+        player.Head.transform.rotation = state.Facing;
+        player.Hand.transform.rotation = state.Facing;
 
         for (int i = 0; i < _transformStates.Length; i++)
         {
@@ -103,9 +101,10 @@ public class NetworkPlayerController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        _tag.text = ServerTransformState.Value.Tick + " " + ServerTransformState.Value.Position + " " + ServerTransformState.Value.Rotation;
+        _tickDeltaTime += Time.deltaTime;
         if (IsLocalPlayer)
         {
+            if (!CanMove()) return;
             float horizontalInput = Input.GetAxis("Horizontal");
             float verticalInput = Input.GetAxis("Vertical");
 
@@ -115,7 +114,6 @@ public class NetworkPlayerController : NetworkBehaviour
             float mouseY = Input.GetAxis("Mouse Y");
 
             Vector3 rotationInput = new Vector3(mouseY, mouseX, 0);
-
             ProcessLocalPlayerMovement(moveInput, rotationInput);
         }
         else
@@ -125,12 +123,11 @@ public class NetworkPlayerController : NetworkBehaviour
     }
     private void ProcessLocalPlayerMovement(Vector3 moveInput, Vector3 rotationInput)
     {
-        _tickDeltaTime += Time.deltaTime;
         if (_tickDeltaTime > _tickRate)
         {
             int bufferIndex = _tick % BUFFER_SIZE;
 
-            if (IsServer)
+            if (NetworkManager.IsServer)
             {
                 HandleMovement(moveInput, rotationInput);
 
@@ -139,19 +136,15 @@ public class NetworkPlayerController : NetworkBehaviour
                     Tick = _tick,
                     Position = transform.position,
                     Rotation = transform.rotation,
-                    Facing = head.transform.rotation,
-                    HasStartedMoving = true
+                    Facing = player.Head.transform.rotation,
                 };
 
-                _previousTransformState = ServerTransformState.Value;
                 ServerTransformState.Value = state;
             }
             else
             {
-                Debug.Log("preRpcCallInitiated");
                 HandleMovement(moveInput, rotationInput);
-                MovePlayerRequestServerRpc(moveInput, rotationInput);
-                Debug.Log("RpcCallInitiated");
+                MovePlayerRequestServerRpc(_tick, moveInput, rotationInput);
 
                 //transform.position = ServerTransformState.Value.Position;
                 //transform.rotation = ServerTransformState.Value.Rotation;
@@ -168,8 +161,7 @@ public class NetworkPlayerController : NetworkBehaviour
                 Tick = _tick,
                 Position = transform.position,
                 Rotation = transform.rotation,
-                Facing = head.transform.rotation,
-                HasStartedMoving = true
+                Facing = player.Head.transform.rotation,
             };
 
             _inputStates[bufferIndex] = inputState;
@@ -182,62 +174,56 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void ProcessSimulatedPlayerMovement()
     {
-        _tickDeltaTime += Time.deltaTime;
-
-        if (!IsServer && ServerTransformState.Value.HasStartedMoving)
+        if (!NetworkManager.IsServer)
         {
-            transform.position = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, Time.deltaTime * _speed);
-            transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, Time.deltaTime * _speed);
-            head.transform.rotation = Quaternion.Lerp(head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
-
-            if (!GetComponent<PlayerInventory>().EquippedItem.Equals(null))
-            {
-                GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject.transform.rotation = Quaternion.Lerp(head.transform.rotation, ServerTransformState.Value.Facing, Time.deltaTime * _speed);
-            }        
+            transform.position = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, _tickDeltaTime * _speed);
+            transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, _tickDeltaTime * _speed);
+            Quaternion facing = Quaternion.Lerp(player.Head.transform.rotation, ServerTransformState.Value.Facing, _tickDeltaTime * _speed);
+            player.Head.transform.rotation = facing;
+            player.Hand.transform.rotation = facing;
         }
 
+        UpdateTick();
+    }
+
+    private void HandleMovement(Vector3 moveInput, Vector3 rotationInput)
+    {
+        transform.Translate(moveInput * _speed * _tickRate);
+        transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate); ;
+        player.Head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+        player.Hand.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+    }
+
+    private bool CanMove() => player.IsAlive;
+
+    private void UpdateTick()
+    {
         if (_tickDeltaTime > _tickRate)
         {
             _tickDeltaTime -= _tickRate;
             _tick++;
         }
-
     }
 
-    private void HandleMovement(Vector3 moveInput, Vector3 rotationInput)
+    [ServerRpc (RequireOwnership = false)]
+    private void MovePlayerRequestServerRpc(int tick, Vector3 moveInput, Vector3 rotationInput)
     {
-        Debug.Log("1");
-        transform.Translate(moveInput * _speed * _tickRate);
-        Debug.Log("2");
-        transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate); ;
-        Debug.Log("3");
-        head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
-
-        Debug.Log("4");
-
-        //handhelditem rotation
-        if (!GetComponent<PlayerInventory>().EquippedItem.Value.Equals(PlayerInventory._emptyItem)){
-            GetNetworkObject(GetComponent<PlayerInventory>().EquippedItem.Value.NetworkObjectId).gameObject.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
-        }
-        Debug.Log("5");
-    }
-
-    [ServerRpc]
-    private void MovePlayerRequestServerRpc(Vector3 moveInput, Vector3 rotationInput)
-    {
-        Debug.Log("RpcThrough");
         HandleMovement(moveInput, rotationInput);
 
         TransformState state = new TransformState()
         {
-            Tick = _tick,
+            Tick = tick,
             Position = transform.position,
             Rotation = transform.rotation,
-            Facing = head.transform.rotation,
-            HasStartedMoving = true
+            Facing = player.Head.transform.rotation,
         };
 
-        _previousTransformState = ServerTransformState.Value;
         ServerTransformState.Value = state;
+    }
+
+
+    public new bool IsLocalPlayer
+    {
+        get { return player.IsLocalPlayer; }
     }
 }

@@ -51,8 +51,6 @@ MonoBehaviour:
   _stickPartPrefab: {fileID: 3268425756383058752, guid: 54a5772a057f5c044a0e07ba1afaf78f, type: 3}
   _minInitialLength: 0.1
   _maxInitialLength: 1
-  _minInitialWidth: 2
-  _maxInitialWidth: 8
   _lengthDownfall: 0.8
   _widthDownfall: 0.9
   _extraBranchWidthDownfall: 0.6
@@ -95,9 +93,9 @@ MonoBehaviour:
   SyncRotAngleX: 1
   SyncRotAngleY: 1
   SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01

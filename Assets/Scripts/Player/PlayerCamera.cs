@@ -17,11 +17,15 @@ public class PlayerCamera : NetworkBehaviour
 
     private GameObject fpsCam;
 
+    private Player _player;
+
     void Start()
     {
-        if (IsOwner)
+        _player = transform.parent.gameObject.GetComponent<Player>();
+        if (_player.IsLocalPlayer)
         {
-            LoadCamera();
+            CreateCamera();
+            OnGameStart();
         }
     }
 
@@ -29,14 +33,6 @@ public class PlayerCamera : NetworkBehaviour
     {
         if (fpsCam && _inGameUI)
         {
-            //if (fpsCam && IsLocalPlayer)
-            //{
-            //    float mouseY = Input.GetAxis("Mouse Y");
-
-            //    Vector3 rotationInput = new Vector3(-mouseY, 0, 0);
-
-            //    fpsCam.transform.Rotate(rotationInput);
-            //}
             RaycastHit hit = new RaycastHit();
             if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.TransformDirection(Vector3.forward), out hit, 4, LayerMask.GetMask("Pickable")))
             {
@@ -54,21 +50,16 @@ public class PlayerCamera : NetworkBehaviour
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.TransformDirection(Vector3.forward), out hit, 4, LayerMask.GetMask("Pickable")))
         {
-            Debug.Log(hit.collider.gameObject.name);
-            GameObject facingPickable = hit.collider.gameObject;
-            while(facingPickable.transform.parent != null)
-            {
-                facingPickable = facingPickable.transform.parent.gameObject;
-            }
-            return facingPickable;
+            return hit.collider.gameObject;
         }
         return null;
     }
 
-    public void LoadCamera()
+    public void CreateCamera()
     {
-        fpsCam = Instantiate(FirstPersonCameraPrefab, CameraOffset, new Quaternion());
+        fpsCam = Instantiate(FirstPersonCameraPrefab);
         fpsCam.transform.SetParent(transform);
+        fpsCam.transform.localPosition = CameraOffset;
     }
     public void OnGameStart()
     {

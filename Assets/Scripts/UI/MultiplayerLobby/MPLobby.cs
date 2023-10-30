@@ -12,17 +12,19 @@ public class MPLobby : NetworkBehaviour
     private GameObject clientView;
     void Start()
     {
-        if (NetworkManager.IsHost)
+        if (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
         {
+            clientView.SetActive(false);
             hostView.SetActive(true);
         }
         else
         {
+            hostView.SetActive(false);
             clientView.SetActive(true);
         }
     }
     public void StartGame()
     {
-        NetworkManager.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
     }
 }
