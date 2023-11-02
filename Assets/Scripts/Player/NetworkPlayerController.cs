@@ -42,7 +42,6 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void OnServerStateChanged(TransformState _previousState, TransformState serverState)
     {
-        Debug.Log(name + serverState.Position);
         if (NetworkManager.IsServer || !IsLocalPlayer) return;
 
 

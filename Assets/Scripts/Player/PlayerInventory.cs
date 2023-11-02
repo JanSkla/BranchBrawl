@@ -34,7 +34,7 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (player.IsLocalPlayer && Input.GetKeyDown(KeyCode.E) && EquippedItem.Value.Equals(_emptyItem))
         {
-            GameObject pickableObject = player.Head.GetComponent<PlayerCamera>().GetFacingPickable();
+            GameObject pickableObject = player.GetComponent<PlayerCamera>().GetFacingPickable();
             if (pickableObject != null)
             {
                 if (pickableObject.CompareTag("Stick"))
