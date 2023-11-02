@@ -260,7 +260,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FirstPersonCameraPrefab: {fileID: 1793215923367635377, guid: 167ab319e1654734b84c1593dfd4d884, type: 3}
-  Head: {fileID: 0}
   CameraOffset: {x: 0, y: 0.5, z: 0.3}
   FpsCam: {fileID: 0}
 --- !u!1 &7804545093389861399
