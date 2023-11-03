@@ -9,6 +9,7 @@ using Unity.Services.Relay;
 using UnityEngine;
 using Unity.Netcode.Transports.UTP;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class HostJoinMenu : MonoBehaviour
 {
@@ -74,6 +75,7 @@ public class HostJoinMenu : MonoBehaviour
         catch
         {
             Debug.LogError("Relay create join code request failed");
+            SceneManager.LoadScene("MultiplayerLobby");
             throw;
         }
 
@@ -112,6 +114,7 @@ public class HostJoinMenu : MonoBehaviour
         catch
         {
             Debug.LogError("Relay create join code request failed");
+            SceneManager.LoadScene("MultiplayerLobby");
             throw;
         }
 
@@ -139,5 +142,9 @@ public class HostJoinMenu : MonoBehaviour
         {
             yield return null;
         }
+    }
+    public void GoBack()
+    {
+        SceneManager.LoadScene("Menu");
     }
 }

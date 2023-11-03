@@ -27,9 +27,9 @@ public class Gun : NetworkBehaviour
 
         HitData hitData = new();
 
-        Vector3 shootOriginPos = muzzle.transform.position;
+        Vector3 playerCameraPos = NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<PlayerCamera>().FpsCam.transform.position;
 
-        if (Physics.Raycast(shootOriginPos, transform.forward, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Player")))
+        if (Physics.Raycast(playerCameraPos, transform.forward, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Player")))
         {
             hitData.IsHit = true;
             GameObject hitTarget = hit.collider.gameObject;
@@ -40,7 +40,7 @@ public class Gun : NetworkBehaviour
             }
 
             hitData.HitNwID = hitTarget.GetComponent<NetworkObject>().NetworkObjectId;
-            Debug.DrawRay(shootOriginPos, transform.forward * hit.distance, Color.green, 1);
+            Debug.DrawRay(playerCameraPos, transform.forward * hit.distance, Color.green, 1);
 
             if (IsServer)
             {
@@ -50,7 +50,7 @@ public class Gun : NetworkBehaviour
         else
         {
             hitData.IsHit = false;
-            Debug.DrawRay(shootOriginPos, transform.forward * 100, Color.red, 1);
+            Debug.DrawRay(playerCameraPos, transform.forward * 100, Color.red, 1);
         }
 
         ShootSendNetworkRpc(hitData);

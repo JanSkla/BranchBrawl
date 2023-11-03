@@ -32,8 +32,8 @@ public class Player : NetworkBehaviour
             }
             if (IsLocalPlayer)
             {
-                if(GetComponent<LocalPlayer>()._inGameUI != null)
-                    GetComponent<LocalPlayer>()._inGameUI.DeathScreen(_isAlive);
+                if(GetComponent<LocalPlayer>().InGameUI != null)
+                    GetComponent<LocalPlayer>().InGameUI.DeathScreen(_isAlive);
             }
         }
     }

@@ -26,17 +26,19 @@ public class InGameUI : MonoBehaviour
     [SerializeField]
     private GameObject _deathScreen;
 
-    // Update is called once per frame
-    private void Start()
+    public Player CurrentPlayer;
+
+    void Start()
     {
-        GameObject.Find("Local Player").GetComponent<LocalPlayer>()._inGameUI = this;
+        Cursor.visible = false;
+        CurrentPlayer = GameObject.Find("Local Player").GetComponent<Player>();
+        CurrentPlayer.GetComponent<LocalPlayer>().InGameUI = this;
     }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            _game.SetActive(false);
-            _menu.SetActive(true);
+            SetMenu(!_menu.activeSelf);
         }
     }
 
@@ -48,8 +50,15 @@ public class InGameUI : MonoBehaviour
     //menu control
     public void CloseMenu()
     {
-        _game.SetActive(true);
-        _menu.SetActive(false);
+        SetMenu(false);
+    }
+
+    private void SetMenu(bool visible)
+    {
+        Cursor.lockState = visible ? CursorLockMode.None : CursorLockMode.Confined; ///HERE
+        //Cursor.visible = visible;
+        _game.SetActive(!visible);
+        _menu.SetActive(visible);
     }
 
     public void Disconect()
@@ -60,6 +69,8 @@ public class InGameUI : MonoBehaviour
 
     public void DeathScreen(bool isAlive)
     {
+        Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
         _deathScreen.SetActive(!isAlive);
         _cursor.SetActive(isAlive);
     }
