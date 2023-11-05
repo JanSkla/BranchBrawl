@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2815521183762580131}
   - component: {fileID: 1267352950499475213}
+  - component: {fileID: 1434419898626002057}
   m_Layer: 0
   m_Name: GunCamera
   m_TagString: Untagged
@@ -83,6 +84,19 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &1434419898626002057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750999466413779751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: f14f3f7eb2a87614993e0cb947c60b7e, type: 2}
 --- !u!1 &1793215923367635377
 GameObject:
   m_ObjectHideFlags: 0
@@ -93,6 +107,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1893265127574288582}
   - component: {fileID: 9099976011083996020}
+  - component: {fileID: -8093961775634713618}
   m_Layer: 0
   m_Name: FirstPersonCamera
   m_TagString: Untagged
@@ -167,3 +182,16 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &-8093961775634713618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793215923367635377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: e52392aed6585874eb72c10c3e778c26, type: 2}
