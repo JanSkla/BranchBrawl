@@ -5,5 +5,5 @@ using UnityEngine;
 public class LocalPlayer : MonoBehaviour
 {
     [HideInInspector]
-    public InGameUI _inGameUI;
+    public InGameUI InGameUI;
 }

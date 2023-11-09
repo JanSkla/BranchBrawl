@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Gun
   m_EditorClassIdentifier: 
   name: Pistol
-  damage: 123
+  damage: 54
   firerate: 123
-  isAuto: 1
+  isAuto: 0
   currentAmmo: 123
   magSize: 123
   reloadTime: 1

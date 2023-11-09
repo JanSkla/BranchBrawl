@@ -27,4 +27,9 @@ public class MPLobby : NetworkBehaviour
     {
         NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
     }
+    public void GoBack()
+    {
+        NetworkManager.Singleton.Shutdown();
+        SceneManager.LoadScene("MultiplayerLobby");
+    }
 }

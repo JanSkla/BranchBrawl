@@ -14,14 +14,13 @@ public class PlayerCamera : NetworkBehaviour
     private Vector3 CameraOffset = new Vector3(0, 0.5f, 0.3f);
 
     private GameObject _inGameUI;
-
-    private GameObject fpsCam;
-
     private Player _player;
+
+    public GameObject FpsCam;
 
     void Start()
     {
-        _player = transform.parent.gameObject.GetComponent<Player>();
+        _player = GetComponent<Player>();
         if (_player.IsLocalPlayer)
         {
             CreateCamera();
@@ -31,10 +30,10 @@ public class PlayerCamera : NetworkBehaviour
 
     void Update()
     {
-        if (fpsCam && _inGameUI)
+        if (FpsCam && _inGameUI)
         {
             RaycastHit hit = new RaycastHit();
-            if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.TransformDirection(Vector3.forward), out hit, 4, LayerMask.GetMask("Pickable")))
+            if (Physics.Raycast(FpsCam.transform.position, FpsCam.transform.TransformDirection(Vector3.forward), out hit, 4, LayerMask.GetMask("Pickable")))
             {
                 _inGameUI.GetComponent<InGameUI>().ChangeCursorColor(Color.cyan);
             }
@@ -48,7 +47,7 @@ public class PlayerCamera : NetworkBehaviour
     public GameObject GetFacingPickable()
     {
         RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.TransformDirection(Vector3.forward), out hit, 4, LayerMask.GetMask("Pickable")))
+        if (Physics.Raycast(FpsCam.transform.position, FpsCam.transform.TransformDirection(Vector3.forward), out hit, 4, LayerMask.GetMask("Pickable")))
         {
             return hit.collider.gameObject;
         }
@@ -57,9 +56,9 @@ public class PlayerCamera : NetworkBehaviour
 
     public void CreateCamera()
     {
-        fpsCam = Instantiate(FirstPersonCameraPrefab);
-        fpsCam.transform.SetParent(transform);
-        fpsCam.transform.localPosition = CameraOffset;
+        FpsCam = Instantiate(FirstPersonCameraPrefab);
+        FpsCam.transform.SetParent(_player.Head.transform);
+        FpsCam.transform.localPosition = CameraOffset;
     }
     public void OnGameStart()
     {
@@ -72,12 +71,12 @@ public class PlayerCamera : NetworkBehaviour
 
     private void DisableFirstCamera()
     {
-        fpsCam.SetActive(false);
+        FpsCam.SetActive(false);
     }
 
     private void EnableFirstCamera()
     {
-        fpsCam.SetActive(true);
+        FpsCam.SetActive(true);
     }
 
     private void FindInGameUI()
