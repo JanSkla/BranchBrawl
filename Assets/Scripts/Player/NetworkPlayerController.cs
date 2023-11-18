@@ -12,8 +12,14 @@ public class NetworkPlayerController : NetworkBehaviour
     private float _speed = 10;
     [SerializeField]
     private float _turnSpeed = 150;
+    [SerializeField]
+    private float _jumpPower = 1;
+
+    private float _terrainColliderHeight = 0f;
 
     private Player player;
+
+    private float _rotationX = 0;
 
     private int _tick = 0;
     private float _tickRate = 1.0f / 90.0f;
@@ -27,6 +33,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void Start()
     {
+        _terrainColliderHeight = GetComponent<CapsuleCollider>().height;
         if (!NetworkManager.IsServer && !IsLocalPlayer)
         {
             GetComponent<Rigidbody>().useGravity = false;
@@ -110,7 +117,7 @@ public class NetworkPlayerController : NetworkBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                GetComponent<Rigidbody>().AddForce(Vector3.up * 10, ForceMode.Impulse);
+                HandleJump();
                 if (!NetworkManager.IsServer)
                 {
                     JumpServerRPC();
@@ -125,12 +132,12 @@ public class NetworkPlayerController : NetworkBehaviour
                 float horizontalInput = Input.GetAxis("Horizontal");
                 float verticalInput = Input.GetAxis("Vertical");
 
-                Vector3 moveInput = new Vector3(horizontalInput, 0, verticalInput);
+                Vector3 moveInput = new(horizontalInput, 0, verticalInput);
 
                 float mouseX = Input.GetAxis("Mouse X");
                 float mouseY = Input.GetAxis("Mouse Y");
 
-                Vector3 rotationInput = new Vector3(mouseY, mouseX, 0);
+                Vector2 rotationInput = new(mouseY, mouseX);
                 ProcessLocalPlayerMovement(moveInput, rotationInput);
             }
         }
@@ -166,14 +173,14 @@ public class NetworkPlayerController : NetworkBehaviour
             //transform.rotation = ServerTransformState.Value.Rotation;
         }
 
-        InputState inputState = new InputState()
+        InputState inputState = new()
         {
             Tick = _tick,
             movementInput = moveInput,
             rotationInput = rotationInput,
         };
 
-        TransformState transformState = new TransformState()
+        TransformState transformState = new()
         {
             Tick = _tick,
             Position = transform.position,
@@ -204,13 +211,31 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void HandleMovement(Vector3 moveInput, Vector3 rotationInput)
     {
-        transform.Translate(moveInput * _speed * _tickRate);
-        transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate); ;
-        player.Head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
-        player.Hand.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+        transform.Translate(_speed * _tickRate * moveInput);
+        transform.Rotate(_tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0));
+
+        _rotationX -= rotationInput.x * _turnSpeed * _tickRate;
+        _rotationX = Mathf.Clamp(_rotationX, -90, 90);
+        player.Head.transform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
+        player.Hand.transform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
+        //transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate);
+        //player.Head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+        //player.Hand.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
+    }
+    private void HandleJump()
+    {
+        if (GroundCheck())
+        {
+            GetComponent<Rigidbody>().AddForce(Vector3.up * _jumpPower, ForceMode.Impulse);
+        }
     }
 
     private bool CanMove() => player.IsAlive;
+
+    private bool GroundCheck()
+    {
+        return (Physics.Raycast(transform.position, Vector3.down, _terrainColliderHeight / 2 + 0.1f));
+    }
 
     private void UpdateTick()
     {
@@ -240,7 +265,7 @@ public class NetworkPlayerController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void JumpServerRPC()
     {
-        GetComponent<Rigidbody>().AddForce(Vector3.up * 10, ForceMode.Impulse);
+        HandleJump();
     }
 
     public new bool IsLocalPlayer

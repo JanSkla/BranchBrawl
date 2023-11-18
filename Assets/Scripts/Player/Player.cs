@@ -69,7 +69,7 @@ public class Player : NetworkBehaviour
             Hand.GetComponent<NetworkObject>().Spawn();
             Debug.Log("id"+ Hand.GetComponent<NetworkObject>().NetworkObjectId);
             _handNwId.Value = Hand.GetComponent<NetworkObject>().NetworkObjectId;
-            Hand.GetComponent<NetworkObject>().TrySetParent(transform);
+            Hand.GetComponent<NetworkObject>().TrySetParent(transform, false);
         }
     }
 

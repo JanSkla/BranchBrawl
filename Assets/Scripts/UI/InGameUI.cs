@@ -30,6 +30,7 @@ public class InGameUI : MonoBehaviour
 
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         CurrentPlayer = GameObject.Find("Local Player").GetComponent<Player>();
         CurrentPlayer.GetComponent<LocalPlayer>().InGameUI = this;
@@ -55,8 +56,8 @@ public class InGameUI : MonoBehaviour
 
     private void SetMenu(bool visible)
     {
-        Cursor.lockState = visible ? CursorLockMode.None : CursorLockMode.Confined; ///HERE
-        //Cursor.visible = visible;
+        Cursor.lockState = visible ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = visible;
         _game.SetActive(!visible);
         _menu.SetActive(visible);
     }
@@ -70,7 +71,7 @@ public class InGameUI : MonoBehaviour
     public void DeathScreen(bool isAlive)
     {
         Cursor.lockState = CursorLockMode.None;
-        //Cursor.visible = true;
+        Cursor.visible = true;
         _deathScreen.SetActive(!isAlive);
         _cursor.SetActive(isAlive);
     }

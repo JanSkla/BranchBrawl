@@ -62,7 +62,7 @@ public class Gun : NetworkBehaviour
     private void SimulatedShoot()
     {
         Debug.Log(gunData.name + " Shoots //simulated");
-        Debug.DrawRay(muzzle.transform.position, transform.forward * 100, Color.red, 1);
+        Debug.DrawRay(muzzle.transform.position, transform.forward * 100, Color.blue, 1);
     }
 
     private void ShootSendNetworkRpc(HitData hit)
