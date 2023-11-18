@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 10
-  _turnSpeed: 150
+  _turnSpeed: 300
   _jumpPower: 250
 --- !u!54 &3834361509385746255
 Rigidbody:
