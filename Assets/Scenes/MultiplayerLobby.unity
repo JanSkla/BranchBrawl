@@ -1699,6 +1699,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hostView: {fileID: 1428250228}
   clientView: {fileID: 1455302567}
+  gameManager: {fileID: 7270065971641108665, guid: 92cac0153daffa5428fc771784720af5, type: 3}
 --- !u!114 &1024859096
 MonoBehaviour:
   m_ObjectHideFlags: 0

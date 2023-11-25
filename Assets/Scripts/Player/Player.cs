@@ -84,10 +84,10 @@ public class Player : NetworkBehaviour
 
     public void Die()
     {
-        GameObject gameManager = GameObject.Find("GameManager");
-        if (gameManager)
+        GameObject roundManager = GameObject.Find("RoundManager");
+        if (roundManager)
         {
-            gameManager.GetComponent<GameManager>().AlivePlayerCount--;
+            roundManager.GetComponent<RoundManager>().AlivePlayerCount--;
         }
         GetComponent<Renderer>().material.color = Color.red;
         Debug.Log(gameObject.name + " died");

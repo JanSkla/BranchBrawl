@@ -1,11 +1,8 @@
-using Newtonsoft.Json.Linq;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : NetworkBehaviour
+public class RoundManager : NetworkBehaviour
 {
     private InGameUI _inGameUI;
 
@@ -22,13 +19,13 @@ public class GameManager : NetworkBehaviour
             _alivePlayerCount = value;
             if (_alivePlayerCount <= 1)
             {
-                State = GameState.Over;
+                State = RoundState.Over;
             }
         }
     }
 
-    private GameState _state;
-    public GameState State
+    private RoundState _state;
+    public RoundState State
     {
         get { return _state; }
         set
@@ -36,10 +33,10 @@ public class GameManager : NetworkBehaviour
             _state = value;
             switch (value)
             {
-                case GameState.Running:
+                case RoundState.Running:
                     GameSetRunning();
                     return;
-                case GameState.Over:
+                case RoundState.Over:
                     GameOver();
                     return;
             }
@@ -71,7 +68,7 @@ public class GameManager : NetworkBehaviour
         }
         _inGameUI = GameObject.Find("InGameUI").GetComponent<InGameUI>();
 
-        State = GameState.Running;
+        State = RoundState.Running;
     }
     public void PlayAgain()
     {
@@ -81,7 +78,7 @@ public class GameManager : NetworkBehaviour
             {
                 client.Value.PlayerObject.GetComponent<PlayerManager>().DespawnPlayerObject();
             }
-            NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            GameObject.Find("GameManager(Clone)").GetComponent<GameManager>().CurrentRoundFinished();
         }
     }
     [ClientRpc]
@@ -91,7 +88,7 @@ public class GameManager : NetworkBehaviour
         Debug.Log(AlivePlayerCount + " Alive");
     }
 }
-public enum GameState
+public enum RoundState
 {
     Running,
     Over

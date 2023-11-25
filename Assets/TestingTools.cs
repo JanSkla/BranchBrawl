@@ -6,7 +6,7 @@ using UnityEngine;
 public class TestingTools : MonoBehaviour
 {
     [SerializeField]
-    private GameManager gameManager;
+    private RoundManager roundManager;
 
     void Start()
     {
@@ -15,6 +15,6 @@ public class TestingTools : MonoBehaviour
 
     public void PlayAgain()
     {
-        gameManager.PlayAgain();
+        roundManager.PlayAgain();
     }
 }
