@@ -67,6 +67,7 @@ public class RoundManager : NetworkBehaviour
             SetAlivePlayerCountClientRpc(AlivePlayerCount);
         }
         _inGameUI = GameObject.Find("InGameUI").GetComponent<InGameUI>();
+        _inGameUI.OnRoundStarted();
 
         State = RoundState.Running;
     }

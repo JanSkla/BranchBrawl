@@ -10,8 +10,11 @@ public class GameManager : NetworkBehaviour
     private bool _currentRoundActive = false;
     void Awake()
     {
-        GetComponent<NetworkObject>().Spawn();
-        DontDestroyOnLoad(this.gameObject);
+        if (NetworkManager.IsServer)
+        {
+            GetComponent<NetworkObject>().Spawn(false);
+        }
+        //DontDestroyOnLoad(this.gameObject);
     }
     public void StartGame()
     {
@@ -69,7 +72,7 @@ public class GameManager : NetworkBehaviour
 
         _currentRoundActive = false;
         _currentRoundListIndex++;
-        if (RoundsList[_currentRoundListIndex].IsUnityNull()) return;
+        if (RoundsList.Count < _currentRoundListIndex) return;
         StartCurrentRound();
     }
 }

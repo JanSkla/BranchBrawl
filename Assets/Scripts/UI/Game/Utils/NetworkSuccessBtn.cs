@@ -16,6 +16,9 @@ public class NetworkSuccessBtn : NetworkBehaviour
     [SerializeField]
     private GameManager gameManager;
 
+    [SerializeField]
+    private string prefixTextValue;
+
     private int _playerCount;
     private bool _isReady = false;
 
@@ -74,7 +77,7 @@ public class NetworkSuccessBtn : NetworkBehaviour
 
     private void UpdateText(int readyCount)
     {
-        text.text = $"Play again {readyCount}/{_playerCount}";
+        text.text = $"{prefixTextValue}{readyCount}/{_playerCount}";
     }
 
     private void OnReadyCountChange(int prevCount, int newCount)

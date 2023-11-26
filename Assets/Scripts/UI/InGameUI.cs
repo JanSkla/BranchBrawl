@@ -32,8 +32,6 @@ public class InGameUI : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        CurrentPlayer = GameObject.Find("Local Player").GetComponent<Player>();
-        CurrentPlayer.GetComponent<LocalPlayer>().InGameUI = this;
     }
     void Update()
     {
@@ -41,6 +39,11 @@ public class InGameUI : MonoBehaviour
         {
             SetMenu(!_menu.activeSelf);
         }
+    }
+    public void OnRoundStarted()
+    {
+        CurrentPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>();
+        CurrentPlayer.GetComponent<LocalPlayer>().InGameUI = this;
     }
 
     public void ChangeCursorColor(Color color)
@@ -56,8 +59,11 @@ public class InGameUI : MonoBehaviour
 
     private void SetMenu(bool visible)
     {
-        Cursor.lockState = visible ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = visible;
+        if (_running.activeSelf)
+        {
+            Cursor.lockState = visible ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = visible;
+        }
         _game.SetActive(!visible);
         _menu.SetActive(visible);
     }
@@ -70,8 +76,8 @@ public class InGameUI : MonoBehaviour
 
     public void DeathScreen(bool isAlive)
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        Cursor.lockState = !isAlive ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = !isAlive;
         _deathScreen.SetActive(!isAlive);
         _cursor.SetActive(isAlive);
     }
@@ -79,6 +85,8 @@ public class InGameUI : MonoBehaviour
     public void UpdateGameScreen(bool isOver)
     {
         Debug.Log("Over");
+        Cursor.lockState = isOver ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = isOver;
         _running.SetActive(!isOver);
         _over.SetActive(isOver);
     }

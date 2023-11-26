@@ -1268,7 +1268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40c872b394df2a747b2adc4cced42277, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playAgainBtn: {fileID: 0}
+  playAgainBtn: {fileID: 930056955}
 --- !u!4 &922455558
 Transform:
   m_ObjectHideFlags: 0
@@ -1412,6 +1412,11 @@ PrefabInstance:
 --- !u!224 &930056954 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6697506695718617734, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
+  m_PrefabInstance: {fileID: 930056953}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &930056955 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2680596518697103354, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
   m_PrefabInstance: {fileID: 930056953}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &963194225
@@ -2692,6 +2697,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 0}
   gameManager: {fileID: 0}
+  prefixTextValue: 
 --- !u!1 &1574922124
 GameObject:
   m_ObjectHideFlags: 0
