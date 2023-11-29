@@ -6,7 +6,7 @@ using UnityEngine;
 
 public struct PlayerGameData : INetworkSerializable, IEquatable<PlayerGameData>
 {
-    public ulong PlayerNwId;
+    public ulong PlayerManagerNwId;
     public int Crowns;
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
@@ -14,13 +14,13 @@ public struct PlayerGameData : INetworkSerializable, IEquatable<PlayerGameData>
         if (serializer.IsReader)
         {
             var reader = serializer.GetFastBufferReader();
-            reader.ReadValueSafe(out PlayerNwId);
+            reader.ReadValueSafe(out PlayerManagerNwId);
             reader.ReadValueSafe(out Crowns);
         }
         else
         {
             var writer = serializer.GetFastBufferWriter();
-            writer.WriteValueSafe(PlayerNwId);
+            writer.WriteValueSafe(PlayerManagerNwId);
             writer.WriteValueSafe(Crowns);
         }
     }
@@ -28,6 +28,7 @@ public struct PlayerGameData : INetworkSerializable, IEquatable<PlayerGameData>
     //IEquatable
     public bool Equals(PlayerGameData other)
     {
-        return PlayerNwId == other.PlayerNwId && Crowns == other.Crowns;
+        return PlayerManagerNwId == other.PlayerManagerNwId && Crowns == other.Crowns;
     }
+    //~IEquatable
 }

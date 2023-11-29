@@ -34,7 +34,7 @@ public class GameManager : NetworkBehaviour
         {
             _playersGameData.Add(new PlayerGameData()
             {
-                PlayerNwId = clientIds[i],
+                PlayerManagerNwId = clientIds[i],
                 Crowns = 0
             });
         }
