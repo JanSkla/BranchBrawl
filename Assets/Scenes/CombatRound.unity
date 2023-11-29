@@ -934,6 +934,7 @@ MonoBehaviour:
   _over: {fileID: 1870289877}
   _cursor: {fileID: 592667150}
   _deathScreen: {fileID: 1821461749}
+  PlacementText: {fileID: 1544529371}
   CurrentPlayer: {fileID: 0}
 --- !u!222 &579744231
 CanvasRenderer:
@@ -2537,7 +2538,6 @@ GameObject:
   - component: {fileID: 1544529370}
   - component: {fileID: 1544529372}
   - component: {fileID: 1544529371}
-  - component: {fileID: 1544529374}
   - component: {fileID: 1544529373}
   m_Layer: 5
   m_Name: PlacementTxt
@@ -2683,21 +2683,6 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &1544529374
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1544529369}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 799356e06f0f69b4687928bc47a8de8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: {fileID: 0}
-  gameManager: {fileID: 0}
-  prefixTextValue: 
 --- !u!1 &1574922124
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,17 +15,20 @@ public class InGameUI : MonoBehaviour
     private GameObject _menu;
 
     //Game
-
     [SerializeField]
     private GameObject _running;
     [SerializeField]
     private GameObject _over;
 
-    //Runngig
+    //Running
     [SerializeField]
     private GameObject _cursor;
     [SerializeField]
     private GameObject _deathScreen;
+
+    //Over
+    [SerializeField]
+    public TextMeshProUGUI PlacementText;
 
     public Player CurrentPlayer;
 
@@ -84,7 +88,6 @@ public class InGameUI : MonoBehaviour
 
     public void UpdateGameScreen(bool isOver)
     {
-        Debug.Log("Over");
         Cursor.lockState = isOver ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = isOver;
         _running.SetActive(!isOver);

@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using Unity.Netcode;
 using UnityEngine;
 
@@ -24,7 +23,6 @@ public class Player : NetworkBehaviour
         set
         {
             _isAlive = value;
-            Debug.Log("Died" + value);
 
             if (!_isAlive)
             {
@@ -46,10 +44,6 @@ public class Player : NetworkBehaviour
         }
         else if (NetworkManager.IsClient)
         {
-            Debug.Log("H"+ _playerManagerNwId.Value);
-            Debug.Log("PM"+ _handNwId.Value);
-            //_playerManagerNwId.OnValueChanged += OnPlayerManagerNwIdChange;
-            //_handNwId.OnValueChanged += OnHandNwIdChange;
 
             PlayerManager = NetworkManager.SpawnManager.SpawnedObjects[_playerManagerNwId.Value].gameObject.GetComponent<NetworkObject>();
 
@@ -64,10 +58,8 @@ public class Player : NetworkBehaviour
         if (NetworkManager.IsServer)
         {
             Hand = Instantiate(handPrefab);
-            Debug.Log("id" + Hand.GetComponent<NetworkObject>().NetworkObjectId);
             Hand.layer = IsLocalPlayer ? 8 : 6;
             Hand.GetComponent<NetworkObject>().Spawn();
-            Debug.Log("id"+ Hand.GetComponent<NetworkObject>().NetworkObjectId);
             _handNwId.Value = Hand.GetComponent<NetworkObject>().NetworkObjectId;
             Hand.GetComponent<NetworkObject>().TrySetParent(transform, false);
         }
@@ -87,10 +79,15 @@ public class Player : NetworkBehaviour
         GameObject roundManager = GameObject.Find("RoundManager");
         if (roundManager)
         {
+            int placement = roundManager.GetComponent<RoundManager>().AlivePlayerCount;
             roundManager.GetComponent<RoundManager>().AlivePlayerCount--;
+
+            if (IsLocalPlayer)
+            {
+                GameObject.Find("InGameUI").GetComponent<InGameUI>().PlacementText.text = placement.ToString();
+            }
         }
         GetComponent<Renderer>().material.color = Color.red;
-        Debug.Log(gameObject.name + " died");
     }
 
     public new bool IsLocalPlayer

@@ -15,7 +15,6 @@ public class RoundManager : NetworkBehaviour
         get { return _alivePlayerCount; }
         set
         {
-            Debug.Log(value + " alive");
             _alivePlayerCount = value;
             if (_alivePlayerCount <= 1)
             {
@@ -82,11 +81,11 @@ public class RoundManager : NetworkBehaviour
             GameObject.Find("GameManager(Clone)").GetComponent<GameManager>().CurrentRoundFinished();
         }
     }
+
     [ClientRpc]
     private void SetAlivePlayerCountClientRpc(int alivePlayerCount)
     {
         _alivePlayerCount = alivePlayerCount;
-        Debug.Log(AlivePlayerCount + " Alive");
     }
 }
 public enum RoundState
