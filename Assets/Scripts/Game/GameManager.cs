@@ -1,11 +1,18 @@
 
 using Unity.Netcode;
 using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
-    public NetworkList<int> RoundsList = new NetworkList<int>();
+    [SerializeField]
+    private int _goalCrowns = 3;
+
+    private NetworkList<int> _roundsList = new();
+
+    private NetworkList<PlayerGameData> _playersGameData = new();
+
     private int _currentRoundListIndex = 0;
     private bool _currentRoundActive = false;
     void Awake()
@@ -14,19 +21,27 @@ public class GameManager : NetworkBehaviour
         {
             GetComponent<NetworkObject>().Spawn(false);
         }
-        //DontDestroyOnLoad(this.gameObject);
+
+        StartGame();
     }
     public void StartGame()
     {
         if (!NetworkManager.IsServer) return;
 
-        //RoundsList = new NetworkList<int>();
+        var clientIds = NetworkManager.Singleton.ConnectedClientsIds;
 
-        RoundsList.Add((int)RoundType.FirstCombat);
-        //RoundsList.Add((int)RoundType.Upgrade);
-        RoundsList.Add((int)RoundType.Combat);
-        //RoundsList.Add((int)RoundType.Upgrade);
-        RoundsList.Add((int)RoundType.Combat);
+        for (int i = 0; i < clientIds.Count; i++)
+        {
+            _playersGameData.Add(new PlayerGameData()
+            {
+                PlayerNwId = clientIds[i],
+                Crowns = 0
+            });
+        }
+
+        _roundsList.Add((int)RoundType.FirstCombat);
+        //_roundsList.Add((int)RoundType.Upgrade);
+        _roundsList.Add((int)RoundType.Combat);
         StartCurrentRound();
     }
     private void StartCurrentRound()
@@ -34,7 +49,7 @@ public class GameManager : NetworkBehaviour
         if (!NetworkManager.IsServer) return;
 
         if (_currentRoundActive) return;
-        RoundType currentType = (RoundType)RoundsList[_currentRoundListIndex];
+        RoundType currentType = (RoundType)_roundsList[_currentRoundListIndex];
         switch (currentType)
         {
             case RoundType.FirstCombat:
@@ -42,6 +57,8 @@ public class GameManager : NetworkBehaviour
                 break;
             case RoundType.Combat:
                 StartCombatRound();
+                //_roundsList.Add((int)RoundType.Upgrade);
+                _roundsList.Add((int)RoundType.Combat);
                 break;
             case RoundType.Upgrade:
                 StartUpgradeRound();
@@ -72,7 +89,7 @@ public class GameManager : NetworkBehaviour
 
         _currentRoundActive = false;
         _currentRoundListIndex++;
-        if (RoundsList.Count < _currentRoundListIndex) return;
+        if (_roundsList.Count < _currentRoundListIndex) return;
         StartCurrentRound();
     }
 }

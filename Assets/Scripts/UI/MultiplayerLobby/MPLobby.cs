@@ -28,7 +28,7 @@ public class MPLobby : NetworkBehaviour
     public void StartGame()
     {
         GameObject gminstance =  Instantiate(gameManager);
-        gminstance.GetComponent<GameManager>().StartGame();
+        //gminstance.GetComponent<GameManager>().StartGame();
     }
     public void GoBack()
     {
