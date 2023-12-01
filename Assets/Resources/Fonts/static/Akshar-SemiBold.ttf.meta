@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 334b47fe3e1b57d4897fdee912bfc8ee
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Akshar
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 715140fbaf51c154485346465046acc1, type: 3}
+  - {fileID: 12800000, guid: b1cb7317dd766a040aea3a86e6a06179, type: 3}
+  - {fileID: 12800000, guid: 02ba8342dacb5d742a024dd9e920c8ea, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
