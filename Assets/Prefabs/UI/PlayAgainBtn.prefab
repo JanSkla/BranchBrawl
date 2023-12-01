@@ -285,6 +285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 3226702814259076643}
   gameManager: {fileID: 0}
+  prefixTextValue: 'Play again '
 --- !u!114 &7730551996114646815
 MonoBehaviour:
   m_ObjectHideFlags: 0

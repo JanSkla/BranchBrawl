@@ -21,7 +21,6 @@ public class Gun : NetworkBehaviour
 
     public void Shoot(bool firstShot)
     {
-        Debug.Log("tries to shoot");
         if (!gunData.isAuto && !firstShot) return;
         if (!CanShoot() || gunData.currentAmmo <= 0) return;
 
@@ -61,7 +60,6 @@ public class Gun : NetworkBehaviour
 
     private void SimulatedShoot()
     {
-        Debug.Log(gunData.name + " Shoots //simulated");
         Debug.DrawRay(muzzle.transform.position, transform.forward * 100, Color.blue, 1);
     }
 

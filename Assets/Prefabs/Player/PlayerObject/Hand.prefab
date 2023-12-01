@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1808568653894831094}
   - component: {fileID: 4969331125498314598}
   - component: {fileID: 3438882312526837034}
-  - component: {fileID: -1868510294769611546}
   m_Layer: 8
   m_Name: Hand
   m_TagString: Untagged
@@ -127,15 +126,3 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &-1868510294769611546
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3375491625978825827}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 675a30af824ecb14f8232cd791d4e449, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

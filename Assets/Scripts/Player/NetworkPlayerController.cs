@@ -60,7 +60,6 @@ public class NetworkPlayerController : NetworkBehaviour
         TransformState calculatedState = _transformStates.First(localState => localState.Tick == serverState.Tick);
         if (Vector3.Distance(calculatedState.Position, serverState.Position) < 0.3 && Mathf.Abs(calculatedState.Position.y - serverState.Position.y) < 1) return;
 
-        Debug.Log("TP");
         TeleportPlayer(serverState);
 
 

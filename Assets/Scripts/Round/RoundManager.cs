@@ -1,16 +1,13 @@
-using Newtonsoft.Json.Linq;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : NetworkBehaviour
+public class RoundManager : NetworkBehaviour
 {
     private InGameUI _inGameUI;
 
-    [SerializeField]
-    private GameObject playAgainBtn;
+    private GameManager _gameManager;
 
     private int _alivePlayerCount;
     public int AlivePlayerCount
@@ -18,17 +15,16 @@ public class GameManager : NetworkBehaviour
         get { return _alivePlayerCount; }
         set
         {
-            Debug.Log(value + " alive");
             _alivePlayerCount = value;
             if (_alivePlayerCount <= 1)
             {
-                State = GameState.Over;
+                State = RoundState.Over;
             }
         }
     }
 
-    private GameState _state;
-    public GameState State
+    private RoundState _state;
+    public RoundState State
     {
         get { return _state; }
         set
@@ -36,27 +32,46 @@ public class GameManager : NetworkBehaviour
             _state = value;
             switch (value)
             {
-                case GameState.Running:
+                case RoundState.Running:
                     GameSetRunning();
                     return;
-                case GameState.Over:
+                case RoundState.Over:
                     GameOver();
                     return;
             }
         }
     }
+
+    public Action GameOver;
     void Start()
     {
+        GameOver += OnGameOver;
+        _gameManager = GameObject.Find("GameManager(Clone)").GetComponent<GameManager>();
         StartGame();
     }
     private void GameSetRunning()
     {
         _inGameUI.UpdateGameScreen(false);
     }
-    private void GameOver()
+    private void OnGameOver()
     {
         _inGameUI.UpdateGameScreen(true);
-        playAgainBtn.GetComponent<NetworkSuccessBtn>().Fulfilled += PlayAgain;
+
+        //add crown to round winner
+
+        if (!NetworkManager.IsServer) return;
+
+        var enumerator = _gameManager.PlayersGameData.GetEnumerator();
+        while (enumerator.MoveNext())
+        {
+            Debug.Log(NetworkManager.Singleton.ConnectedClients[enumerator.Current.ClientId].PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>().IsAlive);
+            if (NetworkManager.Singleton.ConnectedClients[enumerator.Current.ClientId].PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>().IsAlive)
+            {
+                enumerator.Current.SetCrowns(enumerator.Current.Crowns + 1);
+            }
+            Debug.Log(enumerator.Current.Crowns);
+        }
+        //~
     }
     private void StartGame()
     {
@@ -70,8 +85,9 @@ public class GameManager : NetworkBehaviour
             SetAlivePlayerCountClientRpc(AlivePlayerCount);
         }
         _inGameUI = GameObject.Find("InGameUI").GetComponent<InGameUI>();
+        _inGameUI.OnRoundStarted();
 
-        State = GameState.Running;
+        State = RoundState.Running;
     }
     public void PlayAgain()
     {
@@ -81,17 +97,17 @@ public class GameManager : NetworkBehaviour
             {
                 client.Value.PlayerObject.GetComponent<PlayerManager>().DespawnPlayerObject();
             }
-            NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            GameObject.Find("GameManager(Clone)").GetComponent<GameManager>().CurrentRoundFinished();
         }
     }
+
     [ClientRpc]
     private void SetAlivePlayerCountClientRpc(int alivePlayerCount)
     {
         _alivePlayerCount = alivePlayerCount;
-        Debug.Log(AlivePlayerCount + " Alive");
     }
 }
-public enum GameState
+public enum RoundState
 {
     Running,
     Over

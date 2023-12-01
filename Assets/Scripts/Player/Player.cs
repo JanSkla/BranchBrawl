@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,10 +9,9 @@ public class Player : NetworkBehaviour
     [SerializeField]
     public GameObject Head;
 
-    //[HideInInspector]
     public GameObject Hand;
     private NetworkVariable<ulong> _handNwId = new();
-    //[HideInInspector]
+
     public NetworkObject PlayerManager;
     private NetworkVariable<ulong> _playerManagerNwId = new();
 
@@ -24,7 +22,6 @@ public class Player : NetworkBehaviour
         set
         {
             _isAlive = value;
-            Debug.Log("Died" + value);
 
             if (!_isAlive)
             {
@@ -46,10 +43,6 @@ public class Player : NetworkBehaviour
         }
         else if (NetworkManager.IsClient)
         {
-            Debug.Log("H"+ _playerManagerNwId.Value);
-            Debug.Log("PM"+ _handNwId.Value);
-            //_playerManagerNwId.OnValueChanged += OnPlayerManagerNwIdChange;
-            //_handNwId.OnValueChanged += OnHandNwIdChange;
 
             PlayerManager = NetworkManager.SpawnManager.SpawnedObjects[_playerManagerNwId.Value].gameObject.GetComponent<NetworkObject>();
 
@@ -64,10 +57,8 @@ public class Player : NetworkBehaviour
         if (NetworkManager.IsServer)
         {
             Hand = Instantiate(handPrefab);
-            Debug.Log("id" + Hand.GetComponent<NetworkObject>().NetworkObjectId);
             Hand.layer = IsLocalPlayer ? 8 : 6;
             Hand.GetComponent<NetworkObject>().Spawn();
-            Debug.Log("id"+ Hand.GetComponent<NetworkObject>().NetworkObjectId);
             _handNwId.Value = Hand.GetComponent<NetworkObject>().NetworkObjectId;
             Hand.GetComponent<NetworkObject>().TrySetParent(transform, false);
         }
@@ -84,13 +75,18 @@ public class Player : NetworkBehaviour
 
     public void Die()
     {
-        GameObject gameManager = GameObject.Find("GameManager");
-        if (gameManager)
+        RoundManager roundManager = GameObject.Find("RoundManager").GetComponent<RoundManager>();
+        if (roundManager)
         {
-            gameManager.GetComponent<GameManager>().AlivePlayerCount--;
+            int placement = roundManager.AlivePlayerCount;
+            roundManager.AlivePlayerCount--;
+
+            if (IsLocalPlayer)
+            {
+                GameObject.Find("InGameUI").GetComponent<InGameUI>().PlacementText.text = placement.ToString();
+            }
         }
         GetComponent<Renderer>().material.color = Color.red;
-        Debug.Log(gameObject.name + " died");
     }
 
     public new bool IsLocalPlayer

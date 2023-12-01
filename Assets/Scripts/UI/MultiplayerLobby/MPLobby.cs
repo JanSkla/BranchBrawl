@@ -10,6 +10,8 @@ public class MPLobby : NetworkBehaviour
     private GameObject hostView;
     [SerializeField]
     private GameObject clientView;
+    [SerializeField]
+    private GameObject gameManager;
     void Start()
     {
         if (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
@@ -25,7 +27,8 @@ public class MPLobby : NetworkBehaviour
     }
     public void StartGame()
     {
-        NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        GameObject gminstance =  Instantiate(gameManager);
+        //gminstance.GetComponent<GameManager>().StartGame();
     }
     public void GoBack()
     {

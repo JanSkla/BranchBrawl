@@ -14,7 +14,10 @@ public class NetworkSuccessBtn : NetworkBehaviour
     private TextMeshProUGUI text;
 
     [SerializeField]
-    private GameManager gameManager;
+    private RoundManager roundManager;
+
+    [SerializeField]
+    private string prefixTextValue;
 
     private int _playerCount;
     private bool _isReady = false;
@@ -32,6 +35,7 @@ public class NetworkSuccessBtn : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         _readyCount.OnValueChanged += OnReadyCountChange;
+        roundManager.GameOver += OnGameOver;
 
 
         if (NetworkManager.IsServer || NetworkManager.IsHost)
@@ -47,6 +51,11 @@ public class NetworkSuccessBtn : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         _readyCount.OnValueChanged -= OnReadyCountChange;
+    }
+
+    private void OnGameOver()
+    {
+        Fulfilled += roundManager.PlayAgain;
     }
 
     public void OnButtonPress()
@@ -74,7 +83,7 @@ public class NetworkSuccessBtn : NetworkBehaviour
 
     private void UpdateText(int readyCount)
     {
-        text.text = $"Play again {readyCount}/{_playerCount}";
+        text.text = $"{prefixTextValue}{readyCount}/{_playerCount}";
     }
 
     private void OnReadyCountChange(int prevCount, int newCount)
