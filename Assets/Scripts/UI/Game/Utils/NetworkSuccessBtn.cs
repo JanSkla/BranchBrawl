@@ -14,7 +14,7 @@ public class NetworkSuccessBtn : NetworkBehaviour
     private TextMeshProUGUI text;
 
     [SerializeField]
-    private GameManager gameManager;
+    private RoundManager roundManager;
 
     [SerializeField]
     private string prefixTextValue;
@@ -35,6 +35,7 @@ public class NetworkSuccessBtn : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         _readyCount.OnValueChanged += OnReadyCountChange;
+        roundManager.GameOver += OnGameOver;
 
 
         if (NetworkManager.IsServer || NetworkManager.IsHost)
@@ -50,6 +51,11 @@ public class NetworkSuccessBtn : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         _readyCount.OnValueChanged -= OnReadyCountChange;
+    }
+
+    private void OnGameOver()
+    {
+        Fulfilled += roundManager.PlayAgain;
     }
 
     public void OnButtonPress()

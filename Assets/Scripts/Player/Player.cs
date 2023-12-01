@@ -9,10 +9,9 @@ public class Player : NetworkBehaviour
     [SerializeField]
     public GameObject Head;
 
-    //[HideInInspector]
     public GameObject Hand;
     private NetworkVariable<ulong> _handNwId = new();
-    //[HideInInspector]
+
     public NetworkObject PlayerManager;
     private NetworkVariable<ulong> _playerManagerNwId = new();
 
@@ -76,11 +75,11 @@ public class Player : NetworkBehaviour
 
     public void Die()
     {
-        GameObject roundManager = GameObject.Find("RoundManager");
+        RoundManager roundManager = GameObject.Find("RoundManager").GetComponent<RoundManager>();
         if (roundManager)
         {
-            int placement = roundManager.GetComponent<RoundManager>().AlivePlayerCount;
-            roundManager.GetComponent<RoundManager>().AlivePlayerCount--;
+            int placement = roundManager.AlivePlayerCount;
+            roundManager.AlivePlayerCount--;
 
             if (IsLocalPlayer)
             {

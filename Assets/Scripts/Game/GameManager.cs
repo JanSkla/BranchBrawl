@@ -11,7 +11,7 @@ public class GameManager : NetworkBehaviour
 
     private NetworkList<int> _roundsList = new();
 
-    private NetworkList<PlayerGameData> _playersGameData = new();
+    public NetworkList<PlayerGameData> PlayersGameData = new();
 
     private int _currentRoundListIndex = 0;
     private bool _currentRoundActive = false;
@@ -32,9 +32,10 @@ public class GameManager : NetworkBehaviour
 
         for (int i = 0; i < clientIds.Count; i++)
         {
-            _playersGameData.Add(new PlayerGameData()
+            Debug.Log(clientIds[i]);
+            PlayersGameData.Add(new PlayerGameData()
             {
-                PlayerManagerNwId = clientIds[i],
+                ClientId = clientIds[i],
                 Crowns = 0
             });
         }

@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -6,8 +7,7 @@ public class RoundManager : NetworkBehaviour
 {
     private InGameUI _inGameUI;
 
-    [SerializeField]
-    private GameObject playAgainBtn;
+    private GameManager _gameManager;
 
     private int _alivePlayerCount;
     public int AlivePlayerCount
@@ -41,18 +41,37 @@ public class RoundManager : NetworkBehaviour
             }
         }
     }
+
+    public Action GameOver;
     void Start()
     {
+        GameOver += OnGameOver;
+        _gameManager = GameObject.Find("GameManager(Clone)").GetComponent<GameManager>();
         StartGame();
     }
     private void GameSetRunning()
     {
         _inGameUI.UpdateGameScreen(false);
     }
-    private void GameOver()
+    private void OnGameOver()
     {
         _inGameUI.UpdateGameScreen(true);
-        playAgainBtn.GetComponent<NetworkSuccessBtn>().Fulfilled += PlayAgain;
+
+        //add crown to round winner
+
+        if (!NetworkManager.IsServer) return;
+
+        var enumerator = _gameManager.PlayersGameData.GetEnumerator();
+        while (enumerator.MoveNext())
+        {
+            Debug.Log(NetworkManager.Singleton.ConnectedClients[enumerator.Current.ClientId].PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>().IsAlive);
+            if (NetworkManager.Singleton.ConnectedClients[enumerator.Current.ClientId].PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>().IsAlive)
+            {
+                enumerator.Current.SetCrowns(enumerator.Current.Crowns + 1);
+            }
+            Debug.Log(enumerator.Current.Crowns);
+        }
+        //~
     }
     private void StartGame()
     {
