@@ -14,7 +14,7 @@ public class HealthDisplayText : MonoBehaviour
     void Start()
     {
         _healthDisplay.enabled = false;
-        Invoke(nameof(DelayedStart), 0.2f);
+        Invoke(nameof(DelayedStart), 0.5f);
     }
     private void DelayedStart()
     {

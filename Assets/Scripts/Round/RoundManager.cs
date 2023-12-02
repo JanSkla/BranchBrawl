@@ -47,6 +47,13 @@ public class RoundManager : NetworkBehaviour
     {
         GameOver += OnGameOver;
         _gameManager = GameObject.Find("GameManager(Clone)").GetComponent<GameManager>();
+
+        var enumerator = _gameManager.PlayersGameData.GetEnumerator();
+        while (enumerator.MoveNext())
+        {
+            Debug.Log(enumerator.Current.Crowns);
+        }
+
         StartGame();
     }
     private void GameSetRunning()
