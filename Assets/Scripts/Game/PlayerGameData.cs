@@ -8,10 +8,6 @@ public struct PlayerGameData : INetworkSerializable, IEquatable<PlayerGameData>
 {
     public ulong ClientId;
     public int Crowns;
-    public void SetCrowns(int t)
-    {
-        Crowns = t;
-    }
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         if (serializer.IsReader)

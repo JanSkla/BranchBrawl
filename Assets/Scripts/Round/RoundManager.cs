@@ -74,9 +74,14 @@ public class RoundManager : NetworkBehaviour
             Debug.Log(NetworkManager.Singleton.ConnectedClients[enumerator.Current.ClientId].PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>().IsAlive);
             if (NetworkManager.Singleton.ConnectedClients[enumerator.Current.ClientId].PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>().IsAlive)
             {
-                enumerator.Current.SetCrowns(enumerator.Current.Crowns + 1);
+                _gameManager.PlayersGameData.Add(new PlayerGameData()
+                {
+                    ClientId = enumerator.Current.ClientId,
+                    Crowns = enumerator.Current.Crowns + 1,
+                });
+                _gameManager.PlayersGameData.Remove(enumerator.Current);
+                break;
             }
-            Debug.Log(enumerator.Current.Crowns);
         }
         //~
     }

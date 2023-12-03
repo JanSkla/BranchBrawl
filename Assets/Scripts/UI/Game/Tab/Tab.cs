@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Tab : MonoBehaviour
@@ -19,9 +19,19 @@ public class Tab : MonoBehaviour
             Destroy(child.gameObject);
         }
 
+        List<PlayerGameData> sortedList = new();
+
         foreach (var data in _gameManager.PlayersGameData)
         {
-            AddRow(data.ClientId.ToString(), data.Crowns);
+            sortedList.Add(data);
+        }
+
+        sortedList = sortedList.OrderBy(o => o.Crowns).Reverse().ToList();
+
+        for (int i = 0; i < sortedList.Count; i++)
+        {
+            var data = sortedList[i];
+            AddRow(i + 1 + ". Pepa" + data.ClientId.ToString(), data.Crowns);
         }
     }
 
