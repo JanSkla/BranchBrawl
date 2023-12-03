@@ -30,6 +30,10 @@ public class InGameUI : MonoBehaviour
     [SerializeField]
     public TextMeshProUGUI PlacementText;
 
+    //Tab
+    [SerializeField]
+    private GameObject _tab;
+
     public Player CurrentPlayer;
 
     void Start()
@@ -42,6 +46,14 @@ public class InGameUI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             SetMenu(!_menu.activeSelf);
+        }
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            _tab.SetActive(true);
+        }
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            _tab.SetActive(false);
         }
     }
     public void OnRoundStarted()
