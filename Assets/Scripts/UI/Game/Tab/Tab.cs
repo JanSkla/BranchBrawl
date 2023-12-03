@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Tab : MonoBehaviour
@@ -31,7 +32,8 @@ public class Tab : MonoBehaviour
         for (int i = 0; i < sortedList.Count; i++)
         {
             var data = sortedList[i];
-            AddRow(i + 1 + ". Pepa" + data.ClientId.ToString(), data.Crowns);
+            var pm = NetworkManager.Singleton.ConnectedClients[data.ClientId].PlayerObject.GetComponent<PlayerManager>();
+            AddRow(pm.PlayerName.Value.ToString(), data.Crowns);
         }
     }
 
