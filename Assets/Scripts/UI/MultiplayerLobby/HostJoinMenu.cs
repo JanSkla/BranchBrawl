@@ -17,9 +17,6 @@ public class HostJoinMenu : MonoBehaviour
     private int m_MaxConnections = 5; //huh
 
     [SerializeField]
-    private GameObject mpLobby;
-
-    [SerializeField]
     private GameObject loadingView;
 
     [SerializeField]
@@ -49,7 +46,7 @@ public class HostJoinMenu : MonoBehaviour
     }
 
     //Host
-    public static async Task<RelayServerData> AllocateRelayServerAndGetJoinCode(int maxConnections, TextMeshProUGUI hostCodeDisplay, GameObject mpLobbyView, GameObject loadingView, string region = null)
+    public static async Task<RelayServerData> AllocateRelayServerAndGetJoinCode(int maxConnections, TextMeshProUGUI hostCodeDisplay, GameObject loadingView, string region = null)
     {
         Allocation allocation;
         string createJoinCode;
@@ -75,7 +72,7 @@ public class HostJoinMenu : MonoBehaviour
         catch
         {
             Debug.LogError("Relay create join code request failed");
-            SceneManager.LoadScene("MultiplayerLobby");
+            SceneManager.LoadScene("HostJoinMenu");
             throw;
         }
 
@@ -87,7 +84,9 @@ public class HostJoinMenu : MonoBehaviour
         NetworkManager.Singleton.StartHost();
 
         loadingView.SetActive(false);
-        mpLobbyView.SetActive(true);
+
+
+        NetworkManager.Singleton.SceneManager.LoadScene("MultiplayerLobby", LoadSceneMode.Single);
 
         return relaySeverData;
     }
@@ -95,7 +94,7 @@ public class HostJoinMenu : MonoBehaviour
     IEnumerator Example_ConfigureTransportAndStartNgoAsHost()
     {
         hostCodeDisplay.text = "getting join code";
-        var serverRelayUtilityTask = AllocateRelayServerAndGetJoinCode(m_MaxConnections, hostCodeDisplay, mpLobby, loadingView);
+        var serverRelayUtilityTask = AllocateRelayServerAndGetJoinCode(m_MaxConnections, hostCodeDisplay, loadingView);
 
         while (!serverRelayUtilityTask.IsCompleted)
         {
@@ -104,7 +103,7 @@ public class HostJoinMenu : MonoBehaviour
     }
 
     //Client
-    public static async Task<RelayServerData> JoinRelayServerFromJoinCode(string joinCode, GameObject mpLobbyView, GameObject loadingView)
+    public static async Task<RelayServerData> JoinRelayServerFromJoinCode(string joinCode, GameObject loadingView)
     {
         JoinAllocation allocation;
         try
@@ -114,7 +113,7 @@ public class HostJoinMenu : MonoBehaviour
         catch
         {
             Debug.LogError("Relay create join code request failed");
-            SceneManager.LoadScene("MultiplayerLobby");
+            SceneManager.LoadScene("HostJoinMenu");
             throw;
         }
 
@@ -128,7 +127,6 @@ public class HostJoinMenu : MonoBehaviour
         NetworkManager.Singleton.StartClient();
 
         loadingView.SetActive(false);
-        mpLobbyView.SetActive(true);
 
         return relayServerData;
     }
@@ -136,7 +134,7 @@ public class HostJoinMenu : MonoBehaviour
     IEnumerator Example_ConfigureTransportAndStartNgoAsConnectingPlayer(string RelayJoinCode)
     {
         // Populate RelayJoinCode beforehand through the UI
-        var clientRelayUtilityTask = JoinRelayServerFromJoinCode(RelayJoinCode, mpLobby, loadingView);
+        var clientRelayUtilityTask = JoinRelayServerFromJoinCode(RelayJoinCode, loadingView);
 
         while (!clientRelayUtilityTask.IsCompleted)
         {

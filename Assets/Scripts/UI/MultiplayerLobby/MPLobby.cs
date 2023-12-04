@@ -33,6 +33,6 @@ public class MPLobby : NetworkBehaviour
     public void GoBack()
     {
         NetworkManager.Singleton.Shutdown();
-        SceneManager.LoadScene("MultiplayerLobby");
+        SceneManager.LoadScene("HostJoinMenu");
     }
 }
