@@ -1,4 +1,5 @@
 
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ public class Player : NetworkBehaviour
     private GameObject handPrefab;
     [SerializeField]
     public GameObject Head;
+    [SerializeField]
+    private TextMeshPro _nameTag;
 
     public GameObject Hand;
     private NetworkVariable<ulong> _handNwId = new();
@@ -62,6 +65,7 @@ public class Player : NetworkBehaviour
             _handNwId.Value = Hand.GetComponent<NetworkObject>().NetworkObjectId;
             Hand.GetComponent<NetworkObject>().TrySetParent(transform, false);
         }
+        _nameTag.text = PlayerManager.gameObject.GetComponent<PlayerManager>().PlayerName.Value.ToString();
     }
 
     //public override void OnNetworkDespawn()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -7,6 +8,21 @@ using UnityEngine.XR;
 
 public class PlayerManager : NetworkBehaviour
 {
+    public NetworkVariable<FixedString32Bytes> PlayerName;
+
+    private string[] gamerTags = {
+        "ShadowStrike",
+        "LunarPhoenix",
+        "CyberPulse",
+        "EternalSpecter",
+        "QuantumNinja",
+        "MysticVortex",
+        "RoguePixel",
+        "NeonThunder",
+        "AstroBlaze",
+        "ViperByte"
+    };
+
     [SerializeField]
     private GameObject playerPrefab;
 
@@ -23,10 +39,10 @@ public class PlayerManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         _playerObjectNwId.OnValueChanged += OnPlayerObjectNwIdChange;
-        //if (IsServer)
-        //{
-        //    SpawnPlayerObject();
-        //}
+        if (IsServer)
+        {
+            PlayerName.Value = gamerTags[NetworkManager.LocalClientId % (ulong)gamerTags.Length] + NetworkManager.LocalClientId;
+        }
     }
 
     public void SpawnPlayerObject()
