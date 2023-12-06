@@ -23,7 +23,7 @@ public class HostJoinMenu : MonoBehaviour
     private TMP_InputField joinInput;
 
     [SerializeField]
-    private TextMeshProUGUI hostCodeDisplay;
+    private GameObject _networkDataManagerPrefab;
 
     public void OnHostClick()
     {
@@ -46,7 +46,7 @@ public class HostJoinMenu : MonoBehaviour
     }
 
     //Host
-    public static async Task<RelayServerData> AllocateRelayServerAndGetJoinCode(int maxConnections, TextMeshProUGUI hostCodeDisplay, GameObject loadingView, string region = null)
+    public static async Task<RelayServerData> AllocateRelayServerAndGetJoinCode(int maxConnections, GameObject loadingView, GameObject networkDataManagerPrefab, string region = null)
     {
         Allocation allocation;
         string createJoinCode;
@@ -67,7 +67,6 @@ public class HostJoinMenu : MonoBehaviour
         {
             createJoinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             Debug.Log("Host started with code " + createJoinCode);
-            hostCodeDisplay.text = createJoinCode;
         }
         catch
         {
@@ -85,7 +84,9 @@ public class HostJoinMenu : MonoBehaviour
 
         loadingView.SetActive(false);
 
-
+        GameObject networkDataManager = Instantiate(networkDataManagerPrefab);
+        networkDataManager.GetComponent<NetworkObject>().Spawn(false);
+        networkDataManager.GetComponent<NetworkData>().JoinCode.Value = createJoinCode;
         NetworkManager.Singleton.SceneManager.LoadScene("MultiplayerLobby", LoadSceneMode.Single);
 
         return relaySeverData;
@@ -93,8 +94,7 @@ public class HostJoinMenu : MonoBehaviour
 
     IEnumerator Example_ConfigureTransportAndStartNgoAsHost()
     {
-        hostCodeDisplay.text = "getting join code";
-        var serverRelayUtilityTask = AllocateRelayServerAndGetJoinCode(m_MaxConnections, hostCodeDisplay, loadingView);
+        var serverRelayUtilityTask = AllocateRelayServerAndGetJoinCode(m_MaxConnections, loadingView, _networkDataManagerPrefab);
 
         while (!serverRelayUtilityTask.IsCompleted)
         {

@@ -2253,7 +2253,7 @@ MonoBehaviour:
   m_MaxConnections: 5
   loadingView: {fileID: 1183848286}
   joinInput: {fileID: 568253418}
-  hostCodeDisplay: {fileID: 0}
+  _networkDataManagerPrefab: {fileID: 8383688736542503566, guid: 6d85c0547c829b945bfb93c29de9caf2, type: 3}
 --- !u!1 &2081143379
 GameObject:
   m_ObjectHideFlags: 0
