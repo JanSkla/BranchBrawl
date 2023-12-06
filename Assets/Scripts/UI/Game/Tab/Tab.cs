@@ -32,7 +32,7 @@ public class Tab : MonoBehaviour
         for (int i = 0; i < sortedList.Count; i++)
         {
             var data = sortedList[i];
-            var pm = NetworkManager.Singleton.ConnectedClients[data.ClientId].PlayerObject.GetComponent<PlayerManager>();
+            var pm = NetworkManager.Singleton.SpawnManager.SpawnedObjects[data.PMNwId].GetComponent<PlayerManager>();
             AddRow(pm.PlayerName.Value.ToString(), data.Crowns);
         }
     }

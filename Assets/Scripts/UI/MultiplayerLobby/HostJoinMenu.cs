@@ -23,7 +23,18 @@ public class HostJoinMenu : MonoBehaviour
     private TMP_InputField joinInput;
 
     [SerializeField]
+    private GameObject _networkManagerPrefab;
+    [SerializeField]
     private GameObject _networkDataManagerPrefab;
+
+    void Start()
+    {
+        if (!GameObject.Find("NetworkManager"))
+        {
+            var nm = Instantiate(_networkManagerPrefab);
+            nm.name = "NetworkManager";
+        }
+    }
 
     public void OnHostClick()
     {
