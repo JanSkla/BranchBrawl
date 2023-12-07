@@ -26,6 +26,11 @@ public class GameUI : MonoBehaviour
     [SerializeField]
     public TextMeshProUGUI PlacementText;
 
+    [SerializeField]
+    public TextMeshProUGUI CountDownText;
+
+    private GameManager _gameManager;
+
     private void OnEnable()
     {
         if (_running.activeSelf)
