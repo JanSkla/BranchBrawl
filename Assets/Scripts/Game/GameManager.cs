@@ -63,6 +63,9 @@ public class GameManager : NetworkBehaviour
             case RoundType.Upgrade:
                 StartUpgradeRound();
                 break;
+            case RoundType.Winner:
+                StartWinnerScene();
+                break;
         }
     }
     private void StartCombatRound()
@@ -76,6 +79,12 @@ public class GameManager : NetworkBehaviour
         if (!NetworkManager.IsServer) return;
 
         NetworkManager.Singleton.SceneManager.LoadScene("UpgradeRound", LoadSceneMode.Single);
+    }
+    private void StartWinnerScene()
+    {
+        if (!NetworkManager.IsServer) return;
+
+        NetworkManager.Singleton.SceneManager.LoadScene("WinnerScene", LoadSceneMode.Single);
     }
     public void CurrentRoundStarted()
     {
@@ -97,5 +106,6 @@ public enum RoundType
 {
     FirstCombat = 0,
     Combat = 1,
-    Upgrade = 2
+    Upgrade = 2,
+    Winner = 3
 }
