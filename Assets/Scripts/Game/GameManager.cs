@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : NetworkBehaviour
 {
     [SerializeField]
-    private int _goalCrowns = 3;
+    private int _goalCrowns;
 
     private NetworkList<int> _roundsList = new();
 
@@ -48,6 +48,19 @@ public class GameManager : NetworkBehaviour
     {
         if (!NetworkManager.IsServer) return;
 
+        bool isWin = false;
+
+        foreach (var PGD in PlayersGameData)
+        {
+            if (PGD.Crowns == _goalCrowns)
+            {
+                LoadWinnerScene();
+                isWin = true;
+            }
+        }
+
+        if (isWin) return;
+
         if (_currentRoundActive) return;
         RoundType currentType = (RoundType)_roundsList[_currentRoundListIndex];
         switch (currentType)
@@ -63,9 +76,6 @@ public class GameManager : NetworkBehaviour
             case RoundType.Upgrade:
                 StartUpgradeRound();
                 break;
-            case RoundType.Winner:
-                StartWinnerScene();
-                break;
         }
     }
     private void StartCombatRound()
@@ -80,7 +90,7 @@ public class GameManager : NetworkBehaviour
 
         NetworkManager.Singleton.SceneManager.LoadScene("UpgradeRound", LoadSceneMode.Single);
     }
-    private void StartWinnerScene()
+    private void LoadWinnerScene()
     {
         if (!NetworkManager.IsServer) return;
 
@@ -106,6 +116,5 @@ public enum RoundType
 {
     FirstCombat = 0,
     Combat = 1,
-    Upgrade = 2,
-    Winner = 3
+    Upgrade = 2
 }

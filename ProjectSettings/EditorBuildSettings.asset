@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/HostJoinMenu.unity
     guid: b1b631eb401ceef409b74d285983e0e7
+  - enabled: 1
+    path: Assets/Scenes/WinnerScene.unity
+    guid: 65cb98a943e48e94a818ea10fc617b9e
   m_configObjects: {}

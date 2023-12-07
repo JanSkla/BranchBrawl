@@ -538,6 +538,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6085639780039116383, guid: 4da654a0d2727a94ab4da0d7aca7494d, type: 3}
+      propertyPath: _onFullfilled.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 922455557}
+    - target: {fileID: 6085639780039116383, guid: 4da654a0d2727a94ab4da0d7aca7494d, type: 3}
+      propertyPath: _onFullfilled.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayAgain
+      objectReference: {fileID: 0}
     - target: {fileID: 8444483657981614956, guid: 4da654a0d2727a94ab4da0d7aca7494d, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 404704363
