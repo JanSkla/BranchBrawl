@@ -58,11 +58,11 @@ public class RoundManager : NetworkBehaviour
     }
     private void GameSetRunning()
     {
-        _inGameUI.UpdateGameScreen(false);
+        _inGameUI.Game.GetComponent<GameUI>().UpdateGameScreen(false);
     }
     private void OnGameOver()
     {
-        _inGameUI.UpdateGameScreen(true);
+        _inGameUI.Game.GetComponent<GameUI>().UpdateGameScreen(true);
 
         //add crown to round winner
 

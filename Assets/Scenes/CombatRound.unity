@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1099,13 +1099,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f92e27dd45d85c74b98e7675a8d7d1ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _game: {fileID: 1501683997}
+  Game: {fileID: 1501683997}
   _menu: {fileID: 34309884}
-  _running: {fileID: 197059485}
-  _over: {fileID: 1870289877}
-  _cursor: {fileID: 592667150}
-  _deathScreen: {fileID: 1821461749}
-  PlacementText: {fileID: 1544529371}
   _tab: {fileID: 1829903172}
   CurrentPlayer: {fileID: 0}
 --- !u!222 &579744231
@@ -2415,8 +2410,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1501683998}
+  - component: {fileID: 1501683999}
   m_Layer: 5
-  m_Name: Game
+  m_Name: GameUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2444,6 +2440,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1501683999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501683997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c43f0e336d53354439fbaa585f23449c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inGameUI: {fileID: 579744230}
+  _running: {fileID: 197059485}
+  _over: {fileID: 1870289877}
+  _cursor: {fileID: 592667150}
+  _deathScreen: {fileID: 1821461749}
+  PlacementText: {fileID: 1544529371}
 --- !u!1 &1544529369
 GameObject:
   m_ObjectHideFlags: 0

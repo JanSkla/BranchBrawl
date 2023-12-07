@@ -10,25 +10,9 @@ using UnityEngine.UI;
 public class InGameUI : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _game;
+    public GameObject Game;
     [SerializeField]
     private GameObject _menu;
-
-    //Game
-    [SerializeField]
-    private GameObject _running;
-    [SerializeField]
-    private GameObject _over;
-
-    //Running
-    [SerializeField]
-    private GameObject _cursor;
-    [SerializeField]
-    private GameObject _deathScreen;
-
-    //Over
-    [SerializeField]
-    public TextMeshProUGUI PlacementText;
 
     //Tab
     [SerializeField]
@@ -62,11 +46,6 @@ public class InGameUI : MonoBehaviour
         CurrentPlayer.GetComponent<LocalPlayer>().InGameUI = this;
     }
 
-    public void ChangeCursorColor(Color color)
-    {
-        _cursor.GetComponent<Image>().color = color;
-    }
-
     //menu control
     public void CloseMenu()
     {
@@ -75,13 +54,13 @@ public class InGameUI : MonoBehaviour
 
     private void SetMenu(bool visible)
     {
-        if (_running.activeSelf)
-        {
-            Cursor.lockState = visible ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = visible;
-        }
-        _game.SetActive(!visible);
+        Game.SetActive(!visible);
         _menu.SetActive(visible);
+        if (visible)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     public void Disconect()
@@ -90,19 +69,4 @@ public class InGameUI : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
-    public void DeathScreen(bool isAlive)
-    {
-        Cursor.lockState = !isAlive ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = !isAlive;
-        _deathScreen.SetActive(!isAlive);
-        _cursor.SetActive(isAlive);
-    }
-
-    public void UpdateGameScreen(bool isOver)
-    {
-        Cursor.lockState = isOver ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = isOver;
-        _running.SetActive(!isOver);
-        _over.SetActive(isOver);
-    }
 }
