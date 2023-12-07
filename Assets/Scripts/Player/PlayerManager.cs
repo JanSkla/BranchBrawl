@@ -29,8 +29,19 @@ public class PlayerManager : NetworkBehaviour
     public GameObject PlayerObject;
     private NetworkVariable<ulong> _playerObjectNwId = new();
 
+    private NetworkData _networkData;
+
     void Start()
     {
+        //add to playerData
+
+        _networkData = GameObject.Find("NetworkDataManager(Clone)").GetComponent<NetworkData>();
+
+        if (IsServer)
+        {
+            _networkData.PlayerObjectNwIds.Add(GetComponent<NetworkObject>().NetworkObjectId);
+        }
+
         //if (IsClient)
         //{
         //    PlayerObject = NetworkManager.SpawnManager.SpawnedObjects[_playerObjectNwId.Value].gameObject;
@@ -41,7 +52,17 @@ public class PlayerManager : NetworkBehaviour
         _playerObjectNwId.OnValueChanged += OnPlayerObjectNwIdChange;
         if (IsServer)
         {
-            PlayerName.Value = gamerTags[NetworkManager.LocalClientId % (ulong)gamerTags.Length] + NetworkManager.LocalClientId;
+            PlayerName.Value = gamerTags[Random.Range(0, gamerTags.Length)] + NetworkManager.LocalClientId;
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (IsServer && !IsLocalPlayer)
+        {
+            //remove from playerData
+            int index = _networkData.PlayerObjectNwIds.IndexOf(GetComponent<NetworkObject>().NetworkObjectId);
+            _networkData.PlayerObjectNwIds.RemoveAt(index);
         }
     }
 

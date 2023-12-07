@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Tab : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class Tab : MonoBehaviour
     private GameObject _tabRowPrefab;
 
     private GameManager _gameManager;
+
 
     void OnEnable()
     {
@@ -32,7 +34,7 @@ public class Tab : MonoBehaviour
         for (int i = 0; i < sortedList.Count; i++)
         {
             var data = sortedList[i];
-            var pm = NetworkManager.Singleton.ConnectedClients[data.ClientId].PlayerObject.GetComponent<PlayerManager>();
+            var pm = NetworkManager.Singleton.SpawnManager.SpawnedObjects[data.PMNwId].GetComponent<PlayerManager>();
             AddRow(pm.PlayerName.Value.ToString(), data.Crowns);
         }
     }

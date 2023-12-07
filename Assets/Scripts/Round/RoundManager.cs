@@ -71,12 +71,12 @@ public class RoundManager : NetworkBehaviour
         var enumerator = _gameManager.PlayersGameData.GetEnumerator();
         while (enumerator.MoveNext())
         {
-            Debug.Log(NetworkManager.Singleton.ConnectedClients[enumerator.Current.ClientId].PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>().IsAlive);
-            if (NetworkManager.Singleton.ConnectedClients[enumerator.Current.ClientId].PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>().IsAlive)
+            Debug.Log(NetworkManager.Singleton.SpawnManager.SpawnedObjects[enumerator.Current.PMNwId].GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>().IsAlive);
+            if (NetworkManager.Singleton.SpawnManager.SpawnedObjects[enumerator.Current.PMNwId].GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>().IsAlive)
             {
                 _gameManager.PlayersGameData.Add(new PlayerGameData()
                 {
-                    ClientId = enumerator.Current.ClientId,
+                    PMNwId = enumerator.Current.PMNwId,
                     Crowns = enumerator.Current.Crowns + 1,
                 });
                 _gameManager.PlayersGameData.Remove(enumerator.Current);

@@ -28,14 +28,13 @@ public class GameManager : NetworkBehaviour
     {
         if (!NetworkManager.IsServer) return;
 
-        var clientIds = NetworkManager.Singleton.ConnectedClientsIds;
+        var nwClients = NetworkManager.Singleton.ConnectedClients;
 
-        for (int i = 0; i < clientIds.Count; i++)
+        for (int i = 0; i < nwClients.Count; i++)
         {
-            Debug.Log(clientIds[i]);
             PlayersGameData.Add(new PlayerGameData()
             {
-                ClientId = clientIds[i],
+                PMNwId = nwClients[(ulong)i].PlayerObject.GetComponent<NetworkObject>().NetworkObjectId,
                 Crowns = 0
             });
         }
