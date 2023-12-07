@@ -29,10 +29,6 @@ public class MPLobby : NetworkBehaviour
             clientView.SetActive(true);
         }
         var nwDM = GameObject.Find("NetworkDataManager(Clone)");
-        Debug.Log(nwDM);
-        Debug.Log(nwDM.GetComponent<NetworkData>());
-        Debug.Log(nwDM.GetComponent<NetworkData>().JoinCode);
-        Debug.Log(nwDM.GetComponent<NetworkData>().JoinCode.Value);
         _joinCodeDisplay.text = nwDM.GetComponent<NetworkData>().JoinCode.Value.ToString();
     }
     public void StartGame()
