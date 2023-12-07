@@ -5,19 +5,18 @@ using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class NetworkSuccessBtn : NetworkBehaviour
 {
-    public Action Fulfilled;
-
     [SerializeField]
     private TextMeshProUGUI text;
 
     [SerializeField]
-    private RoundManager roundManager;
+    private string prefixTextValue;
 
     [SerializeField]
-    private string prefixTextValue;
+    private UnityEvent _onFullfilled;
 
     private int _playerCount;
     private bool _isReady = false;
@@ -35,7 +34,6 @@ public class NetworkSuccessBtn : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         _readyCount.OnValueChanged += OnReadyCountChange;
-        roundManager.GameOver += OnGameOver;
 
 
         if (NetworkManager.IsServer || NetworkManager.IsHost)
@@ -51,11 +49,6 @@ public class NetworkSuccessBtn : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         _readyCount.OnValueChanged -= OnReadyCountChange;
-    }
-
-    private void OnGameOver()
-    {
-        Fulfilled += roundManager.PlayAgain;
     }
 
     public void OnButtonPress()
@@ -91,8 +84,13 @@ public class NetworkSuccessBtn : NetworkBehaviour
         UpdateText(newCount);
         if (NetworkManager.IsServer && newCount == _playerCount)
         {
-            Fulfilled.Invoke();
+            Fullfilled();
         }
+    }
+
+    private void Fullfilled()
+    {
+        _onFullfilled.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]

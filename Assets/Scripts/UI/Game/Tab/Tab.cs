@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Tab : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class Tab : MonoBehaviour
     private GameObject _tabRowPrefab;
 
     private GameManager _gameManager;
+
 
     void OnEnable()
     {
