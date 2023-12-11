@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WinnerSceneManager : MonoBehaviour
 {
@@ -54,5 +55,9 @@ public class WinnerSceneManager : MonoBehaviour
     public void StarNewGame()
     {
         _networkData.StartNewGame();
+    }
+    public void GoToLobby()
+    {
+        NetworkManager.Singleton.SceneManager.LoadScene("MultiplayerLobby", LoadSceneMode.Single);
     }
 }
