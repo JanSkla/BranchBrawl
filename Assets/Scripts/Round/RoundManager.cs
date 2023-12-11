@@ -103,6 +103,12 @@ public class RoundManager : NetworkBehaviour
         PlayAgain();
         yield return null;
     }
+
+    [ClientRpc]
+    private void StartNewRoundCountdownClientRpc()
+    {
+        StartNewRoundCountdown();
+    }
     private void StartGame()
     {
         if (NetworkManager.IsServer || NetworkManager.IsHost)
