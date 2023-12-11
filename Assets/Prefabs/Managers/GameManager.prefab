@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce11eae100ccad64b99fa6a4ba3337cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playAgainBtn: {fileID: 0}
+  _goalCrowns: 1
 --- !u!114 &657205337311461514
 MonoBehaviour:
   m_ObjectHideFlags: 0

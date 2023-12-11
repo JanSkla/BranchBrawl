@@ -33,7 +33,7 @@ public class Player : NetworkBehaviour
             if (IsLocalPlayer)
             {
                 if(GetComponent<LocalPlayer>().InGameUI != null)
-                    GetComponent<LocalPlayer>().InGameUI.DeathScreen(_isAlive);
+                    GetComponent<LocalPlayer>().InGameUI.Game.GetComponent<GameUI>().DeathScreen(_isAlive);
             }
         }
     }
@@ -87,7 +87,7 @@ public class Player : NetworkBehaviour
 
             if (IsLocalPlayer)
             {
-                GameObject.Find("InGameUI").GetComponent<InGameUI>().PlacementText.text = placement.ToString();
+                GameObject.Find("InGameUI").GetComponent<InGameUI>().Game.GetComponent<GameUI>().PlacementText.text = placement.ToString();
             }
         }
         GetComponent<Renderer>().material.color = Color.red;

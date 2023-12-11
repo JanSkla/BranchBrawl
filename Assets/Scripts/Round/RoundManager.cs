@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -58,11 +59,11 @@ public class RoundManager : NetworkBehaviour
     }
     private void GameSetRunning()
     {
-        _inGameUI.UpdateGameScreen(false);
+        _inGameUI.Game.GetComponent<GameUI>().UpdateGameScreen(false);
     }
     private void OnGameOver()
     {
-        _inGameUI.UpdateGameScreen(true);
+        _inGameUI.Game.GetComponent<GameUI>().UpdateGameScreen(true);
 
         //add crown to round winner
 
@@ -84,6 +85,23 @@ public class RoundManager : NetworkBehaviour
             }
         }
         //~
+
+        StartCoroutine(nameof(StartNewRoundCountdown));
+    }
+    IEnumerator StartNewRoundCountdown()
+    {
+        var cTxt = _inGameUI.Game.GetComponent<GameUI>().CountDownText;
+
+        int time = 5;
+
+        for (int i = 0; i < time; i++)
+        {
+            cTxt.text = (time - i).ToString();
+            yield return new WaitForSeconds(1);
+        }
+        cTxt.text = (time - 0).ToString();
+        PlayAgain();
+        yield return null;
     }
     private void StartGame()
     {

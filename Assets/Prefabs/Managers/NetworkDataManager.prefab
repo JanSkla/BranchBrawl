@@ -80,6 +80,7 @@ MonoBehaviour:
         byte0027: 0
         byte0028: 0
         byte0029: 0
+  _gameManagerPrefab: {fileID: 7270065971641108665, guid: 92cac0153daffa5428fc771784720af5, type: 3}
 --- !u!114 &-7493315971237157800
 MonoBehaviour:
   m_ObjectHideFlags: 0

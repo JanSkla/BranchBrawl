@@ -16,6 +16,7 @@ public class Tab : MonoBehaviour
 
     void OnEnable()
     {
+        Debug.Log("sda");
         _gameManager = GameObject.Find("GameManager(Clone)").GetComponent<GameManager>();
         foreach (Transform child in _tabContainer.transform)
         {
@@ -24,19 +25,21 @@ public class Tab : MonoBehaviour
 
         List<PlayerGameData> sortedList = new();
 
+        Debug.Log("sda");
         foreach (var data in _gameManager.PlayersGameData)
         {
             sortedList.Add(data);
         }
 
         sortedList = sortedList.OrderBy(o => o.Crowns).Reverse().ToList();
-
+        Debug.Log("sda");
         for (int i = 0; i < sortedList.Count; i++)
         {
             var data = sortedList[i];
             var pm = NetworkManager.Singleton.SpawnManager.SpawnedObjects[data.PMNwId].GetComponent<PlayerManager>();
             AddRow(pm.PlayerName.Value.ToString(), data.Crowns);
         }
+        Debug.Log("sda");
     }
 
     private void AddRow(string name, int crowns)

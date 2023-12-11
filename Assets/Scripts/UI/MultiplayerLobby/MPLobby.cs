@@ -13,9 +13,9 @@ public class MPLobby : NetworkBehaviour
     [SerializeField]
     private GameObject clientView;
     [SerializeField]
-    private GameObject gameManager;
-    [SerializeField]
     private TextMeshProUGUI _joinCodeDisplay;
+
+    private GameObject _networkDataManager;
     void Start()
     {
         if (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
@@ -28,16 +28,12 @@ public class MPLobby : NetworkBehaviour
             hostView.SetActive(false);
             clientView.SetActive(true);
         }
-        var nwDM = GameObject.Find("NetworkDataManager(Clone)");
-        Debug.Log(nwDM);
-        Debug.Log(nwDM.GetComponent<NetworkData>());
-        Debug.Log(nwDM.GetComponent<NetworkData>().JoinCode);
-        Debug.Log(nwDM.GetComponent<NetworkData>().JoinCode.Value);
-        _joinCodeDisplay.text = nwDM.GetComponent<NetworkData>().JoinCode.Value.ToString();
+        _networkDataManager = GameObject.Find("NetworkDataManager(Clone)");
+        _joinCodeDisplay.text = _networkDataManager.GetComponent<NetworkData>().JoinCode.Value.ToString();
     }
     public void StartGame()
     {
-        GameObject gminstance =  Instantiate(gameManager);
+        _networkDataManager.GetComponent<NetworkData>().StartNewGame();
         //gminstance.GetComponent<GameManager>().StartGame();
     }
     public void GoBack()
