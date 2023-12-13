@@ -6,8 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
-    [SerializeField]
-    private int _goalCrowns;
+    private int _goalCrowns = 3;
 
     private NetworkList<int> _roundsList = new();
 
@@ -39,8 +38,9 @@ public class GameManager : NetworkBehaviour
             });
         }
 
+        _roundsList.Add((int)RoundType.Upgrade);
         _roundsList.Add((int)RoundType.FirstCombat);
-        //_roundsList.Add((int)RoundType.Upgrade);
+        _roundsList.Add((int)RoundType.Upgrade);
         _roundsList.Add((int)RoundType.Combat);
         StartCurrentRound();
     }
@@ -70,7 +70,7 @@ public class GameManager : NetworkBehaviour
                 break;
             case RoundType.Combat:
                 StartCombatRound();
-                //_roundsList.Add((int)RoundType.Upgrade);
+                _roundsList.Add((int)RoundType.Upgrade);
                 _roundsList.Add((int)RoundType.Combat);
                 break;
             case RoundType.Upgrade:

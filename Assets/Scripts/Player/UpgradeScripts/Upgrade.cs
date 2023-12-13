@@ -2,25 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Upgrade : IUpgrade
+public abstract class Upgrade
 {
+    public int Id;
+    public string Description;
 
-    private string _name;
-    public string Name
+    public Upgrade(int id, string description)
     {
-        get { return _name; }
-        set { _name = Name; }
+        Id = id;
+        Description = description;
     }
-    public Upgrade(string name)
-    {
-        Name = name;
-    }
-    public void OnAdd()
-    {
-
-    }
-    public void OnDelete()
-    {
-
-    }
+    public abstract void OnAdd();
+    public abstract void OnDelete();
 }
