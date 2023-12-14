@@ -5,7 +5,7 @@ using UnityEngine;
 public class EmptyUpgrade : Upgrade
 {
     public EmptyUpgrade(int id) : base(id, "Empty idk neco") { }
-    public override void OnAdd()
+    public override void OnAdd(PlayerManager player)
     {
         Debug.Log("Empty upgrade added");
     }

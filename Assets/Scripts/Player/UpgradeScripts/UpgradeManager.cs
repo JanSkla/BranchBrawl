@@ -27,5 +27,6 @@ public class UpgradeManager : MonoBehaviour
     public void AddUpgrade(Upgrade upgrade)
     {
         upgrades.Add(upgrade);
+        upgrade.OnAdd(GetComponent<PlayerManager>());
     }
 }

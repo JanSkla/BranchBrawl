@@ -22,7 +22,6 @@ public class UpgradeSceneManager : MonoBehaviour
         {
             var newUpgrade = UpgradeManager.GetRandomUpgrade();
 
-
             var newCard = Instantiate(_upgradeCardprefab);
             newCard.transform.SetParent(_upgradesContainer.transform);
             newCard.GetComponent<Button>().onClick.AddListener(() => UpgradeSelected(newUpgrade.Id));
