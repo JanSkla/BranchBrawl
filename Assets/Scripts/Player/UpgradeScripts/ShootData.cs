@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IHasDestiny
+public class ShootData
 {
-    public IHasSource[] Destiny { get; set; }
+    public int Amount;
 }

@@ -6,6 +6,6 @@ public class G2Splitter : GSplitter
 {
     public G2Splitter()
     {
-        Destiny = new IHasSource[2];
+        Destiny = new GPart[2];
     }
 }

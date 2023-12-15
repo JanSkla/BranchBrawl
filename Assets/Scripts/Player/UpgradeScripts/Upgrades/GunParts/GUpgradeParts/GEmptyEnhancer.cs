@@ -6,10 +6,10 @@ public class GEmptyEnhancer : GEnhancer
 {
     public GEmptyEnhancer()
     {
-        Destiny = new IHasSource[1];
+        Destiny = new GPart[1];
     }
-    public new void Shoot(int amount)
+    public new void Shoot(ShootData shot)
     {
-        Destiny[0].Shoot(amount);
+        Destiny[0].Shoot(shot);
     }
 }

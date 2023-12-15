@@ -2,23 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GEnhancer : GUpgrade, IHasDestiny, IHasSource
+public abstract class GEnhancer : GUpgrade
 {
-    private IHasSource[] _destiny;
-    public IHasSource[] Destiny
+    public new void Shoot(ShootData shot)
     {
-        get { return _destiny; }
-        set { _destiny = value; }
+        Destiny[0].Shoot(shot);
     }
-
-    private IHasDestiny _source;
-    public IHasDestiny Source
+    public int EnhanceScript(int amount)
     {
-        get { return _source; }
-        set { _source = value; }
-    }
-    public void Shoot(int amount)
-    {
-        Destiny[0].Shoot(amount);
+        return amount;
     }
 }

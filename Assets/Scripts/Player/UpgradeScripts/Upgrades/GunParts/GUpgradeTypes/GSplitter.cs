@@ -2,26 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GSplitter : GUpgrade, IHasDestiny, IHasSource
+public abstract class GSplitter : GUpgrade
 {
-    private IHasSource[] _destiny;
-    public IHasSource[] Destiny
-    {
-        get { return _destiny; }
-        set { _destiny = value; }
-    }
-
-    private IHasDestiny _source;
-    public IHasDestiny Source
-    {
-        get { return _source; }
-        set { _source = value; }
-    }
-    public void Shoot(int amount)
+    public new void Shoot(ShootData shot)
     {
         foreach (var dest in Destiny)
         {
-            dest.Shoot(amount);
+            dest.Shoot(shot);
         }
     }
 }

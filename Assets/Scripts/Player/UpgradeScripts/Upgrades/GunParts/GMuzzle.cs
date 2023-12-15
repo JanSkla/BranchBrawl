@@ -2,15 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GMuzzle : MonoBehaviour, IHasSource
+public class GMuzzle : GPart
 {
-    private IHasDestiny _source;
-    public IHasDestiny Source
-    {
-        get { return _source; }
-        set { _source = value; }
-    }
-    public void Shoot(int amount)
+    public new void Shoot(ShootData shot)
     {
         Debug.Log("Shoots successfully");
     }
