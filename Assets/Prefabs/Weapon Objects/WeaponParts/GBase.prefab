@@ -151,7 +151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9eedcebd692f6d47a19ca626831e6f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destiny: {fileID: 0}
+  destiny:
+    position: {fileID: 3469885983056083880}
+    Part: {fileID: 0}
 --- !u!1001 &315050225388818350
 PrefabInstance:
   m_ObjectHideFlags: 0

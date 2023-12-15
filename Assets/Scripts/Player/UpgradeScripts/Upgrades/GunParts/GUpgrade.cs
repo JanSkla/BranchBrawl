@@ -5,8 +5,8 @@ using UnityEngine;
 public abstract class GUpgrade : GPart
 {
     [SerializeField]
-    private GPart[] _destiny;
-    public GPart[] Destiny
+    private GDestiny[] _destiny;
+    public GDestiny[] Destiny
     {
         get { return _destiny; }
         set { _destiny = value; }

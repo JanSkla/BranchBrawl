@@ -8,7 +8,7 @@ public abstract class GSplitter : GUpgrade
     {
         foreach (var dest in Destiny)
         {
-            dest.Shoot(shot);
+            dest.Part.Shoot(shot);
         }
     }
 }

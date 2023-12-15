@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class GBase : MonoBehaviour
 {
-    public GPart destiny;
+    public GDestiny destiny;
     public void Shoot(ShootData shot)
     {
-        destiny.Shoot(shot);
+        destiny.Part.Shoot(shot);
     }
 }
