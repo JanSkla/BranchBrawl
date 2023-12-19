@@ -7,7 +7,9 @@ using UnityEngine.UI;
 public class UpgradeSceneManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _upgradesContainer;
+    private GameObject _upgradeSelect;
+    [SerializeField]
+    private GameObject _gunBuilder;
 
     [SerializeField]
     private GameObject _upgradeCardprefab;
@@ -18,12 +20,15 @@ public class UpgradeSceneManager : MonoBehaviour
 
     void Start()
     {
+        _upgradeSelect.SetActive(true);
+        _gunBuilder.SetActive(false);
+
         for (int i = 0; i < _selectCount; i++)
         {
             var newUpgrade = UpgradeManager.GetRandomUpgrade();
 
             var newCard = Instantiate(_upgradeCardprefab);
-            newCard.transform.SetParent(_upgradesContainer.transform);
+            newCard.transform.SetParent(_upgradeSelect.transform);
             newCard.GetComponent<Button>().onClick.AddListener(() => UpgradeSelected(newUpgrade.Id));
 
             var newOption = new UpgradeOption(newCard, newUpgrade.Id);
@@ -37,7 +42,8 @@ public class UpgradeSceneManager : MonoBehaviour
         Debug.Log("Selected" + upgrade.Id + ":" + id);
         NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<UpgradeManager>().AddUpgrade(upgrade);
 
-        _upgradesContainer.SetActive(false);
+        _upgradeSelect.SetActive(false);
+        _gunBuilder.SetActive(true);
     }
 
     private struct UpgradeOption

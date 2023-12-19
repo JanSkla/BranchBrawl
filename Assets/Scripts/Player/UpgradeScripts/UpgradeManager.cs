@@ -6,11 +6,9 @@ public class UpgradeManager : MonoBehaviour
 {
     private List<Upgrade> upgrades = new();
 
-    private List<Upgrade> gunUpgrades = new();
-
     private static List<Upgrade> upgradeTypes = new() {
-        new UpgradeEmpty(1),
-        new UpgradeEmpty(2)
+        new UpgradeG2Splitter(1),
+        new UpgradeG2Splitter(2),
     };
 
     public static Upgrade GetUpgradeById(int id)

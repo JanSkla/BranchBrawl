@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class GUpgradeData
 {
-    public GUpgrade PartPrefab;
+    public int UpgradeId;
+    public string PrefabResource;
     public int TotalCount;
-    public int UnusedCount;
+    public int UsedCount;
 }

@@ -32,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-838188364911126295
 MonoBehaviour:
@@ -83,6 +83,8 @@ MonoBehaviour:
         byte0029: 0
   playerPrefab: {fileID: 3264913644830457048, guid: 4d7c0cb3e4baffc499f6f40933d5e57b, type: 3}
   PlayerObject: {fileID: 0}
+  playerGunManagerPrefab: {fileID: 1113968305058667033, guid: 3b37863c59422484787273b623d39003, type: 3}
+  PlayerGunManager: {fileID: 0}
 --- !u!114 &3303988004564933755
 MonoBehaviour:
   m_ObjectHideFlags: 0

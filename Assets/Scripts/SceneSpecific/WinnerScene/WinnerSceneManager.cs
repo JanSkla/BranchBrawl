@@ -54,6 +54,7 @@ public class WinnerSceneManager : MonoBehaviour
     // Start is called before the first frame update
     public void StarNewGame()
     {
+        _gameManager.NewGameCleanup();
         _networkData.StartNewGame();
     }
     public void GoToLobby()
