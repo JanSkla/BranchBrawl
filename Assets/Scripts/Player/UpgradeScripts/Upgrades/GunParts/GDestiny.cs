@@ -4,6 +4,6 @@ using UnityEngine;
 [Serializable]
 public class GDestiny
 {
-    public Transform position;
+    public Transform Position;
     public GPart Part;
 }
