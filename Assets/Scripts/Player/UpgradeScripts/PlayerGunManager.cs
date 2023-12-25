@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerGunManager : NetworkBehaviour
 {
+    private static string _muzzlePrefab = "Prefabs/GunParts/GMuzzle";
     private readonly List<GUpgradeData> _gUpgradeInv = new();
 
     private GunBaseSaveData _gunCurrentData;
@@ -51,19 +54,35 @@ public class PlayerGunManager : NetworkBehaviour
     public class GunBaseSaveData
     {
         private GBase _prefab;
-        private GunBaseChildData _childPrefabs;
+        private GunBaseChildData _childPrefab;
         public GunBaseSaveData(GBase thisPrefab)
         {
             _prefab = thisPrefab;
 
             if (thisPrefab.Destiny.Part.GetType() != typeof(GUpgrade)) return;
 
-            _childPrefabs = new GunBaseChildData(thisPrefab.Destiny.Part as GUpgrade);
+            _childPrefab = new GunBaseChildData(thisPrefab.Destiny.Part as GUpgrade);
         }
 
-        public void Spawn(GPart parent)
+        public GBase Spawn()
         {
-            Instantiate(_prefab);
+
+            var gSource = Instantiate(_prefab);
+
+            if (!_childPrefab.IsUnityNull())
+            {
+                _childPrefab.Spawn(gSource);
+            }
+            else
+            {
+                var gMuzzleprefab = Resources.Load(_muzzlePrefab) as GMuzzle;
+                var gMuzzle = Instantiate(gMuzzleprefab);
+                gMuzzle.transform.SetParent(gSource.transform);
+
+                gSource.Destiny.Part = gMuzzle;
+            }
+
+            return gSource;
         }
     }
     public class GunBaseChildData
@@ -85,7 +104,45 @@ public class PlayerGunManager : NetworkBehaviour
 
         public void Spawn(GPart parent)
         {
-            Instantiate(_prefab);
+            for (int i = 0; i < _childPrefabs.Length; i++)
+            {
+                var gSource = Instantiate(_prefab);
+
+                if (!_childPrefabs[i].IsUnityNull())
+                {
+                    _childPrefabs[i].Spawn(gSource);
+                }
+                else
+                {
+                    var gMuzzleprefab = Resources.Load(_muzzlePrefab) as GMuzzle;
+                    var gMuzzle = Instantiate(gMuzzleprefab);
+                    gMuzzle.transform.SetParent(gSource.transform);
+
+                    gSource.Destiny[i].Part = gMuzzle;
+                }
+
+                gSource.transform.SetParent(parent.transform);
+            }
+            //foreach (var childPrefab in _childPrefabs)
+            //{
+            //    var gSource = Instantiate(_prefab);
+
+            //    if (!childPrefab.IsUnityNull())
+            //    {
+            //        childPrefab.Spawn(gSource);
+            //    }
+            //    else
+            //    {
+            //        var gMuzzleprefab = Resources.Load(_muzzlePrefab) as GMuzzle;
+            //        var gMuzzle = Instantiate(gMuzzleprefab);
+            //        gMuzzle.transform.SetParent(gSource.transform);
+
+            //        gSource.Destiny[1].Part = gMuzzle;
+            //    }
+
+            //    gSource.transform.SetParent(parent.transform);
+            //    childPrefab.Spawn(gSource);
+            //}
         }
     }
 }
