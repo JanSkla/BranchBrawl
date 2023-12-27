@@ -66,8 +66,6 @@ public class PlayerGunManager : NetworkBehaviour
         //Save from gBase gameobject
         public GunBaseSaveData(GBase gBase)
         {
-            Debug.Log("GBase save");
-            Debug.Log(gBase.Destiny.Part.GetType());
             if (!gBase.Destiny.Part.GetType().IsSubclassOf(typeof(GUpgrade))) return;
 
             _childPrefab = new GunBaseChildData(gBase.Destiny.Part as GUpgrade);
@@ -99,7 +97,6 @@ public class PlayerGunManager : NetworkBehaviour
         private GunBaseChildData[] _childPrefabs;
         public GunBaseChildData(GUpgrade gUpgrade)
         {
-            Debug.Log("GUpgrade save");
             _upgradeId = gUpgrade.UpgradeId;
             _childPrefabs = new GunBaseChildData[gUpgrade.Destiny.Length];
 
@@ -113,8 +110,6 @@ public class PlayerGunManager : NetworkBehaviour
 
         public GPart Spawn(Transform parentTransfrom)
         {
-            Debug.Log(_upgradeId);
-            Debug.Log(UpgradeManager.GetUpgradeById(_upgradeId));
             GUpgrade gUpgrade = (UpgradeManager.GetUpgradeById(_upgradeId) as UpgradeWithPart).InstantiatePrefab().GetComponent<GUpgrade>();
             gUpgrade.transform.SetParent(parentTransfrom, false);
 
