@@ -59,7 +59,7 @@ public class PlayerGunManager : NetworkBehaviour
             Debug.Log("prefabResource does not exist in the list");
         }
     }
-    public class GunBaseSaveData
+    public class GunBaseSaveData : INetworkSerializable
     {
         private GunBaseChildData _childPrefab;
 
@@ -80,6 +80,53 @@ public class PlayerGunManager : NetworkBehaviour
 
             return gBase;
         }
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            if (serializer.IsReader)
+            {
+                var reader = serializer.GetFastBufferReader();
+                reader.ReadValueSafe(out string serializeText);
+
+                //from string to GBSD
+                ParseText(serializeText);
+                //~
+            }
+            else
+            {
+                //to string, fomrat: "1{101{1{11}11{111,11111},1}"
+                string serializeText = ParseToText(_childPrefab);
+                //~
+
+                var writer = serializer.GetFastBufferWriter();
+                writer.WriteValueSafe(serializeText);
+            }
+        }
+
+        public static GunBaseSaveData ParseText(string text)
+        {
+            return new GunBaseSaveData();
+        }
+
+        public static string ParseToText(GunBaseChildData gbcd)
+        {
+            string output = "";
+
+            RecursiveAssingText(gbcd);
+
+            return output;
+
+            void RecursiveAssingText(GunBaseChildData gbcdInner)
+            {
+                output += gbcd.UpgradeId.ToString();
+                foreach (var cp in gbcdInner.ChildPrefabs)
+                {
+                    output += "{";
+                    RecursiveAssingText(gbcdInner);
+                    output += "}";
+                }
+                output += ",";
+            }
+        }
 
         //testing purposes
 
@@ -91,61 +138,40 @@ public class PlayerGunManager : NetworkBehaviour
         public GunBaseSaveData() { }
     }
 
-    public class GunBaseChildData //TADY NECO TODO
+    public class GunBaseChildData
     {
-        private int _upgradeId;
-        private GunBaseChildData[] _childPrefabs;
+        public int UpgradeId;
+        public GunBaseChildData[] ChildPrefabs;
         public GunBaseChildData(GUpgrade gUpgrade)
         {
-            _upgradeId = gUpgrade.UpgradeId;
-            _childPrefabs = new GunBaseChildData[gUpgrade.Destiny.Length];
+            UpgradeId = gUpgrade.UpgradeId;
+            ChildPrefabs = new GunBaseChildData[gUpgrade.Destiny.Length];
 
             for (int i = 0; i < gUpgrade.Destiny.Length; i++)
             {
                 if (!gUpgrade.Destiny[i].Part.GetType().IsSubclassOf(typeof(GUpgrade))) return;
 
-                _childPrefabs[i] = new GunBaseChildData(gUpgrade.Destiny[i].Part as GUpgrade);
+                ChildPrefabs[i] = new GunBaseChildData(gUpgrade.Destiny[i].Part as GUpgrade);
             }
         }
 
         public GPart Spawn(Transform parentTransfrom)
         {
-            GUpgrade gUpgrade = (UpgradeManager.GetUpgradeById(_upgradeId) as UpgradeWithPart).InstantiatePrefab().GetComponent<GUpgrade>();
+            GUpgrade gUpgrade = (UpgradeManager.GetUpgradeById(UpgradeId) as UpgradeWithPart).InstantiatePrefab().GetComponent<GUpgrade>();
             gUpgrade.transform.SetParent(parentTransfrom, false);
 
-            for (int i = 0; i < _childPrefabs.Length; i++)
+            for (int i = 0; i < ChildPrefabs.Length; i++)
             {
-                GBDSpawnShared(_childPrefabs[i], gUpgrade.Destiny[i]);
+                GBDSpawnShared(ChildPrefabs[i], gUpgrade.Destiny[i]);
             }
             return gUpgrade;
-            //foreach (var childPrefab in _childPrefabs)
-            //{
-            //    var gSource = Instantiate(_prefab);
-
-            //    if (!childPrefab.IsUnityNull())
-            //    {
-            //        childPrefab.Spawn(gSource);
-            //    }
-            //    else
-            //    {
-            //        var gMuzzleprefab = Resources.Load(_muzzlePrefab) as GMuzzle;
-            //        var gMuzzle = Instantiate(gMuzzleprefab);
-            //        gMuzzle.transform.SetParent(gSource.transform);
-
-            //        gSource.Destiny[1].Part = gMuzzle;
-            //    }
-
-            //    gSource.transform.SetParent(parent.transform);
-            //    childPrefab.Spawn(gSource);
-            //}
         }
-
         //testing purposes
 
-        public GunBaseChildData(int UpgradeId, GunBaseChildData[] chPrefab)
+        public GunBaseChildData(int upgradeId, GunBaseChildData[] chPrefab)
         {
-            _upgradeId = UpgradeId;
-            _childPrefabs = chPrefab;
+            UpgradeId = upgradeId;
+            ChildPrefabs = chPrefab;
         }
     }
 
