@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class UpgradeWithPart : Upgrade
 {
-    public string UpgradePrefabResource;
+    private string _upgradePrefabResource;
 
     public UpgradeWithPart(int id, string upgradePrefabResource, string descripotion) : base(id, descripotion)
     {
-        UpgradePrefabResource = upgradePrefabResource;
+        _upgradePrefabResource = upgradePrefabResource;
     }
     public override void OnAdd(PlayerManager pm)
     {
@@ -22,7 +22,7 @@ public class UpgradeWithPart : Upgrade
     }
     public GameObject InstantiatePrefab()
     {
-        var prefab = Resources.Load(UpgradePrefabResource) as GameObject;
+        var prefab = Resources.Load(_upgradePrefabResource) as GameObject;
         var instance = Object.Instantiate(prefab);
         instance.GetComponent<GUpgrade>().UpgradeId = Id;
         return instance;

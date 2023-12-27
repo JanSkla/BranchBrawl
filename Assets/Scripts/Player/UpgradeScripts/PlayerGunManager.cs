@@ -38,7 +38,6 @@ public class PlayerGunManager : NetworkBehaviour
             _gUpgradeInv.Add(new GUpgradeData()
             {
                 UpgradeId = uwp.Id,
-                PrefabResource = uwp.UpgradePrefabResource,
                 TotalCount = 1,
                 UsedCount = 0
             });
@@ -63,9 +62,13 @@ public class PlayerGunManager : NetworkBehaviour
     public class GunBaseSaveData
     {
         private GunBaseChildData _childPrefab;
+
+        //Save from gBase gameobject
         public GunBaseSaveData(GBase gBase)
         {
-            if (gBase.Destiny.Part.GetType() != typeof(GUpgrade)) return;
+            Debug.Log("GBase save");
+            Debug.Log(gBase.Destiny.Part.GetType());
+            if (!gBase.Destiny.Part.GetType().IsSubclassOf(typeof(GUpgrade))) return;
 
             _childPrefab = new GunBaseChildData(gBase.Destiny.Part as GUpgrade);
         }
@@ -86,9 +89,8 @@ public class PlayerGunManager : NetworkBehaviour
         {
             _childPrefab = chPrefab;
         }
-        public GunBaseSaveData()
-        {
-        }
+        //Has no upgrades
+        public GunBaseSaveData() { }
     }
 
     public class GunBaseChildData //TADY NECO TODO
@@ -97,12 +99,13 @@ public class PlayerGunManager : NetworkBehaviour
         private GunBaseChildData[] _childPrefabs;
         public GunBaseChildData(GUpgrade gUpgrade)
         {
+            Debug.Log("GUpgrade save");
             _upgradeId = gUpgrade.UpgradeId;
             _childPrefabs = new GunBaseChildData[gUpgrade.Destiny.Length];
 
             for (int i = 0; i < gUpgrade.Destiny.Length; i++)
             {
-                if (gUpgrade.Destiny[i].Part.GetType() != typeof(GUpgrade)) return;
+                if (!gUpgrade.Destiny[i].Part.GetType().IsSubclassOf(typeof(GUpgrade))) return;
 
                 _childPrefabs[i] = new GunBaseChildData(gUpgrade.Destiny[i].Part as GUpgrade);
             }
@@ -110,7 +113,9 @@ public class PlayerGunManager : NetworkBehaviour
 
         public GPart Spawn(Transform parentTransfrom)
         {
-            GUpgrade gUpgrade = Instantiate(Resources.Load((UpgradeManager.GetUpgradeById(_upgradeId) as UpgradeWithPart).UpgradePrefabResource)).GetComponent<GUpgrade>();
+            Debug.Log(_upgradeId);
+            Debug.Log(UpgradeManager.GetUpgradeById(_upgradeId));
+            GUpgrade gUpgrade = (UpgradeManager.GetUpgradeById(_upgradeId) as UpgradeWithPart).InstantiatePrefab().GetComponent<GUpgrade>();
             gUpgrade.transform.SetParent(parentTransfrom, false);
 
             for (int i = 0; i < _childPrefabs.Length; i++)
