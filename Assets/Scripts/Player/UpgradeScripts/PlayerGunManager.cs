@@ -29,7 +29,7 @@ public class PlayerGunManager : NetworkBehaviour
     public void AddGUpgrade(UpgradeWithPart uwp)
     {
         var findSimiliar = _gUpgradeInv.Find(e => e.UpgradeId == uwp.Id);
-        if(findSimiliar != null)
+        if (findSimiliar != null)
         {
             findSimiliar.TotalCount++;
         }
@@ -160,13 +160,13 @@ public class PlayerGunManager : NetworkBehaviour
     }
     private static void GBDSpawnShared(GunBaseChildData childData, GDestiny desitny)
     {
-            if (!childData.IsUnityNull())
-            {
+        if (!childData.IsUnityNull())
+        {
             desitny.Part = childData.Spawn(desitny.Position);
-            }
-            else
-            {
-                GBDInstantiateOnDestiny(desitny);
-            }
+        }
+        else
+        {
+            GBDInstantiateOnDestiny(desitny);
+        }
     }
 }
