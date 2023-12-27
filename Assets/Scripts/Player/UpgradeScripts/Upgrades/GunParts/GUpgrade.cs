@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class GUpgrade : GPart
 {
+    public int UpgradeId;
     [SerializeField]
     private GDestiny[] _destiny;
     public GDestiny[] Destiny

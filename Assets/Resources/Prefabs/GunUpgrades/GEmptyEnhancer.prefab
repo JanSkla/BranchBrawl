@@ -46,8 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e58fb54e031605040989626424ac93f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UpgradeId: 0
   _destiny:
-  - position: {fileID: 1891467019319968700}
+  - Position: {fileID: 1891467019319968700}
     Part: {fileID: 0}
 --- !u!1001 &3334666294018455482
 PrefabInstance:

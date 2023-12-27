@@ -8,9 +8,18 @@ using UnityEngine;
 public class PlayerGunManager : NetworkBehaviour
 {
     private static string _muzzlePrefab = "Prefabs/GunParts/GMuzzle";
+    private static string _basePrefab = "Prefabs/GunParts/GBase";
+
+
     private readonly List<GUpgradeData> _gUpgradeInv = new();
 
-    private GunBaseSaveData _gunCurrentData;
+    //private GunBaseSaveData _gunCurrentData;
+    //public GunBaseSaveData GunCurrentData = new GunBaseSaveData();
+    //public GunBaseSaveData GunCurrentData = new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[2]));
+    public GunBaseSaveData GunCurrentData = new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[]{
+        new GunBaseChildData(1, new GunBaseChildData[2]),
+        new GunBaseChildData(1, new GunBaseChildData[2])
+    }));
 
     public IEnumerable<GUpgradeData> GUpgradeInv
     {
@@ -53,76 +62,62 @@ public class PlayerGunManager : NetworkBehaviour
     }
     public class GunBaseSaveData
     {
-        private GBase _prefab;
         private GunBaseChildData _childPrefab;
-        public GunBaseSaveData(GBase thisPrefab)
+        public GunBaseSaveData(GBase gBase)
         {
-            _prefab = thisPrefab;
+            if (gBase.Destiny.Part.GetType() != typeof(GUpgrade)) return;
 
-            if (thisPrefab.Destiny.Part.GetType() != typeof(GUpgrade)) return;
-
-            _childPrefab = new GunBaseChildData(thisPrefab.Destiny.Part as GUpgrade);
+            _childPrefab = new GunBaseChildData(gBase.Destiny.Part as GUpgrade);
         }
 
         public GBase Spawn()
         {
+            GameObject gBasePrefab = Resources.Load(_basePrefab) as GameObject;
+            GBase gBase = Instantiate(gBasePrefab).GetComponent<GBase>();
 
-            var gSource = Instantiate(_prefab);
+            GBDSpawnShared(_childPrefab, gBase.Destiny);
 
-            if (!_childPrefab.IsUnityNull())
-            {
-                _childPrefab.Spawn(gSource);
-            }
-            else
-            {
-                var gMuzzleprefab = Resources.Load(_muzzlePrefab) as GMuzzle;
-                var gMuzzle = Instantiate(gMuzzleprefab);
-                gMuzzle.transform.SetParent(gSource.transform);
+            return gBase;
+        }
 
-                gSource.Destiny.Part = gMuzzle;
-            }
+        //testing purposes
 
-            return gSource;
+        public GunBaseSaveData(GunBaseChildData chPrefab)
+        {
+            _childPrefab = chPrefab;
+        }
+        public GunBaseSaveData()
+        {
         }
     }
-    public class GunBaseChildData
+
+    public class GunBaseChildData //TADY NECO TODO
     {
-        private GUpgrade _prefab;
+        private int _upgradeId;
         private GunBaseChildData[] _childPrefabs;
-        public GunBaseChildData(GUpgrade thisPrefab)
+        public GunBaseChildData(GUpgrade gUpgrade)
         {
-            _prefab = thisPrefab;
-            _childPrefabs = new GunBaseChildData[thisPrefab.Destiny.Length];
+            _upgradeId = gUpgrade.UpgradeId;
+            _childPrefabs = new GunBaseChildData[gUpgrade.Destiny.Length];
 
-            for (int i = 0; i < thisPrefab.Destiny.Length; i++)
+            for (int i = 0; i < gUpgrade.Destiny.Length; i++)
             {
-                if (thisPrefab.Destiny[i].Part.GetType() != typeof(GUpgrade)) return;
+                if (gUpgrade.Destiny[i].Part.GetType() != typeof(GUpgrade)) return;
 
-                _childPrefabs[i] = new GunBaseChildData(thisPrefab.Destiny[i].Part as GUpgrade);
+                _childPrefabs[i] = new GunBaseChildData(gUpgrade.Destiny[i].Part as GUpgrade);
             }
         }
 
-        public void Spawn(GPart parent)
+        public GPart Spawn(Transform parentTransfrom)
         {
+            GUpgrade gUpgrade = Instantiate(Resources.Load((UpgradeManager.GetUpgradeById(_upgradeId) as UpgradeWithPart).UpgradePrefabResource)).GetComponent<GUpgrade>();
+            gUpgrade.transform.SetParent(parentTransfrom, false);
+
             for (int i = 0; i < _childPrefabs.Length; i++)
             {
-                var gSource = Instantiate(_prefab);
-
-                if (!_childPrefabs[i].IsUnityNull())
-                {
-                    _childPrefabs[i].Spawn(gSource);
-                }
-                else
-                {
-                    var gMuzzleprefab = Resources.Load(_muzzlePrefab) as GMuzzle;
-                    var gMuzzle = Instantiate(gMuzzleprefab);
-                    gMuzzle.transform.SetParent(gSource.transform);
-
-                    gSource.Destiny[i].Part = gMuzzle;
-                }
-
-                gSource.transform.SetParent(parent.transform);
+                GBDSpawnShared(_childPrefabs[i], gUpgrade.Destiny[i]);
             }
+            return gUpgrade;
             //foreach (var childPrefab in _childPrefabs)
             //{
             //    var gSource = Instantiate(_prefab);
@@ -144,5 +139,34 @@ public class PlayerGunManager : NetworkBehaviour
             //    childPrefab.Spawn(gSource);
             //}
         }
+
+        //testing purposes
+
+        public GunBaseChildData(int UpgradeId, GunBaseChildData[] chPrefab)
+        {
+            _upgradeId = UpgradeId;
+            _childPrefabs = chPrefab;
+        }
+    }
+
+    //Helper func for GBD classes
+    private static void GBDInstantiateOnDestiny(GDestiny desitny)
+    {
+        GameObject gMuzzleprefab = Resources.Load(_muzzlePrefab) as GameObject;
+        GMuzzle gMuzzle = Instantiate(gMuzzleprefab).GetComponent<GMuzzle>();
+        gMuzzle.transform.SetParent(desitny.Position, false);
+
+        desitny.Part = gMuzzle;
+    }
+    private static void GBDSpawnShared(GunBaseChildData childData, GDestiny desitny)
+    {
+            if (!childData.IsUnityNull())
+            {
+            desitny.Part = childData.Spawn(desitny.Position);
+            }
+            else
+            {
+                GBDInstantiateOnDestiny(desitny);
+            }
     }
 }
