@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class UpgradeWithPart : Upgrade
+public abstract class UpgradeWithPart : Upgrade
 {
     private string _upgradePrefabResource;
 
@@ -27,4 +27,5 @@ public class UpgradeWithPart : Upgrade
         instance.GetComponent<GUpgrade>().UpgradeId = Id;
         return instance;
     }
+    public abstract int GetBranchCount();
 }
