@@ -16,17 +16,17 @@ public class PlayerGunManager : NetworkBehaviour
     //private GunBaseSaveData _gunCurrentData;
     //public GunBaseSaveData GunCurrentData = new GunBaseSaveData();
     //public GunBaseSaveData GunCurrentData = new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[2]));
-    public GunBaseSaveData GunCurrentData = new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[]{
+    public NetworkVariable<GunBaseSaveData> GunCurrentData = new(new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[]{
         new GunBaseChildData(1, new GunBaseChildData[2]),
         new GunBaseChildData(1, new GunBaseChildData[2])
-    })); // "1{1{,,},1{,,},}" -- in text
+    }))); // "1{1{,,},1{,,},}" -- in text
 
     private void Start()
     {
         //Debug.Log(GunBaseSaveData.ParseToText(new GunBaseSaveData().Child));
         //Debug.Log(GunBaseSaveData.ParseToText(GunBaseSaveData.ParseText(GunBaseSaveData.ParseToText(new GunBaseSaveData().Child))));
-        Debug.Log("original" + GunBaseSaveData.ParseToText(GunCurrentData.Child));
-        Debug.Log("new" + GunBaseSaveData.ParseToText(GunBaseSaveData.ParseText(GunBaseSaveData.ParseToText(GunCurrentData.Child))));
+        Debug.Log("original" + GunBaseSaveData.ParseToText(GunCurrentData.Value.Child));
+        Debug.Log("new" + GunBaseSaveData.ParseToText(GunBaseSaveData.ParseText(GunBaseSaveData.ParseToText(GunCurrentData.Value.Child))));
     }
 
     public IEnumerable<GUpgradeData> GUpgradeInv

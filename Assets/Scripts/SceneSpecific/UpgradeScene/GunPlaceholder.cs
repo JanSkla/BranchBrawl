@@ -11,13 +11,10 @@ public class GunPlaceholder : MonoBehaviour
     {
         var gcr =  NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.GunCurrentData;
 
-        GBase gBase = gcr.Spawn();
+        GBase gBase = gcr.Value.Spawn();
 
         gBase.name = "1";
 
-
-        gcr = new PlayerGunManager.GunBaseSaveData(gBase);
-
-        gcr.Spawn().name = "2";
+        gBase.transform.SetParent(transform, false);
     }
 }
