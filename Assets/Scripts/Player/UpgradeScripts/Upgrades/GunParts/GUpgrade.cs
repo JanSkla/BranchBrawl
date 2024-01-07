@@ -13,9 +13,9 @@ public abstract class GUpgrade : GPart
         set { _destiny = value; }
     }
 
-    public void ReplacePart(GUpgrade guPrefab) //TODO needs check
+    public void ReplacePart(UpgradeWithPart guPrefab) //TODO needs check
     {
-        GUpgrade gu = Instantiate(guPrefab);
+        GUpgrade gu = guPrefab.InstantiatePrefab();
 
         GameObject parentparentGO = gu.transform.parent.parent.gameObject;
 

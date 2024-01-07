@@ -22,12 +22,13 @@ public abstract class UpgradeWithPart : Upgrade
     {
         Debug.Log(Description + " upgrade deleted");
     }
-    public GameObject InstantiatePrefab()
+    public GUpgrade InstantiatePrefab()
     {
         var prefab = Resources.Load(_upgradePrefabResource) as GameObject;
         var instance = Object.Instantiate(prefab);
-        instance.GetComponent<GUpgrade>().UpgradeId = Id;
-        return instance;
+        GUpgrade gu = instance.GetComponent<GUpgrade>();
+        gu.UpgradeId = Id;
+        return gu;
     }
     public abstract int GetBranchCount();
 }
