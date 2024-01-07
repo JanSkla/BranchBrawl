@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class UpgradeWithPart : Upgrade
+public abstract class UpgradeWithPart : Upgrade
 {
+    protected static int _branchingCount = 1;
+
     private string _upgradePrefabResource;
 
     public UpgradeWithPart(int id, string upgradePrefabResource, string descripotion) : base(id, descripotion)
@@ -26,5 +28,9 @@ public class UpgradeWithPart : Upgrade
         var instance = Object.Instantiate(prefab);
         instance.GetComponent<GUpgrade>().UpgradeId = Id;
         return instance;
+    }
+    public int GetBranchingCount()
+    {
+        return _branchingCount;
     }
 }

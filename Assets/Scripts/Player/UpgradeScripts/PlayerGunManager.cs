@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -102,9 +103,36 @@ public class PlayerGunManager : NetworkBehaviour
             }
         }
 
-        public static GunBaseSaveData ParseText(string text)
+        public static GunBaseChildData ParseText(string text)
         {
-            return new GunBaseSaveData();
+            int.TryParse(text.Substring(0, text.IndexOf('{')), out int upgradeId);
+            var gbsd = new GunBaseChildData(upgradeId, new GunBaseChildData[(UpgradeManager.GetUpgradeById(upgradeId) as UpgradeWithPart).GetBranchingCount()]);
+
+            int from;
+            int to;
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (text[i] == '{')
+                {
+                    
+                }
+                else if (text[i] == '}')
+                {
+
+                }
+                else if (text[i] != ',')
+                {
+
+                }
+            }
+
+            return gbsd;
+
+            void RecursiveAssingGBD(GunBaseChildData gbcd)
+            {
+
+            }
         }
 
         public static string ParseToText(GunBaseChildData gbcd)
@@ -117,12 +145,15 @@ public class PlayerGunManager : NetworkBehaviour
 
             void RecursiveAssingText(GunBaseChildData gbcdInner)
             {
-                output += gbcd.UpgradeId.ToString();
-                foreach (var cp in gbcdInner.ChildPrefabs)
+                if (gbcdInner.IsUnityNull())
                 {
-                    output += "{";
-                    RecursiveAssingText(gbcdInner);
-                    output += "}";
+                    output += gbcd.UpgradeId.ToString();
+                    for (int i = 0; i < gbcdInner.ChildPrefabs.Length; i++)
+                    {
+                        output += "{";
+                        RecursiveAssingText(gbcdInner.ChildPrefabs[i]);
+                        output += "}";
+                    }
                 }
                 output += ",";
             }
