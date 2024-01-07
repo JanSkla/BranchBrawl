@@ -17,9 +17,12 @@ public class PlayerGunManager : NetworkBehaviour
     //private GunBaseSaveData _gunCurrentData;
     //public GunBaseSaveData GunCurrentData = new GunBaseSaveData();
     //public GunBaseSaveData GunCurrentData = new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[2]));
+    //public NetworkVariable<GunBaseSaveData> GunCurrentData = new(new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[]{
+    //    new GunBaseChildData(1, new GunBaseChildData[2]),
+    //    new GunBaseChildData(1, new GunBaseChildData[2])
     public NetworkVariable<GunBaseSaveData> GunCurrentData = new(new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[]{
         new GunBaseChildData(1, new GunBaseChildData[2]),
-        new GunBaseChildData(1, new GunBaseChildData[2])
+        new GunBaseChildData(2, new GunBaseChildData[1])
     }))); // "1{1{,,},1{,,},}" -- in text
 
     private void Start()
@@ -35,6 +38,10 @@ public class PlayerGunManager : NetworkBehaviour
         get { return _gUpgradeInv; }
     }
 
+    public GUpgradeData FindGUpgradeDataByUpId(int UpgradeId)
+    {
+        return _gUpgradeInv.Find(e => e.UpgradeId == UpgradeId);
+    }
     public void AddGUpgrade(UpgradeWithPart uwp)
     {
         var findSimiliar = _gUpgradeInv.Find(e => e.UpgradeId == uwp.Id);

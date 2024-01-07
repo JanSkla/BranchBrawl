@@ -151,6 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9eedcebd692f6d47a19ca626831e6f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _partOutline: {fileID: 0}
+  _totalOutline: {fileID: 0}
   Destiny:
     Position: {fileID: 3469885983056083880}
     Part: {fileID: 0}
@@ -162,6 +164,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 410217346246694838}
     m_Modifications:
+    - target: {fileID: 3304836077341377491, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}
+      propertyPath: parent
+      value: 
+      objectReference: {fileID: 4031068188250361238}
     - target: {fileID: 3780994435565696006, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}
       propertyPath: m_RootOrder
       value: -1

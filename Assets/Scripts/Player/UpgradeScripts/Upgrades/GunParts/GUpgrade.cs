@@ -17,13 +17,15 @@ public abstract class GUpgrade : GPart
     {
         GUpgrade gu = guPrefab.InstantiatePrefab();
 
-        GameObject parentparentGO = gu.transform.parent.parent.gameObject;
+        GPoint gp = transform.parent.GetComponent<GPoint>();
+
+        GameObject parentparentGO = gp.parent;
 
         GDestiny parentGDestRef;
 
         if (parentparentGO.GetComponent<GUpgrade>())
         {
-            int di = gu.transform.parent.GetComponent<GPoint>().destinyIndex;
+            int di = gp.destinyIndex;
 
             parentGDestRef = parentparentGO.GetComponent<GUpgrade>().Destiny[di];
         }
@@ -37,7 +39,7 @@ public abstract class GUpgrade : GPart
             return;
         }
 
-        gu.transform.SetParent(parentGDestRef.Position);
+        gu.transform.SetParent(parentGDestRef.Position, false);
         parentGDestRef.Part = gu;
 
         int guDLength = gu.Destiny.Length;
@@ -47,12 +49,26 @@ public abstract class GUpgrade : GPart
             if (i < guDLength)
             {
                 gu.Destiny[i].Part = Destiny[i].Part;
-                Destiny[i].Part.transform.SetParent(gu.Destiny[i].Position);
+                Destiny[i].Part.transform.SetParent(gu.Destiny[i].Position, false); //TODO, does not keep child
+                Destiny[i].Part.DestroyPartRecursive();
             }
             else
             {
                 Destiny[i].Part.DestroyPartRecursive();
             }
         }
+        for (int i = Destiny.Length; i < guDLength; i++)
+        {
+            GameObject gMuzzleprefab = Resources.Load("Prefabs/GunParts/GMuzzle") as GameObject;
+            GMuzzle gMuzzle = Instantiate(gMuzzleprefab).GetComponent<GMuzzle>();
+
+            Debug.Log(gMuzzle);
+
+            gMuzzle.transform.SetParent(gu.Destiny[i].Position, false);
+
+            gu.Destiny[i].Part = gMuzzle;
+        }
+
+        DestroyPartRecursive();
     }
 }

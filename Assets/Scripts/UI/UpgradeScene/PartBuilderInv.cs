@@ -6,14 +6,12 @@ using UnityEngine;
 
 public class PartBuilderInv : MonoBehaviour
 {
+    public PartBuilderInvChild Selected; //NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.FindGUpgradeDataByUpId();
+
     [SerializeField]
     private GameObject _listObject;
+    [SerializeField]
     private GameObject _childPrefab;
-
-    void Start()
-    {
-        _childPrefab = Resources.Load("Prefabs/GunUpgrades/PartBuilderInv/PartBuilderInvChild") as GameObject;
-    }
 
     private void OnEnable()
     {
@@ -33,8 +31,9 @@ public class PartBuilderInv : MonoBehaviour
             var newObj = Instantiate(_childPrefab);
             newObj.transform.SetParent(_listObject.transform);
             PartBuilderInvChild p = newObj.GetComponent<PartBuilderInvChild>();
-            p.Count.text = (listObj.TotalCount - listObj.UsedCount).ToString() + "x";
-            p.NamePlaceholder.text = listObj.PrefabResource;
+
+            p.PartBuilderInv = this;
+            p.SetGUpgradeData(listObj);
         }
     }
     private void DestroyRecursive(Transform obj)

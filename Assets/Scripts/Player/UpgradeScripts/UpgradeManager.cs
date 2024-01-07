@@ -8,7 +8,7 @@ public class UpgradeManager : MonoBehaviour
 
     private static List<Upgrade> upgradeTypes = new() {
         new UpgradeG2Splitter(1),
-        new UpgradeG2Splitter(2),
+        new UpgradeGEmptyEnhancer(2)
     };
 
     public static Upgrade GetUpgradeById(int id)
