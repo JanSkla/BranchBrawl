@@ -29,8 +29,5 @@ public abstract class UpgradeWithPart : Upgrade
         instance.GetComponent<GUpgrade>().UpgradeId = Id;
         return instance;
     }
-    public int GetBranchingCount()
-    {
-        return _branchingCount;
-    }
+    public abstract int GetBranchCount();
 }

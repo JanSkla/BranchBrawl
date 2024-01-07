@@ -17,10 +17,18 @@ public class PlayerGunManager : NetworkBehaviour
     //private GunBaseSaveData _gunCurrentData;
     //public GunBaseSaveData GunCurrentData = new GunBaseSaveData();
     //public GunBaseSaveData GunCurrentData = new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[2]));
-    public GunBaseSaveData GunCurrentData = new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[]{
+    public NetworkVariable<GunBaseSaveData> GunCurrentData = new(new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[]{
         new GunBaseChildData(1, new GunBaseChildData[2]),
         new GunBaseChildData(1, new GunBaseChildData[2])
-    }));
+    }))); // "1{1{,,},1{,,},}" -- in text
+
+    private void Start()
+    {
+        //Debug.Log(GunBaseSaveData.ParseToText(new GunBaseSaveData().Child));
+        //Debug.Log(GunBaseSaveData.ParseToText(GunBaseSaveData.ParseText(GunBaseSaveData.ParseToText(new GunBaseSaveData().Child))));
+        Debug.Log("original" + GunBaseSaveData.ParseToText(GunCurrentData.Value.Child));
+        Debug.Log("new" + GunBaseSaveData.ParseToText(GunBaseSaveData.ParseText(GunBaseSaveData.ParseToText(GunCurrentData.Value.Child))));
+    }
 
     public IEnumerable<GUpgradeData> GUpgradeInv
     {
@@ -64,6 +72,11 @@ public class PlayerGunManager : NetworkBehaviour
     {
         private GunBaseChildData _childPrefab;
 
+        public GunBaseChildData Child
+        {
+            get { return _childPrefab; }
+        }
+
         //Save from gBase gameobject
         public GunBaseSaveData(GBase gBase)
         {
@@ -105,61 +118,126 @@ public class PlayerGunManager : NetworkBehaviour
 
         public static GunBaseChildData ParseText(string text)
         {
-            int.TryParse(text.Substring(0, text.IndexOf('{')), out int upgradeId);
-            var gbsd = new GunBaseChildData(upgradeId, new GunBaseChildData[(UpgradeManager.GetUpgradeById(upgradeId) as UpgradeWithPart).GetBranchingCount()]);
+            //int upId = int.Parse(text.Substring(0, text.IndexOf("{")));
+            //int arrSize = (UpgradeManager.GetUpgradeById(upId) as UpgradeWithPart).GetBranchCount();
+            //GunBaseChildData output = new(upId, new GunBaseChildData[arrSize]);
 
-            int from;
-            int to;
+            //int from = text.IndexOf("{") + 1;
+            //int to = text.Length;
+            //int j = 1;
+            //for (int i = from; i < text.Length; i++)
+            //{
+            //    if(text[i] == '{')
+            //    {
+            //        j++;
+            //    }
+            //    else if(text[i] == '}')
+            //    {
+            //        j--;
+            //        if (j == 0)
+            //        {
+            //            to = i;
+            //            break;
+            //        }
+            //    }
+            //}
 
-            for (int i = 0; i < text.Length; i++)
+            //string shortenedText = text.Substring(from, to - from);
+
+            if (text.IndexOf("{") == -1) return null;
+
+            return RecursiveAssignGBCD(text);
+
+            GunBaseChildData RecursiveAssignGBCD(string textInner)
             {
-                if (text[i] == '{')
+                Debug.Log("----");
+                Debug.Log(textInner);
+                int upId = int.Parse(text.Substring(0, text.IndexOf("{")));
+                int arrSize = (UpgradeManager.GetUpgradeById(upId) as UpgradeWithPart).GetBranchCount();
+                (int from, int to)[] parts = new (int from, int to)[arrSize];
+                //int from = textInner.IndexOf("{") + 1;
+                //int to = textInner.Length;
+
+                GunBaseChildData output = new(upId, new GunBaseChildData[arrSize]);
+
+                textInner = textInner[(textInner.IndexOf("{")+1)..textInner.LastIndexOf("}")];
+
+                int j = 0;
+                int l = 0;
+                for (int i = 0; i < textInner.Length; i++)
                 {
-                    
+                    if(j == 0 && textInner[i] == ',')
+                    {
+                        l++;
+                    }
+                    else if (textInner[i] == '{')
+                    {
+                        j++;
+                        if(j == 1)
+                        {
+                            parts[l].from = i - 1;
+                        }
+                    }
+                    else if (textInner[i] == '}')
+                    {
+                        j--;
+                        if (j == 0)
+                        {
+                            parts[l].to = i + 1;
+                        }
+                    }
                 }
-                else if (text[i] == '}')
+
+                Debug.Log("arrSize" + arrSize);
+                Debug.Log(textInner);
+
+                for (int i = 0; i < arrSize; i++)
                 {
+                    Debug.Log(parts[0].from+".."+parts[0].to);
+                    Debug.Log(parts[1].from + ".." + parts[1].to);
 
+
+                    string shortenedText = textInner[parts[i].from..parts[i].to];
+
+                    Debug.Log(textInner[parts[i].to]);
+                    Debug.Log(shortenedText);
+
+                    if (shortenedText.IndexOf("{") == -1) continue;
+
+                    output.ChildPrefabs[i] = RecursiveAssignGBCD(shortenedText);
                 }
-                else if (text[i] != ',')
-                {
 
-                }
-            }
-
-            return gbsd;
-
-            void RecursiveAssingGBD(GunBaseChildData gbcd)
-            {
-
+                return output;
             }
         }
 
         public static string ParseToText(GunBaseChildData gbcd)
         {
+            if (gbcd == null) return ",";
+
             string output = "";
 
             RecursiveAssingText(gbcd);
 
-            return output;
+            return output + ",";
 
             void RecursiveAssingText(GunBaseChildData gbcdInner)
             {
-                if (gbcdInner.IsUnityNull())
+                output += gbcd.UpgradeId.ToString();
+                output += "{";
+                for (int i = 0; i < gbcdInner.ChildPrefabs.Length; i++)
                 {
-                    output += gbcd.UpgradeId.ToString();
-                    for (int i = 0; i < gbcdInner.ChildPrefabs.Length; i++)
+                    if (gbcdInner.ChildPrefabs[i] != null)
                     {
-                        output += "{";
                         RecursiveAssingText(gbcdInner.ChildPrefabs[i]);
-                        output += "}";
                     }
+                    output += ",";
                 }
-                output += ",";
+                output += "}";
             }
         }
 
-        //testing purposes
+        //testing purposes 1 // "1{1{,,},1{,,},}" -- in text
 
         public GunBaseSaveData(GunBaseChildData chPrefab)
         {
