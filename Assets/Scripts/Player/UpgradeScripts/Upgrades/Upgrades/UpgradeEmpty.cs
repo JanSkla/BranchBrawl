@@ -9,7 +9,7 @@ public class UpgradeEmpty : Upgrade
     {
         Debug.Log("Empty upgrade added");
     }
-    public override void OnDelete()
+    public override void OnDelete(PlayerManager player)
     {
         Debug.Log("Empty upgrade deleted");
     }

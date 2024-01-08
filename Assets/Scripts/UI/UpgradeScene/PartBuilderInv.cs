@@ -18,7 +18,7 @@ public class PartBuilderInv : MonoBehaviour
         UpdateList();
     }
 
-    private void UpdateList()
+    public void UpdateList()
     {
         foreach (Transform child in _listObject.transform)
         {

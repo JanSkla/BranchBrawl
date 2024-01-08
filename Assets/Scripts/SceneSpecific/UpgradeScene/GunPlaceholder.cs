@@ -29,7 +29,37 @@ public class GunPlaceholder : MonoBehaviour
         {
             UpgradeWithPart uwp = UpgradeManager.GetUpgradeById(_partBuilderInv.Selected.UpgradeId) as UpgradeWithPart;
 
-            HoveredPart.GetComponent<GUpgrade>().ReplacePart(uwp);
+            GUpgrade hoveredGU = HoveredPart.GetComponent<GUpgrade>();
+
+            int hoverGUID = hoveredGU.UpgradeId;
+            var localPlayerGunManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager;
+
+            GUpgradeData gudNew = localPlayerGunManager.FindGUpgradeDataByUpId(_partBuilderInv.Selected.UpgradeId);
+            GUpgradeData gudOld = localPlayerGunManager.FindGUpgradeDataByUpId(hoverGUID);
+
+
+            Debug.Log(!(gudNew.UsedCount < gudNew.TotalCount));
+            //Debug.Log(!(gudOld.UsedCount > 0));  // TEST REMOVE
+            Debug.Log(gudNew == null);
+            Debug.Log(gudOld == null);
+
+            if (gudNew == null ||
+                !(gudNew.UsedCount < gudNew.TotalCount) ||
+                gudOld == null// ||
+                //!(gudOld.UsedCount > 0) REMOVE
+                )
+            {
+                Debug.Log("one of requested are not in list!");
+                return;
+            }
+            localPlayerGunManager.UseGUpgrade(_partBuilderInv.Selected.UpgradeId); //increase used count for the used
+            localPlayerGunManager.UnuseGUpgrade(hoverGUID); //decrease used count for the unused
+
+            _partBuilderInv.UpdateList();
+
+            hoveredGU.ReplacePart(uwp);
+
+            _partBuilderInv.Selected.SetSelected(false);
         }
     }
 }

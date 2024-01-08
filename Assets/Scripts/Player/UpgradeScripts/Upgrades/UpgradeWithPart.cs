@@ -15,11 +15,12 @@ public abstract class UpgradeWithPart : Upgrade
     }
     public override void OnAdd(PlayerManager pm)
     {
-        pm.PlayerGunManager.AddGUpgrade(this);
+        pm.PlayerGunManager.AddGUpgrade(Id);
         Debug.Log(Description + " upgrade added");
     }
-    public override void OnDelete()
+    public override void OnDelete(PlayerManager pm)
     {
+        pm.PlayerGunManager.RemoveGUpgrade(Id);
         Debug.Log(Description + " upgrade deleted");
     }
     public GUpgrade InstantiatePrefab()

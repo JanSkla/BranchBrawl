@@ -13,7 +13,7 @@ public abstract class GUpgrade : GPart
         set { _destiny = value; }
     }
 
-    public void ReplacePart(UpgradeWithPart guPrefab) //TODO needs check
+    public void ReplacePart(UpgradeWithPart guPrefab)
     {
         GUpgrade gu = guPrefab.InstantiatePrefab();
 
@@ -44,20 +44,22 @@ public abstract class GUpgrade : GPart
 
         int guDLength = gu.Destiny.Length;
 
+        Debug.Log("gud" + guDLength);
+        Debug.Log("d" + Destiny.Length);
+
         for (int i = 0; i < Destiny.Length; i++)
         {
-            if (i < guDLength)
+            if (i < guDLength) //keep exissting
             {
                 gu.Destiny[i].Part = Destiny[i].Part;
                 Destiny[i].Part.transform.SetParent(gu.Destiny[i].Position, false); //TODO, does not keep child
-                Destiny[i].Part.DestroyPartRecursive();
             }
-            else
+            else //destroy overflowing
             {
                 Destiny[i].Part.DestroyPartRecursive();
             }
         }
-        for (int i = Destiny.Length; i < guDLength; i++)
+        for (int i = Destiny.Length; i < guDLength; i++) //spawn muzzle for new endings
         {
             GameObject gMuzzleprefab = Resources.Load("Prefabs/GunParts/GMuzzle") as GameObject;
             GMuzzle gMuzzle = Instantiate(gMuzzleprefab).GetComponent<GMuzzle>();
