@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class GunPlaceholder : MonoBehaviour
 {
+    public bool IsDelete = false;
     public GPart HoveredPart;
 
     [SerializeField]
@@ -58,6 +59,31 @@ public class GunPlaceholder : MonoBehaviour
             _partBuilderInv.UpdateList();
 
             hoveredGU.ReplacePart(uwp);
+
+            _partBuilderInv.Selected.SetSelected(false);
+        }
+
+        if (HoveredPart && _partBuilderInv.Selected && HoveredPart.GetComponent<GMuzzle>())
+        {
+            UpgradeWithPart uwp = UpgradeManager.GetUpgradeById(_partBuilderInv.Selected.UpgradeId) as UpgradeWithPart;
+            GMuzzle hoveredGM = HoveredPart.GetComponent<GMuzzle>();
+
+            hoveredGM.ReplaceMuzzle(uwp);
+
+            var localPlayerGunManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager;
+            GUpgradeData gudNew = localPlayerGunManager.FindGUpgradeDataByUpId(_partBuilderInv.Selected.UpgradeId);
+
+            if (gudNew == null ||
+                !(gudNew.UsedCount < gudNew.TotalCount)
+                )
+            {
+                Debug.Log("one of requested are not in list!");
+                return;
+            }
+
+            localPlayerGunManager.UseGUpgrade(_partBuilderInv.Selected.UpgradeId); //increase used count for the used
+
+            _partBuilderInv.UpdateList();
 
             _partBuilderInv.Selected.SetSelected(false);
         }

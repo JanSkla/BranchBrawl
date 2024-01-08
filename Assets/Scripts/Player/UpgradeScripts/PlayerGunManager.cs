@@ -124,6 +124,12 @@ public class PlayerGunManager : NetworkBehaviour
         }
     }
 
+    public static GMuzzle InstantiateGMuzzle()
+    {
+        GMuzzle go = Resources.Load(_muzzlePrefab).GetComponent<GMuzzle>();
+        return Instantiate(go);
+    }
+
     public class GunBaseSaveData : INetworkSerializable
     {
         private GunBaseChildData _childPrefab;
