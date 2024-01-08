@@ -86,6 +86,16 @@ public class GunPlaceholder : MonoBehaviour
             _partBuilderInv.UpdateList();
 
             _partBuilderInv.Selected.SetSelected(false);
+            IsDelete = false;
         }
+    }
+
+    public void ToggleDelete()
+    {
+        if (IsDelete)
+        {
+            _partBuilderInv.Selected = null;
+        }
+        IsDelete = !IsDelete;
     }
 }

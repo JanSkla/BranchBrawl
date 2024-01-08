@@ -28,7 +28,11 @@ public abstract class GPart : MonoBehaviour
     {
         if (GameObject.Find("GunPlaceholder") != null)
         {
-            if(!GetComponent<GUpgrade>().IsUnityNull() || !GetComponent<GMuzzle>().IsUnityNull())
+            if (GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().IsDelete && !GetComponent<GUpgrade>().IsUnityNull())
+            {
+                SetOutlineTotal(true);
+            }
+            else if(!GetComponent<GUpgrade>().IsUnityNull() || !GetComponent<GMuzzle>().IsUnityNull())
             {
                 GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().HoveredPart = this;
                 SetOutlinePart(true);
@@ -39,6 +43,7 @@ public abstract class GPart : MonoBehaviour
     {
         if (GameObject.Find("GunPlaceholder") != null)
         {
+            SetOutlineTotal(false);
             SetOutlinePart(false);
             if (!GetComponent<GUpgrade>().IsUnityNull() || !GetComponent<GMuzzle>().IsUnityNull())
             {
@@ -50,7 +55,44 @@ public abstract class GPart : MonoBehaviour
     {
         if (GameObject.Find("GunPlaceholder") != null)
         {
-            if (!GetComponent<GUpgrade>().IsUnityNull() || !GetComponent<GMuzzle>().IsUnityNull())
+            if (GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().IsDelete && !GetComponent<GUpgrade>().IsUnityNull())
+            {
+
+                GPoint gp = transform.parent.GetComponent<GPoint>();
+
+                GameObject parentparentGO = gp.parent;
+
+                GDestiny parentGDestRef;
+
+                if (parentparentGO.GetComponent<GUpgrade>())
+                {
+                    int di = gp.destinyIndex;
+
+                    parentGDestRef = parentparentGO.GetComponent<GUpgrade>().Destiny[di];
+                }
+                else if (parentparentGO.GetComponent<GBase>())
+                {
+                    parentGDestRef = parentparentGO.GetComponent<GBase>().Destiny;
+                }
+                else
+                {
+                    Debug.Log("There is no GUpgrade nor GBase");
+                    return;
+                }
+                //
+
+                GameObject gMuzzleprefab = Resources.Load("Prefabs/GunParts/GMuzzle") as GameObject;
+                GMuzzle gMuzzle = Instantiate(gMuzzleprefab).GetComponent<GMuzzle>();
+
+                Debug.Log(gMuzzle);
+
+                gMuzzle.transform.SetParent(parentGDestRef.Position, false);
+
+                parentGDestRef.Part = gMuzzle;
+
+                DestroyPartRecursive();
+            }
+            else if (!GetComponent<GUpgrade>().IsUnityNull() || !GetComponent<GMuzzle>().IsUnityNull())
             {
                 GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().ReplacePart();
             }
