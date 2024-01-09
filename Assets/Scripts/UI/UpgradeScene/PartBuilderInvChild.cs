@@ -9,9 +9,6 @@ using UnityEngine.UI;
 
 public class PartBuilderInvChild : MonoBehaviour
 {
-    [SerializeField]
-    private Texture2D handCursor; //TODO
-
     public int UpgradeId;
 
     private bool _isSelected;
@@ -40,14 +37,19 @@ public class PartBuilderInvChild : MonoBehaviour
             {
                 PartBuilderInv.Selected.SetSelected(false);
             }
+            var gp = GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>();
+
+
+            if (gp.IsDelete)
+                gp.ToggleDelete();
 
             PartBuilderInv.Selected = this;
-            Cursor.SetCursor(handCursor, Vector2.zero, CursorMode.Auto);
+            CursorHandler.Hand();
         }
         else
         {
             PartBuilderInv.Selected = null;
-            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            CursorHandler.Default();
         }
     }
 

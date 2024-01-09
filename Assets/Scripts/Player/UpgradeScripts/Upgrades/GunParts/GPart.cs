@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,8 +14,25 @@ public abstract class GPart : MonoBehaviour
     public void Shoot(ShootData shot) { }
     public void DestroyPartRecursive()
     {
+        if (GameObject.Find("GunPlaceholder") != null)
+        {
+            var localPlayerGunManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager;
+            AssignToInvR(GetComponent<GUpgrade>());
+            void AssignToInvR(GUpgrade gu)
+            {
+                if (gu == null) return;
+
+                localPlayerGunManager.UnuseGUpgrade(gu.UpgradeId);
+
+                for (int i = 0; i < gu.Destiny.Length; i++)
+                {
+                    AssignToInvR(gu.Destiny[i].Part.GetComponent<GUpgrade>());
+                }
+            }
+        }
+
         DestroyR(transform);
-        static void DestroyR(Transform t)
+        void DestroyR(Transform t)
         {
             foreach (Transform child in t)
             {
@@ -32,7 +50,7 @@ public abstract class GPart : MonoBehaviour
             {
                 SetOutlineTotal(true);
             }
-            else if(!GetComponent<GUpgrade>().IsUnityNull() || !GetComponent<GMuzzle>().IsUnityNull())
+            else if (!GetComponent<GUpgrade>().IsUnityNull() || !GetComponent<GMuzzle>().IsUnityNull())
             {
                 GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().HoveredPart = this;
                 SetOutlinePart(true);
@@ -91,6 +109,7 @@ public abstract class GPart : MonoBehaviour
                 parentGDestRef.Part = gMuzzle;
 
                 DestroyPartRecursive();
+                GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().PartBuilderInv.UpdateList();
             }
             else if (!GetComponent<GUpgrade>().IsUnityNull() || !GetComponent<GMuzzle>().IsUnityNull())
             {

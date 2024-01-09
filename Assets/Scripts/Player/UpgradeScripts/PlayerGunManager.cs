@@ -15,24 +15,24 @@ public class PlayerGunManager : NetworkBehaviour
     private readonly List<GUpgradeData> _gUpgradeInv = new();
 
     //private GunBaseSaveData _gunCurrentData;
-    //public GunBaseSaveData GunCurrentData = new GunBaseSaveData();
+    public NetworkVariable<GunBaseSaveData> GunCurrentData = new(new GunBaseSaveData());
     //public GunBaseSaveData GunCurrentData = new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[2]));
     //public NetworkVariable<GunBaseSaveData> GunCurrentData = new(new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[]{
     //    new GunBaseChildData(1, new GunBaseChildData[2]),
     //    new GunBaseChildData(1, new GunBaseChildData[2])
-    public NetworkVariable<GunBaseSaveData> GunCurrentData = new(new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[]{
-        new GunBaseChildData(1, new GunBaseChildData[2]),
-        new GunBaseChildData(2, new GunBaseChildData[1])
-    }))); // "1{1{,,},1{,,},}" -- in text
+    //public NetworkVariable<GunBaseSaveData> GunCurrentData = new(new GunBaseSaveData(new GunBaseChildData(1, new GunBaseChildData[]{
+    //    new GunBaseChildData(1, new GunBaseChildData[2]),
+    //    new GunBaseChildData(2, new GunBaseChildData[1])
+    //}))); // "1{1{,,},1{,,},}" -- in text //REMOVE
 
     private void Start()
     {
-        AddGUpgrade(1);
+        AddGUpgrade(1);  //REMOVE
         AddGUpgrade(2);
         //Debug.Log(GunBaseSaveData.ParseToText(new GunBaseSaveData().Child));
         //Debug.Log(GunBaseSaveData.ParseToText(GunBaseSaveData.ParseText(GunBaseSaveData.ParseToText(new GunBaseSaveData().Child))));
-        Debug.Log("original" + GunBaseSaveData.ParseToText(GunCurrentData.Value.Child));
-        Debug.Log("new" + GunBaseSaveData.ParseToText(GunBaseSaveData.ParseText(GunBaseSaveData.ParseToText(GunCurrentData.Value.Child))));
+        //Debug.Log("original" + GunBaseSaveData.ParseToText(GunCurrentData.Value.Child));
+        //Debug.Log("new" + GunBaseSaveData.ParseToText(GunBaseSaveData.ParseText(GunBaseSaveData.ParseToText(GunCurrentData.Value.Child))));
     }
 
     public IEnumerable<GUpgradeData> GUpgradeInv
@@ -113,7 +113,7 @@ public class PlayerGunManager : NetworkBehaviour
             }
             else
             {
-                Debug.Log("Can't use less than in inventory");
+                Debug.Log("Can't unuse less than in inventory");
                 return false;
             }
         }
@@ -250,19 +250,9 @@ public class PlayerGunManager : NetworkBehaviour
                     }
                 }
 
-                Debug.Log("arrSize" + arrSize);
-                Debug.Log(textInner);
-
                 for (int i = 0; i < arrSize; i++)
                 {
-                    Debug.Log(parts[0].from+".."+parts[0].to);
-                    Debug.Log(parts[1].from + ".." + parts[1].to);
-
-
                     string shortenedText = textInner[parts[i].from..parts[i].to];
-
-                    Debug.Log(textInner[parts[i].to]);
-                    Debug.Log(shortenedText);
 
                     if (shortenedText.IndexOf("{") == -1) continue;
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GunPlaceholder : MonoBehaviour
 {
@@ -10,7 +11,9 @@ public class GunPlaceholder : MonoBehaviour
     public GPart HoveredPart;
 
     [SerializeField]
-    private PartBuilderInv _partBuilderInv;
+    private Button _deleteBtn;
+    [SerializeField]
+    public PartBuilderInv PartBuilderInv;
 
     // Start is called before the first frame update
     void Start()
@@ -26,16 +29,16 @@ public class GunPlaceholder : MonoBehaviour
 
     public void ReplacePart()
     {
-        if (HoveredPart && _partBuilderInv.Selected && HoveredPart.GetComponent<GUpgrade>())
+        if (HoveredPart && PartBuilderInv.Selected && HoveredPart.GetComponent<GUpgrade>())
         {
-            UpgradeWithPart uwp = UpgradeManager.GetUpgradeById(_partBuilderInv.Selected.UpgradeId) as UpgradeWithPart;
+            UpgradeWithPart uwp = UpgradeManager.GetUpgradeById(PartBuilderInv.Selected.UpgradeId) as UpgradeWithPart;
 
             GUpgrade hoveredGU = HoveredPart.GetComponent<GUpgrade>();
 
             int hoverGUID = hoveredGU.UpgradeId;
             var localPlayerGunManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager;
 
-            GUpgradeData gudNew = localPlayerGunManager.FindGUpgradeDataByUpId(_partBuilderInv.Selected.UpgradeId);
+            GUpgradeData gudNew = localPlayerGunManager.FindGUpgradeDataByUpId(PartBuilderInv.Selected.UpgradeId);
             GUpgradeData gudOld = localPlayerGunManager.FindGUpgradeDataByUpId(hoverGUID);
 
 
@@ -53,25 +56,23 @@ public class GunPlaceholder : MonoBehaviour
                 Debug.Log("one of requested are not in list!");
                 return;
             }
-            localPlayerGunManager.UseGUpgrade(_partBuilderInv.Selected.UpgradeId); //increase used count for the used
+            localPlayerGunManager.UseGUpgrade(PartBuilderInv.Selected.UpgradeId); //increase used count for the used
             localPlayerGunManager.UnuseGUpgrade(hoverGUID); //decrease used count for the unused
 
-            _partBuilderInv.UpdateList();
+            PartBuilderInv.UpdateList();
 
             hoveredGU.ReplacePart(uwp);
 
-            _partBuilderInv.Selected.SetSelected(false);
+            PartBuilderInv.Selected.SetSelected(false);
         }
 
-        if (HoveredPart && _partBuilderInv.Selected && HoveredPart.GetComponent<GMuzzle>())
+        if (HoveredPart && PartBuilderInv.Selected && HoveredPart.GetComponent<GMuzzle>())
         {
-            UpgradeWithPart uwp = UpgradeManager.GetUpgradeById(_partBuilderInv.Selected.UpgradeId) as UpgradeWithPart;
+            UpgradeWithPart uwp = UpgradeManager.GetUpgradeById(PartBuilderInv.Selected.UpgradeId) as UpgradeWithPart;
             GMuzzle hoveredGM = HoveredPart.GetComponent<GMuzzle>();
 
-            hoveredGM.ReplaceMuzzle(uwp);
-
             var localPlayerGunManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager;
-            GUpgradeData gudNew = localPlayerGunManager.FindGUpgradeDataByUpId(_partBuilderInv.Selected.UpgradeId);
+            GUpgradeData gudNew = localPlayerGunManager.FindGUpgradeDataByUpId(PartBuilderInv.Selected.UpgradeId);
 
             if (gudNew == null ||
                 !(gudNew.UsedCount < gudNew.TotalCount)
@@ -81,21 +82,27 @@ public class GunPlaceholder : MonoBehaviour
                 return;
             }
 
-            localPlayerGunManager.UseGUpgrade(_partBuilderInv.Selected.UpgradeId); //increase used count for the used
 
-            _partBuilderInv.UpdateList();
+            hoveredGM.ReplaceMuzzle(uwp);
 
-            _partBuilderInv.Selected.SetSelected(false);
+            localPlayerGunManager.UseGUpgrade(PartBuilderInv.Selected.UpgradeId); //increase used count for the used
+
+            PartBuilderInv.UpdateList();
+
+            PartBuilderInv.Selected.SetSelected(false);
             IsDelete = false;
         }
     }
 
     public void ToggleDelete()
     {
+        IsDelete = !IsDelete;
         if (IsDelete)
         {
-            _partBuilderInv.Selected = null;
+            PartBuilderInv.Selected = null;
+            CursorHandler.Cross();
         }
-        IsDelete = !IsDelete;
+
+        _deleteBtn.GetComponent<Image>().color = IsDelete ? Color.gray : Color.white;
     }
 }
