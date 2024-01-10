@@ -114,6 +114,7 @@ GameObject:
   - component: {fileID: -6459888833628804304}
   - component: {fileID: 4234992200380901340}
   - component: {fileID: 988738432084341352}
+  - component: {fileID: -7792172164061468869}
   m_Layer: 0
   m_Name: G2Splitter
   m_TagString: Untagged
@@ -196,6 +197,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.9657013, y: 2.3537931, z: 0.6973965}
   m_Center: {x: 1.1125377, y: 0.10122728, z: -0.01080741}
+--- !u!114 &-7792172164061468869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6684928210491982095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &1397223245161722105
 PrefabInstance:
   m_ObjectHideFlags: 0
