@@ -214,7 +214,7 @@ public class PlayerGunManager : NetworkBehaviour
             {
                 Debug.Log("----");
                 Debug.Log(textInner);
-                int upId = int.Parse(text.Substring(0, text.IndexOf("{")));
+                int upId = int.Parse(textInner.Substring(0, textInner.IndexOf("{")));
                 int arrSize = (UpgradeManager.GetUpgradeById(upId) as UpgradeWithPart).GetBranchCount();
                 (int from, int to)[] parts = new (int from, int to)[arrSize];
                 //int from = textInner.IndexOf("{") + 1;
