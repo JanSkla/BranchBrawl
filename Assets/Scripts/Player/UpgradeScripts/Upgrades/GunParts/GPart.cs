@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public abstract class GPart : MonoBehaviour
+public abstract class GPart : NetworkBehaviour
 {
     [SerializeField]
     private Outline _partOutline;

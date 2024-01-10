@@ -39,7 +39,7 @@ public class GameManager : NetworkBehaviour
             });
         }
 
-        _roundsList.Add((int)RoundType.Upgrade);
+        _roundsList.Add((int)RoundType.Upgrade); //REMOVE
         _roundsList.Add((int)RoundType.FirstCombat);
         _roundsList.Add((int)RoundType.Upgrade);
         _roundsList.Add((int)RoundType.Combat);

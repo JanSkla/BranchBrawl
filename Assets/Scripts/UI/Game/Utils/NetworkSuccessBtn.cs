@@ -25,7 +25,7 @@ public class NetworkSuccessBtn : NetworkBehaviour
 
     void OnEnable()
     {
-        if (IsServer)
+        if (NetworkManager.IsServer)
         {
             _playerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
         }

@@ -4,7 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UpgradeSceneManager : MonoBehaviour
+public class UpgradeSceneManager : NetworkBehaviour
 {
     [SerializeField]
     private GameObject _upgradeSelect;
@@ -58,5 +58,36 @@ public class UpgradeSceneManager : MonoBehaviour
         }
     }
 
-    
+    public void StartNextRound()
+    {
+        if (NetworkManager.IsServer)
+        {
+            SaveGBDClientRPC();
+        }
+    }
+
+
+    private int _GBDsSaved = 0;
+
+    [ClientRpc]
+    public void SaveGBDClientRPC()
+    {
+        Debug.Log("aaaa");
+        Debug.Log(GameObject.Find("GunPlaceholder"));
+        Debug.Log(GameObject.Find("GunPlaceholder").transform.GetChild(0));
+        GameObject gunObject = GameObject.Find("GunPlaceholder").transform.GetChild(0).gameObject;
+        GBase gunBase = gunObject.GetComponent<GBase>();
+        if (gunBase == null) Debug.LogError("No gbase in gunplaceholder");
+
+        NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.GunCurrentData.Value = new PlayerGunManager.GunBaseSaveData(gunBase);
+        ConfirmSaveGBDCServerRPC();
+    }
+    [ServerRpc]
+    public void ConfirmSaveGBDCServerRPC()
+    {
+        _GBDsSaved++;
+        if (_GBDsSaved < NetworkManager.Singleton.ConnectedClientsIds.Count) return;
+        
+        GameObject.Find("GameManager(Clone)").GetComponent<GameManager>().CurrentRoundFinished();
+    }
 }
