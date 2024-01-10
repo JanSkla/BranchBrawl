@@ -105,4 +105,9 @@ public class GunPlaceholder : MonoBehaviour
 
         _deleteBtn.GetComponent<Image>().color = IsDelete ? Color.gray : Color.white;
     }
+
+    public void GunPartLogAsText()
+    {
+        Debug.Log( PlayerGunManager.GunBaseSaveData.ParseToText(new PlayerGunManager.GunBaseSaveData(transform.GetChild(0).GetComponent<GBase>()).Child) );
+    }
 }

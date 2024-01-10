@@ -79,13 +79,18 @@ public class UpgradeSceneManager : NetworkBehaviour
         GBase gunBase = gunObject.GetComponent<GBase>();
         if (gunBase == null) Debug.LogError("No gbase in gunplaceholder");
 
-        NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.GunCurrentData.Value = new PlayerGunManager.GunBaseSaveData(gunBase);
-        ConfirmSaveGBDCServerRPC();
+        PlayerGunManager.GunBaseSaveData gbd = new(gunBase);
+
+        Debug.Log(PlayerGunManager.GunBaseSaveData.ParseToText(gbd.Child));
+
+        ConfirmSaveGBDCServerRPC(gbd);
     }
-    [ServerRpc]
-    public void ConfirmSaveGBDCServerRPC()
+    [ServerRpc (RequireOwnership = false)]
+    public void ConfirmSaveGBDCServerRPC(PlayerGunManager.GunBaseSaveData gunBase, ServerRpcParams serverRpcParams = default)
     {
+        NetworkManager.ConnectedClients[serverRpcParams.Receive.SenderClientId].PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.GunCurrentData.Value = gunBase;
         _GBDsSaved++;
+
         if (_GBDsSaved < NetworkManager.Singleton.ConnectedClientsIds.Count) return;
         
         GameObject.Find("GameManager(Clone)").GetComponent<GameManager>().CurrentRoundFinished();

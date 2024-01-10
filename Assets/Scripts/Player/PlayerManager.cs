@@ -49,8 +49,7 @@ public class PlayerManager : NetworkBehaviour
         {
             _networkData.PlayerObjectNwIds.Add(GetComponent<NetworkObject>().NetworkObjectId);
         }
-
-        //if (IsClient)
+        //else if (IsClient)
         //{
         //    PlayerObject = NetworkManager.SpawnManager.SpawnedObjects[_playerObjectNwId.Value].gameObject;
         //}
@@ -62,6 +61,10 @@ public class PlayerManager : NetworkBehaviour
         if (IsServer)
         {
             PlayerName.Value = gamerTags[Random.Range(0, gamerTags.Length)] + NetworkManager.LocalClientId;
+        }
+        if (IsClient && _playerGunManagerNwId.Value > 0)
+        {
+            PlayerGunManager = NetworkManager.SpawnManager.SpawnedObjects[_playerGunManagerNwId.Value].gameObject.GetComponent<PlayerGunManager>();
         }
     }
 
@@ -97,7 +100,11 @@ public class PlayerManager : NetworkBehaviour
     {
         PlayerGunManager = Instantiate(playerGunManagerPrefab).GetComponent<PlayerGunManager>();
         PlayerGunManager.gameObject.GetComponent<NetworkObject>().Spawn();
-        _playerGunManagerNwId.Value = playerGunManagerPrefab.GetComponent<NetworkObject>().NetworkObjectId;
+        _playerGunManagerNwId.Value = PlayerGunManager.GetComponent<NetworkObject>().NetworkObjectId;
+
+        Debug.Log(PlayerGunManager);
+        Debug.Log(PlayerGunManager.GetComponent<NetworkObject>());
+        Debug.Log(PlayerGunManager.GetComponent<NetworkObject>().NetworkObjectId);
         //_player.GetComponent<NetworkObject>().TrySetParent(transform);
     }
     public void DespawnPlayerGunManager()

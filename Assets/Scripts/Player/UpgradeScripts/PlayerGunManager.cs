@@ -164,7 +164,7 @@ public class PlayerGunManager : NetworkBehaviour
                 reader.ReadValueSafe(out string serializeText);
 
                 //from string to GBSD
-                ParseText(serializeText);
+                _childPrefab = ParseText(serializeText);
                 //~
             }
             else
@@ -275,7 +275,7 @@ public class PlayerGunManager : NetworkBehaviour
 
             void RecursiveAssingText(GunBaseChildData gbcdInner)
             {
-                output += gbcd.UpgradeId.ToString();
+                output += gbcdInner.UpgradeId.ToString();
                 output += "{";
                 for (int i = 0; i < gbcdInner.ChildPrefabs.Length; i++)
                 {
@@ -289,7 +289,7 @@ public class PlayerGunManager : NetworkBehaviour
             }
         }
 
-        //testing purposes 1 // "1{1{,,},1{,,},}" -- in text
+        //testing purposes 1 // "1{1{,,},1{,,},}," -- in text
 
         public GunBaseSaveData(GunBaseChildData chPrefab)
         {
@@ -310,7 +310,7 @@ public class PlayerGunManager : NetworkBehaviour
 
             for (int i = 0; i < gUpgrade.Destiny.Length; i++)
             {
-                if (!gUpgrade.Destiny[i].Part.GetType().IsSubclassOf(typeof(GUpgrade))) return;
+                if (!gUpgrade.Destiny[i].Part.GetType().IsSubclassOf(typeof(GUpgrade))) continue;
 
                 ChildPrefabs[i] = new GunBaseChildData(gUpgrade.Destiny[i].Part as GUpgrade);
             }
