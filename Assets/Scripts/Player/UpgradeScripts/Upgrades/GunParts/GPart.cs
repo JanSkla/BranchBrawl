@@ -99,14 +99,10 @@ public abstract class GPart : NetworkBehaviour
                 }
                 //
 
-                GameObject gMuzzleprefab = Resources.Load("Prefabs/GunParts/GMuzzle") as GameObject;
-                GMuzzle gMuzzle = Instantiate(gMuzzleprefab).GetComponent<GMuzzle>();
-
-                Debug.Log(gMuzzle);
-
-                gMuzzle.transform.SetParent(parentGDestRef.Position, false);
-
-                parentGDestRef.Part = gMuzzle;
+                if (NetworkObject.IsSpawned)
+                    PlayerGunManager.NetworkGBDMuzzleInstantiateOnDestiny(parentGDestRef);
+                else
+                    PlayerGunManager.GBDMuzzleInstantiateOnDestiny(parentGDestRef);
 
                 DestroyPartRecursive();
                 GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().PartBuilderInv.UpdateList();

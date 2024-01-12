@@ -151,7 +151,7 @@ public class PlayerGunManager : NetworkBehaviour
         {
             GameObject gBasePrefab = Resources.Load(_basePrefab) as GameObject;
             GBase gBase = Instantiate(gBasePrefab).GetComponent<GBase>();
-            gBase.GetComponent<NetworkObject>().enabled = false;
+            gBase.NetworkObject.AutoObjectParentSync = false;
 
             GBDSpawnShared(_childPrefab, gBase.Destiny);
 
@@ -162,7 +162,7 @@ public class PlayerGunManager : NetworkBehaviour
             GameObject gBasePrefab = Resources.Load(_basePrefab) as GameObject;
             GBase gBase = Instantiate(gBasePrefab).GetComponent<GBase>();
 
-            gBase.GetComponent<NetworkObject>().Spawn();
+            gBase.NetworkObject.Spawn();
 
             GBDNetworkSpawnShared(_childPrefab, gBase.Destiny);
 
@@ -331,7 +331,7 @@ public class PlayerGunManager : NetworkBehaviour
         public GPart Spawn(Transform parentTransfrom)
         {
             GUpgrade gUpgrade = (UpgradeManager.GetUpgradeById(UpgradeId) as UpgradeWithPart).InstantiatePrefab().GetComponent<GUpgrade>();
-            gUpgrade.GetComponent<NetworkObject>().enabled = false;
+            gUpgrade.NetworkObject.AutoObjectParentSync = false;
             gUpgrade.transform.SetParent(parentTransfrom, false);
 
             for (int i = 0; i < ChildPrefabs.Length; i++)
@@ -344,8 +344,8 @@ public class PlayerGunManager : NetworkBehaviour
         {
             GUpgrade gUpgrade = (UpgradeManager.GetUpgradeById(UpgradeId) as UpgradeWithPart).InstantiatePrefab().GetComponent<GUpgrade>();
 
-            gUpgrade.GetComponent<NetworkObject>().Spawn();
-            gUpgrade.GetComponent<NetworkObject>().TrySetParent(parentTransfrom, false);
+            gUpgrade.NetworkObject.Spawn();
+            gUpgrade.NetworkObject.TrySetParent(parentTransfrom, false);
 
             for (int i = 0; i < ChildPrefabs.Length; i++)
             {
@@ -363,22 +363,23 @@ public class PlayerGunManager : NetworkBehaviour
     }
 
     //Helper func for GBD classes
-    private static void GBDMuzzleInstantiateOnDestiny(GDestiny desitny)
+    public static void GBDMuzzleInstantiateOnDestiny(GDestiny desitny)
     {
         GameObject gMuzzleprefab = Resources.Load(_muzzlePrefab) as GameObject;
         GMuzzle gMuzzle = Instantiate(gMuzzleprefab).GetComponent<GMuzzle>();
-        gMuzzle.GetComponent<NetworkObject>().enabled = false;
+
+        gMuzzle.NetworkObject.AutoObjectParentSync = false;
         gMuzzle.transform.SetParent(desitny.Position, false);
 
         desitny.Part = gMuzzle;
     }
-    private static void NetworkGBDMuzzleInstantiateOnDestiny(GDestiny desitny)
+    public static void NetworkGBDMuzzleInstantiateOnDestiny(GDestiny desitny)
     {
         GameObject gMuzzleprefab = Resources.Load(_muzzlePrefab) as GameObject;
         GMuzzle gMuzzle = Instantiate(gMuzzleprefab).GetComponent<GMuzzle>();
 
-        gMuzzle.GetComponent<NetworkObject>().Spawn();
-        gMuzzle.GetComponent<NetworkObject>().TrySetParent(desitny.Position, false);
+        gMuzzle.NetworkObject.Spawn();
+        gMuzzle.NetworkObject.TrySetParent(desitny.Position, false);
 
         desitny.Part = gMuzzle;
     }

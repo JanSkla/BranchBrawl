@@ -42,10 +42,6 @@ public class GunPlaceholder : MonoBehaviour
             GUpgradeData gudOld = localPlayerGunManager.FindGUpgradeDataByUpId(hoverGUID);
 
 
-            Debug.Log(!(gudNew.UsedCount < gudNew.TotalCount));
-            //Debug.Log(!(gudOld.UsedCount > 0));  // TEST REMOVE
-            Debug.Log(gudNew == null);
-            Debug.Log(gudOld == null);
 
             if (gudNew == null ||
                 !(gudNew.UsedCount < gudNew.TotalCount) ||

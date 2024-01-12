@@ -13,8 +13,9 @@ public abstract class GUpgrade : GPart
         set { _destiny = value; }
     }
 
-    public void ReplacePart(UpgradeWithPart guPrefab)
+    public void ReplacePart(UpgradeWithPart guPrefab, bool isNetwork = false)
     {
+        Debug.Log("ReplacePart");
         GUpgrade gu = guPrefab.InstantiatePrefab();
 
         GPoint gp = transform.parent.GetComponent<GPoint>();
@@ -39,7 +40,16 @@ public abstract class GUpgrade : GPart
             return;
         }
 
-        gu.transform.SetParent(parentGDestRef.Position, false);
+        if (isNetwork)
+        {
+            gu.NetworkObject.Spawn();
+            gu.NetworkObject.TrySetParent(parentGDestRef.Position, false);
+        }
+        else
+        {
+            gu.NetworkObject.AutoObjectParentSync = false;
+            gu.transform.SetParent(parentGDestRef.Position, false);
+        }
         parentGDestRef.Part = gu;
 
         int guDLength = gu.Destiny.Length;
@@ -52,7 +62,15 @@ public abstract class GUpgrade : GPart
             if (i < guDLength) //keep exissting
             {
                 gu.Destiny[i].Part = Destiny[i].Part;
-                Destiny[i].Part.transform.SetParent(gu.Destiny[i].Position, false); //TODO, does not keep child
+
+                if (isNetwork)
+                {
+                    Destiny[i].Part.NetworkObject.TrySetParent(gu.Destiny[i].Position, false);
+                }
+                else
+                {
+                    Destiny[i].Part.transform.SetParent(gu.Destiny[i].Position, false);
+                }
             }
             else //destroy overflowing
             {
@@ -61,14 +79,10 @@ public abstract class GUpgrade : GPart
         }
         for (int i = Destiny.Length; i < guDLength; i++) //spawn muzzle for new endings
         {
-            GameObject gMuzzleprefab = Resources.Load("Prefabs/GunParts/GMuzzle") as GameObject;
-            GMuzzle gMuzzle = Instantiate(gMuzzleprefab).GetComponent<GMuzzle>();
-
-            Debug.Log(gMuzzle);
-
-            gMuzzle.transform.SetParent(gu.Destiny[i].Position, false);
-
-            gu.Destiny[i].Part = gMuzzle;
+            if (isNetwork)
+                PlayerGunManager.NetworkGBDMuzzleInstantiateOnDestiny(gu.Destiny[i]);
+            else
+                PlayerGunManager.GBDMuzzleInstantiateOnDestiny(gu.Destiny[i]);
         }
 
         DestroyPartRecursive();

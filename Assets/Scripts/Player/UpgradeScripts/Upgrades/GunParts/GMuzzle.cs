@@ -9,8 +9,9 @@ public class GMuzzle : GPart
         Debug.Log("Shoots successfully");
     }
 
-    public void ReplaceMuzzle(UpgradeWithPart guPrefab)
+    public void ReplaceMuzzle(UpgradeWithPart guPrefab, bool isNetwork = false)
     {
+        Debug.Log("ReplaceMuzzle");
         GUpgrade gu = guPrefab.InstantiatePrefab();
 
         GPoint gp = transform.parent.GetComponent<GPoint>();
@@ -35,21 +36,28 @@ public class GMuzzle : GPart
             return;
         }
 
-        gu.transform.SetParent(parentGDestRef.Position, false);
+        if (isNetwork)
+        {
+            gu.NetworkObject.Spawn();
+            gu.NetworkObject.TrySetParent(parentGDestRef.Position, false);
+        }
+        else
+        {
+            gu.NetworkObject.AutoObjectParentSync = false;
+            gu.transform.SetParent(parentGDestRef.Position, false);
+        }
         parentGDestRef.Part = gu;
 
         int guDLength = gu.Destiny.Length;
 
         for (int i = 0; i < guDLength; i++) //spawn muzzle for new endings
         {
-            GameObject gMuzzleprefab = Resources.Load("Prefabs/GunParts/GMuzzle") as GameObject;
-            GMuzzle gMuzzle = Instantiate(gMuzzleprefab).GetComponent<GMuzzle>();
-
-            Debug.Log(gMuzzle);
-
-            gMuzzle.transform.SetParent(gu.Destiny[i].Position, false);
-
-            gu.Destiny[i].Part = gMuzzle;
+            if (isNetwork)
+                PlayerGunManager.NetworkGBDMuzzleInstantiateOnDestiny(gu.Destiny[i]);
+            else
+                PlayerGunManager.GBDMuzzleInstantiateOnDestiny(gu.Destiny[i]);
         }
+
+        DestroyPartRecursive();
     }
 }
