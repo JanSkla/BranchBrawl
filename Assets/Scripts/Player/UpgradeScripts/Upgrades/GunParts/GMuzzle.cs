@@ -39,7 +39,7 @@ public class GMuzzle : GPart
         if (isNetwork)
         {
             gu.NetworkObject.Spawn();
-            gu.NetworkObject.TrySetParent(parentGDestRef.Position, false);
+            gu.NetworkObject.TrySetParent(parentGDestRef.Position, false); //CHECK WHY FALSE NOT SETTING PARENT
         }
         else
         {
