@@ -53,9 +53,9 @@ public class GMuzzle : GPart
         for (int i = 0; i < guDLength; i++) //spawn muzzle for new endings
         {
             if (isNetwork)
-                PlayerGunManager.NetworkGBDMuzzleInstantiateOnDestiny(gu.Destiny[i]);
+                PlayerGunManager.NetworkMuzzleInstantiateOnDestiny(gu.Destiny[i]);
             else
-                PlayerGunManager.GBDMuzzleInstantiateOnDestiny(gu.Destiny[i]);
+                PlayerGunManager.MuzzleInstantiateOnDestiny(gu.Destiny[i]);
         }
 
         DestroyPartRecursive();
