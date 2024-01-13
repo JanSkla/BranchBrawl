@@ -155,7 +155,7 @@ MonoBehaviour:
   _partOutline: {fileID: 0}
   _totalOutline: {fileID: 0}
   Destiny:
-    Position: {fileID: 3469885983056083880}
+    PositionPoint: {fileID: 2991070087980584061}
     Part: {fileID: 0}
 --- !u!114 &6211681832605290818
 MonoBehaviour:
@@ -242,6 +242,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}
+--- !u!114 &2991070087980584061 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3304836077341377491, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}
+  m_PrefabInstance: {fileID: 315050225388818350}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c694ce12ebbbf7d409616bf623b58f0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &3469885983056083880 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3780994435565696006, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}

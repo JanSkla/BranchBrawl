@@ -50,7 +50,7 @@ public abstract class GUpgrade : GPart
         if (destiny == null) Debug.LogError("There is no destiny with mentioned index");
 
         childNwObject.AutoObjectParentSync = false;
-        childNwObject.transform.SetParent(destiny.Position, false);
+        childNwObject.transform.SetParent(destiny.PositionPoint.transform, false);
     }
 
     public void NetworkAddParentOnDestiny(int destinyIndex, ulong childNwId)
@@ -91,12 +91,12 @@ public abstract class GUpgrade : GPart
         if (isNetwork)
         {
             gu.NetworkObject.Spawn();
-            gu.NetworkObject.TrySetParent(parentGDestRef.Position, false);
+            gu.NetworkObject.TrySetParent(parentGDestRef.PositionPoint.transform, false);
         }
         else
         {
             gu.NetworkObject.AutoObjectParentSync = false;
-            gu.transform.SetParent(parentGDestRef.Position, false);
+            gu.transform.SetParent(parentGDestRef.PositionPoint.transform, false);
         }
         parentGDestRef.Part = gu;
 
@@ -113,11 +113,11 @@ public abstract class GUpgrade : GPart
 
                 if (isNetwork)
                 {
-                    Destiny[i].Part.NetworkObject.TrySetParent(gu.Destiny[i].Position, false);
+                    Destiny[i].Part.NetworkObject.TrySetParent(gu.Destiny[i].PositionPoint.transform, false);
                 }
                 else
                 {
-                    Destiny[i].Part.transform.SetParent(gu.Destiny[i].Position, false);
+                    Destiny[i].Part.transform.SetParent(gu.Destiny[i].PositionPoint.transform, false);
                 }
             }
             else //destroy overflowing

@@ -249,7 +249,7 @@ public class GunBaseSaveData : INetworkSerializable
     {
         if (!childData.IsUnityNull())
         {
-            desitny.Part = childData.Spawn(desitny.Position);
+            desitny.Part = childData.Spawn(desitny.PositionPoint.transform);
         }
         else
         {
@@ -260,7 +260,7 @@ public class GunBaseSaveData : INetworkSerializable
     {
         if (!childData.IsUnityNull())
         {
-            desitny.Part = childData.NetworkSpawn(desitny.Position);
+            desitny.Part = childData.NetworkSpawn(desitny.PositionPoint.transform);
         }
         else
         {

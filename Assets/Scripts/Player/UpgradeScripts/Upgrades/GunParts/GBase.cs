@@ -44,7 +44,7 @@ public class GBase : GPart
         if (childNwObject == null) Debug.LogError("There is no destiny with mentioned index");
 
         childNwObject.AutoObjectParentSync = false;
-        childNwObject.transform.SetParent(Destiny.Position, false);
+        childNwObject.transform.SetParent(Destiny.PositionPoint.transform, false);
     }
 
     public void NetworkAddParentOnDestiny(ulong childNwId)

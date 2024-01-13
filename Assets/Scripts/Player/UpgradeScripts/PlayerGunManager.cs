@@ -134,7 +134,7 @@ public class PlayerGunManager : NetworkBehaviour
         GMuzzle gMuzzle = InstantiateGMuzzle();
 
         gMuzzle.NetworkObject.AutoObjectParentSync = false;
-        gMuzzle.transform.SetParent(desitny.Position, false);
+        gMuzzle.transform.SetParent(desitny.PositionPoint.transform, false);
 
         desitny.Part = gMuzzle;
     }
@@ -143,7 +143,7 @@ public class PlayerGunManager : NetworkBehaviour
         GMuzzle gMuzzle = InstantiateGMuzzle();
 
         gMuzzle.NetworkObject.Spawn();
-        gMuzzle.NetworkObject.TrySetParent(desitny.Position, false);
+        gMuzzle.NetworkObject.TrySetParent(desitny.PositionPoint.transform, false);
 
         desitny.Part = gMuzzle;
     }
