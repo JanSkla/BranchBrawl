@@ -7,8 +7,8 @@ public class UpgradeManager : MonoBehaviour
     private List<Upgrade> upgrades = new();
 
     private static List<Upgrade> upgradeTypes = new() {
-        new EmptyUpgrade(1),
-        new EmptyUpgrade(2)
+        new UpgradeG2Splitter(1),
+        new UpgradeGEmptyEnhancer(2)
     };
 
     public static Upgrade GetUpgradeById(int id)
@@ -27,5 +27,6 @@ public class UpgradeManager : MonoBehaviour
     public void AddUpgrade(Upgrade upgrade)
     {
         upgrades.Add(upgrade);
+        upgrade.OnAdd(GetComponent<PlayerManager>());
     }
 }

@@ -12,6 +12,6 @@ public abstract class Upgrade
         Id = id;
         Description = description;
     }
-    public abstract void OnAdd();
-    public abstract void OnDelete();
+    public abstract void OnAdd(PlayerManager player);
+    public abstract void OnDelete(PlayerManager player);
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -53,6 +54,14 @@ public class RoundManager : NetworkBehaviour
         while (enumerator.MoveNext())
         {
             Debug.Log(enumerator.Current.Crowns);
+        }
+
+        if (IsServer)
+        {
+            foreach (var client in NetworkManager.Singleton.ConnectedClients)
+            {
+                client.Value.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.GunCurrentData.Value.NetworkSpawn();
+            }
         }
 
         StartGame();

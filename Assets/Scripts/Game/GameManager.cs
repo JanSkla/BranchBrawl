@@ -31,6 +31,7 @@ public class GameManager : NetworkBehaviour
 
         for (int i = 0; i < nwClients.Count; i++)
         {
+            nwClients[(ulong)i].PlayerObject.GetComponent<PlayerManager>().SpawnPlayerGunManager();
             PlayersGameData.Add(new PlayerGameData()
             {
                 PMNwId = nwClients[(ulong)i].PlayerObject.GetComponent<NetworkObject>().NetworkObjectId,
@@ -38,7 +39,7 @@ public class GameManager : NetworkBehaviour
             });
         }
 
-        _roundsList.Add((int)RoundType.Upgrade);
+        _roundsList.Add((int)RoundType.Upgrade); //REMOVE
         _roundsList.Add((int)RoundType.FirstCombat);
         _roundsList.Add((int)RoundType.Upgrade);
         _roundsList.Add((int)RoundType.Combat);
@@ -110,6 +111,18 @@ public class GameManager : NetworkBehaviour
         _currentRoundListIndex++;
         if (_roundsList.Count < _currentRoundListIndex) return;
         StartCurrentRound();
+    }
+
+    public void NewGameCleanup()
+    {
+        if (!NetworkManager.IsServer) return;
+
+        var nwClients = NetworkManager.Singleton.ConnectedClients;
+
+        for (int i = 0; i < nwClients.Count; i++)
+        {
+            nwClients[(ulong)i].PlayerObject.GetComponent<PlayerManager>().DespawnPlayerGunManager();
+        }
     }
 }
 public enum RoundType
