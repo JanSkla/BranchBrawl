@@ -5,10 +5,17 @@ using UnityEngine;
 
 public class GBase : GPart
 {
+    private static ShootData _shotData = new() { Amount = 40 };
+
     public GDestiny Destiny;
-    public new void Shoot(ShootData shot)
+    public override void Shoot(bool firstShot, ShootData shootData)
     {
-        Destiny.Part.Shoot(shot);
+
+    }
+    public void Shoot(bool firstShot)
+    {
+        Debug.Log(name);
+        Destiny.Part.Shoot(firstShot, _shotData);
     }
 
     private NetworkList<ulong> _childsOnDesitny = new();

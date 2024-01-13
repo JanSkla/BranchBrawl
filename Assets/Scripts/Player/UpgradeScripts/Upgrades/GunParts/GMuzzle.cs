@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GMuzzle : GPart
 {
-    public new void Shoot(ShootData shot)
+    public override void Shoot(bool firstShot, ShootData shot) //TODO precalculateShot
     {
         Debug.Log("Shoots successfully");
     }

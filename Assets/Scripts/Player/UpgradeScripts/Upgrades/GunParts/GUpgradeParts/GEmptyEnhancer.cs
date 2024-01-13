@@ -8,8 +8,8 @@ public class GEmptyEnhancer : GEnhancer
     {
         Destiny = new GDestiny[1];
     }
-    public new void Shoot(ShootData shot)
+    public new void Shoot(bool firstShot, ShootData shot)
     {
-        Destiny[0].Part.Shoot(shot);
+        Destiny[0].Part.Shoot(firstShot, shot);
     }
 }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public abstract class GEnhancer : GUpgrade
 {
-    public new void Shoot(ShootData shot)
+    public override void Shoot(bool firstShot, ShootData shot)
     {
-        Destiny[0].Part.Shoot(shot);
+        Destiny[0].Part.Shoot(firstShot, shot);
     }
     public int EnhanceScript(int amount)
     {

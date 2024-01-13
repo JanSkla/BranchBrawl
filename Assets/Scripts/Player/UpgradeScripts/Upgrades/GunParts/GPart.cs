@@ -11,7 +11,7 @@ public abstract class GPart : NetworkBehaviour
     [SerializeField]
     private Outline _totalOutline;
 
-    public void Shoot(ShootData shot) { }
+    public abstract void Shoot(bool firstShot, ShootData shot);
     public void DestroyPartRecursive()
     {
         if (GameObject.Find("GunPlaceholder") != null)
