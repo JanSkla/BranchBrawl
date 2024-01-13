@@ -11,6 +11,12 @@ public abstract class GPart : NetworkBehaviour
     [SerializeField]
     private Outline _totalOutline;
 
+    void Start()
+    {
+        _partOutline.enabled = false;
+        _totalOutline.enabled = false;
+    }
+
     public abstract void Shoot(bool firstShot, ShootData shot);
     public void DestroyPartRecursive()
     {
@@ -116,11 +122,27 @@ public abstract class GPart : NetworkBehaviour
 
     public void SetOutlineTotal(bool isOutline)
     {
-        _totalOutline.OutlineMode = isOutline ? Outline.Mode.OutlineVisible : Outline.Mode.OutlineHidden;
+        if (isOutline)
+        {
+            _totalOutline.enabled = true;
+            _totalOutline.OutlineMode = Outline.Mode.OutlineAll;
+        }
+        else
+        {
+            _totalOutline.enabled = false;
+        }
     }
     public void SetOutlinePart(bool isOutline)
     {
-        _partOutline.OutlineMode = isOutline ? Outline.Mode.OutlineVisible : Outline.Mode.OutlineHidden;
+        if (isOutline)
+        {
+            _partOutline.enabled = true;
+            _partOutline.OutlineMode = Outline.Mode.OutlineAll;
+        }
+        else
+        {
+            _partOutline.enabled = false;
+        }
     }
 
 
