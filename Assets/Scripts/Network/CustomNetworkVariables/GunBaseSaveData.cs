@@ -40,7 +40,7 @@ public class GunBaseSaveData : INetworkSerializable
         GameObject gBasePrefab = Resources.Load(_basePrefab) as GameObject;
         GBase gBase = Object.Instantiate(gBasePrefab).GetComponent<GBase>();
 
-        gBase.NetworkObject.Spawn();
+        gBase.NetworkObject.Spawn(true);
 
         GBDNetworkSpawnShared(_childPrefab, gBase.Destiny);
 
@@ -189,45 +189,29 @@ public class GunBaseSaveData : INetworkSerializable
             }
             return gUpgrade;
         }
-        public GPart NetworkSpawn(Transform parentTransfrom)
+        public GPart NetworkSpawn(GDestiny parentDestiny)
         {
             GUpgrade gUpgrade = (UpgradeManager.GetUpgradeById(UpgradeId) as UpgradeWithPart).InstantiatePrefab().GetComponent<GUpgrade>();
 
-            gUpgrade.NetworkObject.Spawn();
+            gUpgrade.NetworkObject.Spawn(true);
 
+            GameObject parentGO = parentDestiny.PositionPoint.Parent;
 
-
-            Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            var parent = parentTransfrom.GetComponent<NetworkObject>();
-            if (!gUpgrade.NetworkObject.AutoObjectParentSync)
+            if(parentGO.GetComponent<GBase>() != null)
             {
-                Debug.Log("1");
+                parentDestiny.PositionPoint.Parent.GetComponent<GBase>().NetworkAddParentOnDestiny(gUpgrade.NetworkObjectId);
+            }
+            else if (parentGO.GetComponent<GUpgrade>() != null)
+            {
+                parentDestiny.PositionPoint.Parent.GetComponent<GUpgrade>().NetworkAddParentOnDestiny(parentDestiny.PositionPoint.DestinyIndex, gUpgrade.NetworkObjectId);
+            }
+            else
+            {
+                Debug.LogError("Neco je zle");
             }
 
-            if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening)
-            {
-                Debug.Log("2");
-            }
-
-            if (!NetworkManager.Singleton.IsServer)
-            {
-                Debug.Log("3");
-            }
-
-            if (!gUpgrade.IsSpawned)
-            {
-                Debug.Log("4");
-            }
-
-            if (parent != null && !parent.IsSpawned)
-            {
-                Debug.Log("5");
-            }
-
-
-
-
-            gUpgrade.NetworkObject.TrySetParent(parentTransfrom, false);
+                
+            //gUpgrade.NetworkObject.TrySetParent(parentTransfrom, false);
 
             for (int i = 0; i < ChildPrefabs.Length; i++)
             {
@@ -260,7 +244,7 @@ public class GunBaseSaveData : INetworkSerializable
     {
         if (!childData.IsUnityNull())
         {
-            desitny.Part = childData.NetworkSpawn(desitny.PositionPoint.transform);
+            desitny.Part = childData.NetworkSpawn(desitny);
         }
         else
         {

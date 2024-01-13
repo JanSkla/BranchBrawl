@@ -138,13 +138,29 @@ public class PlayerGunManager : NetworkBehaviour
 
         desitny.Part = gMuzzle;
     }
-    public static void NetworkMuzzleInstantiateOnDestiny(GDestiny desitny)
+    public static void NetworkMuzzleInstantiateOnDestiny(GDestiny parentDestiny)
     {
         GMuzzle gMuzzle = InstantiateGMuzzle();
 
-        gMuzzle.NetworkObject.Spawn();
-        gMuzzle.NetworkObject.TrySetParent(desitny.PositionPoint.transform, false);
+        gMuzzle.NetworkObject.Spawn(true);
 
-        desitny.Part = gMuzzle;
+        GameObject parentGO = parentDestiny.PositionPoint.Parent;
+
+        if (parentGO.GetComponent<GBase>() != null)
+        {
+            parentDestiny.PositionPoint.Parent.GetComponent<GBase>().NetworkAddParentOnDestiny(gMuzzle.NetworkObjectId);
+        }
+        else if (parentGO.GetComponent<GUpgrade>() != null)
+        {
+            parentDestiny.PositionPoint.Parent.GetComponent<GUpgrade>().NetworkAddParentOnDestiny(parentDestiny.PositionPoint.DestinyIndex, gMuzzle.NetworkObjectId);
+        }
+        else
+        {
+            Debug.LogError("Neco je zle");
+        }
+
+        //gMuzzle.NetworkObject.TrySetParent(desitny.PositionPoint.transform, false);
+
+        parentDestiny.Part = gMuzzle;
     }
 }

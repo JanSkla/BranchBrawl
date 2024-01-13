@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class GPoint : MonoBehaviour
 {
-    public GameObject parent;
-    public int destinyIndex;
+    public GameObject Parent;
+    public int DestinyIndex;
 }

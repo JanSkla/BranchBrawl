@@ -68,13 +68,13 @@ public abstract class GUpgrade : GPart
 
         GPoint gp = transform.parent.GetComponent<GPoint>();
 
-        GameObject parentparentGO = gp.parent;
+        GameObject parentparentGO = gp.Parent;
 
         GDestiny parentGDestRef;
 
         if (parentparentGO.GetComponent<GUpgrade>())
         {
-            int di = gp.destinyIndex;
+            int di = gp.DestinyIndex;
 
             parentGDestRef = parentparentGO.GetComponent<GUpgrade>().Destiny[di];
         }

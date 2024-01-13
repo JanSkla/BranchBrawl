@@ -312,6 +312,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 8133390676613089911}
     m_Modifications:
     - target: {fileID: 3304836077341377491, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}
+      propertyPath: Parent
+      value: 
+      objectReference: {fileID: 6684928210491982095}
+    - target: {fileID: 3304836077341377491, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}
       propertyPath: parent
       value: 
       objectReference: {fileID: 6684928210491982095}
@@ -393,9 +397,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 8133390676613089911}
     m_Modifications:
     - target: {fileID: 3304836077341377491, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}
+      propertyPath: Parent
+      value: 
+      objectReference: {fileID: 6684928210491982095}
+    - target: {fileID: 3304836077341377491, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}
       propertyPath: parent
       value: 
       objectReference: {fileID: 6684928210491982095}
+    - target: {fileID: 3304836077341377491, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}
+      propertyPath: DestinyIndex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3304836077341377491, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}
       propertyPath: destinyIndex
       value: 1
