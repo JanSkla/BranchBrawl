@@ -18,7 +18,7 @@ public class GunPlaceholder : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        var gcr =  NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.GunCurrentData;
+        var gcr = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.GunCurrentData;
 
         GBase gBase = gcr.Value.Spawn();
 
@@ -46,7 +46,7 @@ public class GunPlaceholder : MonoBehaviour
             if (gudNew == null ||
                 !(gudNew.UsedCount < gudNew.TotalCount) ||
                 gudOld == null// ||
-                //!(gudOld.UsedCount > 0) REMOVE
+                              //!(gudOld.UsedCount > 0) REMOVE
                 )
             {
                 Debug.Log("one of requested are not in list!");
@@ -104,6 +104,6 @@ public class GunPlaceholder : MonoBehaviour
 
     public void GunPartLogAsText()
     {
-        Debug.Log( PlayerGunManager.GunBaseSaveData.ParseToText(new PlayerGunManager.GunBaseSaveData(transform.GetChild(0).GetComponent<GBase>()).Child) );
+        Debug.Log(GunBaseSaveData.ParseToText(new GunBaseSaveData(transform.GetChild(0).GetComponent<GBase>()).Child));
     }
 }
