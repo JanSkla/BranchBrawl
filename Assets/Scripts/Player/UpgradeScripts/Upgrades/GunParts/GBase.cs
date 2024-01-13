@@ -11,52 +11,44 @@ public class GBase : GPart
         Destiny.Part.Shoot(shot);
     }
 
-    private NetworkList<ChildOnDestiny> _childOnDestinies = new();
+    private NetworkList<ulong> _childsOnDesitny = new();
 
 
     public override void OnNetworkSpawn()
     {
-        if (_childOnDestinies != null && _childOnDestinies.Count > 0)
+        if (_childsOnDesitny != null && _childsOnDesitny.Count > 0)
         {
-            foreach (var child in _childOnDestinies)
+            foreach (var child in _childsOnDesitny)
             {
                 NetworkSetParentOnDesinty(child);
             }
         }
 
-        _childOnDestinies.OnListChanged += OnChODChange;
+        _childsOnDesitny.OnListChanged += OnChODChange;
     }
 
-    private void OnChODChange(NetworkListEvent<ChildOnDestiny> changeEvent)
+    private void OnChODChange(NetworkListEvent<ulong> changeEvent)
     {
-        if (changeEvent.Type == NetworkListEvent<ChildOnDestiny>.EventType.Add)
+        if (changeEvent.Type == NetworkListEvent<ulong>.EventType.Add)
         {
-            ChildOnDestiny newChOD = changeEvent.Value;
+            ulong newChildNwIdD = changeEvent.Value;
 
-            NetworkSetParentOnDesinty(newChOD);
+            NetworkSetParentOnDesinty(newChildNwIdD);
         }
     }
 
-    private void NetworkSetParentOnDesinty(ChildOnDestiny ChOD)
+    private void NetworkSetParentOnDesinty(ulong childNwId)
     {
-        NetworkObject childNwObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[ChOD.ChildNwId];
-        GDestiny destiny = Destiny;
+        NetworkObject childNwObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[childNwId];
 
         if (childNwObject == null) Debug.LogError("There is no destiny with mentioned index");
-        if (destiny == null) Debug.LogError("There is no destiny with mentioned index");
 
         childNwObject.AutoObjectParentSync = false;
-        childNwObject.transform.SetParent(destiny.Position, false);
+        childNwObject.transform.SetParent(Destiny.Position, false);
     }
 
-    public void NetworkAddParentOnDestiny(int destinyIndex, ulong childNwId)
+    public void NetworkAddParentOnDestiny(ulong childNwId)
     {
-        ChildOnDestiny chod = new()
-        {
-            DestinyIndex = destinyIndex,
-            ChildNwId = childNwId
-        };
-
-        _childOnDestinies.Add(chod);
+        _childsOnDesitny.Add(childNwId);
     }
 }
