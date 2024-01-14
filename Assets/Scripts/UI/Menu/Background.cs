@@ -3,18 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PlayButton : MonoBehaviour, ISelectHandler, IDeselectHandler
+public class Background : MonoBehaviour, ISelectHandler
 {
-
     [SerializeField]
     private HostJoinMenu _hostJoin;
-
     public void OnSelect(BaseEventData eventData)
     {
-        _hostJoin.gameObject.SetActive(true);
-    }
-    public void OnDeselect(BaseEventData eventData)
-    {
-        //_hostJoin.gameObject.SetActive(false);
+        _hostJoin.gameObject.SetActive(false);
     }
 }

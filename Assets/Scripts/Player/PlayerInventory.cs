@@ -8,12 +8,12 @@ using UnityEngine;
 
 public class PlayerInventory : NetworkBehaviour
 {
-    public NetworkVariable<Item> EquippedItem = new NetworkVariable<Item>();
+    public NetworkVariable<Item> EquippedItem = new ();
 
     private Player player;
     private GameManager _gameManager;
 
-    public static Item _emptyItem = new Item();
+    public static Item _emptyItem = new ();
     void Start()
     {
         player = GetComponent<Player>();
@@ -40,7 +40,7 @@ public class PlayerInventory : NetworkBehaviour
 
         if (_gameManager.RoundsList[_gameManager.CurrentRoundListIndex] == 0)
         {
-            if (player.IsLocalPlayer && Input.GetKeyDown(KeyCode.E))
+            if (player.IsLocalPlayer && Input.GetKeyDown(KeyCode.E) && EquippedItem.Value.Equals(_emptyItem))
             {
                 GameObject pickableObject = player.GetComponent<PlayerCamera>().GetFacingPickable();
                 if (pickableObject != null)
@@ -102,7 +102,7 @@ public class PlayerInventory : NetworkBehaviour
             }
 
             Transform handTransform = player.Hand.transform;
-            equipGO.GetComponent<NetworkObject>().TrySetParent(handTransform).ToString();
+            equipGO.GetComponent<NetworkObject>().TrySetParent(handTransform.gameObject, false).ToString();
 
             SharedServerClientEquipActions(equipGO, itemToEquip);
 
@@ -211,7 +211,7 @@ public class PlayerInventory : NetworkBehaviour
         int changeLayer = player.IsLocalPlayer ? LayerMask.NameToLayer("LocalPlayer") : LayerMask.NameToLayer("Player");
 
 
-        ChangeLayerWithChildren(equipGO, changeLayer);
+        Tools.ChangeLayerWithChildren(equipGO, changeLayer);
         //equipGO.layer = changeLayer;
         //foreach (Transform child in equipGO.transform)
         //{
@@ -237,17 +237,8 @@ public class PlayerInventory : NetworkBehaviour
 
         int changeLayer = LayerMask.NameToLayer("Pickable");
 
-        ChangeLayerWithChildren(unequippedGO, changeLayer);
+        Tools.ChangeLayerWithChildren(unequippedGO, changeLayer);
 
         unequippedGO.GetComponent<Rigidbody>().isKinematic = false;
-    }
-
-    private void ChangeLayerWithChildren(GameObject gameObject, LayerMask layerMask)
-    {
-        gameObject.layer = layerMask;
-        foreach (Transform child in gameObject.transform)
-        {
-            ChangeLayerWithChildren(child.gameObject, layerMask);
-        }
     }
 }

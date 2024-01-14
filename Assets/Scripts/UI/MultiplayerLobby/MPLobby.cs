@@ -39,6 +39,6 @@ public class MPLobby : NetworkBehaviour
     public void GoBack()
     {
         NetworkManager.Singleton.Shutdown();
-        SceneManager.LoadScene("HostJoinMenu");
+        SceneManager.LoadScene("Menu");
     }
 }

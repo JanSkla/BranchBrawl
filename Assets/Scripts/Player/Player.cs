@@ -50,7 +50,8 @@ public class Player : NetworkBehaviour
             PlayerManager = NetworkManager.SpawnManager.SpawnedObjects[_playerManagerNwId.Value].gameObject.GetComponent<NetworkObject>();
 
             Hand = NetworkManager.SpawnManager.SpawnedObjects[_handNwId.Value].gameObject;
-            Hand.layer = IsLocalPlayer ? 8 : 6;
+
+            Tools.ChangeLayerWithChildren(Hand, IsLocalPlayer ? 8 : 6);
         }
         if (IsLocalPlayer)
         {
@@ -60,7 +61,9 @@ public class Player : NetworkBehaviour
         if (NetworkManager.IsServer)
         {
             Hand = Instantiate(handPrefab);
-            Hand.layer = IsLocalPlayer ? 8 : 6;
+
+            Tools.ChangeLayerWithChildren(Hand, IsLocalPlayer ? 8 : 6);
+
             Hand.GetComponent<NetworkObject>().Spawn();
             _handNwId.Value = Hand.GetComponent<NetworkObject>().NetworkObjectId;
             Hand.GetComponent<NetworkObject>().TrySetParent(transform, false);
