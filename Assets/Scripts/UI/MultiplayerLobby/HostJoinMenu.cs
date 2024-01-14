@@ -152,8 +152,4 @@ public class HostJoinMenu : MonoBehaviour
             yield return null;
         }
     }
-    public void GoBack()
-    {
-        SceneManager.LoadScene("Menu");
-    }
 }
