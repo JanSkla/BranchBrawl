@@ -125,7 +125,7 @@ public abstract class GPart : NetworkBehaviour
         if (isOutline)
         {
             _totalOutline.enabled = true;
-            _totalOutline.OutlineMode = Outline.Mode.OutlineAll;
+            _totalOutline.OutlineMode = Outline.Mode.OutlineAndSilhouette;
         }
         else
         {
@@ -137,7 +137,7 @@ public abstract class GPart : NetworkBehaviour
         if (isOutline)
         {
             _partOutline.enabled = true;
-            _partOutline.OutlineMode = Outline.Mode.OutlineAll;
+            _partOutline.OutlineMode = Outline.Mode.OutlineAndSilhouette;
         }
         else
         {
