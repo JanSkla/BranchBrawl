@@ -13,8 +13,10 @@ public abstract class GPart : NetworkBehaviour
 
     void Start()
     {
-        _partOutline.enabled = false;
-        _totalOutline.enabled = false;
+        if(_partOutline)
+            _partOutline.enabled = false;
+        if (_totalOutline)
+            _totalOutline.enabled = false;
     }
 
     public abstract void Shoot(bool firstShot, ShootData shot);
@@ -54,12 +56,14 @@ public abstract class GPart : NetworkBehaviour
         {
             if (GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().IsDelete && !GetComponent<GUpgrade>().IsUnityNull())
             {
-                SetOutlineTotal(true);
+                if (_totalOutline)
+                    SetOutlineTotal(true);
             }
             else if (!GetComponent<GUpgrade>().IsUnityNull() || !GetComponent<GMuzzle>().IsUnityNull())
             {
                 GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().HoveredPart = this;
-                SetOutlinePart(true);
+                if (_partOutline)
+                    SetOutlinePart(true);
             }
         }
     }
@@ -67,8 +71,10 @@ public abstract class GPart : NetworkBehaviour
     {
         if (GameObject.Find("GunPlaceholder") != null)
         {
-            SetOutlineTotal(false);
-            SetOutlinePart(false);
+            if (_totalOutline)
+                SetOutlineTotal(false);
+            if (_partOutline)
+                SetOutlinePart(false);
             if (!GetComponent<GUpgrade>().IsUnityNull() || !GetComponent<GMuzzle>().IsUnityNull())
             {
                 GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().HoveredPart = null;
