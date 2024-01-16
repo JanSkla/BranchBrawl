@@ -5,18 +5,32 @@ using UnityEngine;
 
 public class GBase : GPart
 {
-    private static ShootData _shotData = new() { Amount = 40 };
+    [SerializeField]
+    private GunData gunData;
 
     public GDestiny Destiny;
-    public override void Shoot(bool firstShot, ShootData shootData)
-    {
 
+    private static ShootData _shotData = new() { Amount = 40, Type = ShootType.Bullet };
+
+
+    private float _timeSinceLastShot = 0f;
+
+    void Update()
+    {
+        _timeSinceLastShot += Time.deltaTime;
     }
+
     public void Shoot(bool firstShot)
     {
-        Debug.Log(name);
-        Destiny.Part.Shoot(firstShot, _shotData);
+        if (!gunData.isAuto && !firstShot) return;
+        if (!CanShoot() || gunData.currentAmmo <= 0) return;
+
+        Destiny.Part.Shoot(_shotData);
+
+        gunData.currentAmmo--;
+        _timeSinceLastShot = 0f;
     }
+    private bool CanShoot() => !gunData.reloading && _timeSinceLastShot > 1f / gunData.firerate;
 
     private NetworkList<ulong> _childsOnDesitny = new();
 
@@ -52,10 +66,12 @@ public class GBase : GPart
 
         childNwObject.AutoObjectParentSync = false;
         childNwObject.transform.SetParent(Destiny.PositionPoint.transform, false);
+        Destiny.Part = childNwObject.GetComponent<GPart>();
     }
 
     public void NetworkAddParentOnDestiny(ulong childNwId)
     {
         _childsOnDesitny.Add(childNwId);
     }
+    public override void Shoot(ShootData shootData) { }
 }

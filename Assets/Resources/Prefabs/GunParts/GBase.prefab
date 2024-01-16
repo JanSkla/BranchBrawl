@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _partOutline: {fileID: 0}
   _totalOutline: {fileID: 0}
+  gunData: {fileID: 11400000, guid: a08275ba77734444e898f53891605b1f, type: 2}
   Destiny:
     PositionPoint: {fileID: 2991070087980584061}
     Part: {fileID: 0}

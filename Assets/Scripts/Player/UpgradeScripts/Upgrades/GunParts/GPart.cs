@@ -19,7 +19,7 @@ public abstract class GPart : NetworkBehaviour
             _totalOutline.enabled = false;
     }
 
-    public abstract void Shoot(bool firstShot, ShootData shot);
+    public abstract void Shoot(ShootData shot);
     public void DestroyPartRecursive()
     {
         if (GameObject.Find("GunPlaceholder") != null)

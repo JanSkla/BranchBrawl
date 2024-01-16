@@ -4,11 +4,11 @@ using UnityEngine;
 
 public abstract class GSplitter : GUpgrade
 {
-    public override void Shoot(bool firstShot, ShootData shot)
+    public override void Shoot( ShootData shot)
     {
         foreach (var dest in Destiny)
         {
-            dest.Part.Shoot(firstShot, shot);
+            dest.Part.Shoot(shot);
         }
     }
 }

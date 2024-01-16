@@ -164,7 +164,8 @@ public class PlayerInventory : NetworkBehaviour
                 n = n.transform.parent.gameObject;
             }
 
-            n.GetComponent<NetworkTransform>().enabled = false;
+            if (n.GetComponent<NetworkTransform>())
+                n.GetComponent<NetworkTransform>().enabled = false;
 
             SharedServerClientEquipActions(n, newItem);
         }
@@ -172,7 +173,8 @@ public class PlayerInventory : NetworkBehaviour
         {
             GameObject prevGO = GetNetworkObject(previousItem.NetworkObjectId).gameObject;
 
-            prevGO.GetComponent<NetworkTransform>().enabled = true;
+            if (prevGO.GetComponent<NetworkTransform>())
+                prevGO.GetComponent<NetworkTransform>().enabled = true;
 
             SharedServerClientUnequipActions(prevGO);
         }

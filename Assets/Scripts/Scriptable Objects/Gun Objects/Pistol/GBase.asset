@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1146b25e852a56447a5ad182f1c14842, type: 3}
-  m_Name: Gun
+  m_Name: GBase
   m_EditorClassIdentifier: 
-  name: Pistol
+  name: GBase
   damage: 54
-  firerate: 123
-  isAuto: 0
-  currentAmmo: 105
+  firerate: 5
+  isAuto: 1
+  currentAmmo: 62
   magSize: 123
   reloadTime: 1
   reloading: 0

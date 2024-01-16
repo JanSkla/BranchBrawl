@@ -51,6 +51,7 @@ public abstract class GUpgrade : GPart
 
         childNwObject.AutoObjectParentSync = false;
         childNwObject.transform.SetParent(destiny.PositionPoint.transform, false);
+        destiny.Part = childNwObject.GetComponent<GPart>();
     }
 
     public void NetworkAddParentOnDestiny(int destinyIndex, ulong childNwId)
