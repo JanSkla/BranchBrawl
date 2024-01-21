@@ -15,6 +15,11 @@ public class NetworkPlayerController : NetworkBehaviour
     [SerializeField]
     private float _jumpPower = 1;
 
+
+    [SerializeField]
+    private Animator _animator;
+
+
     private float _terrainColliderHeight = 0f;
 
     private Player player;
@@ -198,7 +203,12 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         if (!NetworkManager.IsServer)
         {
-            transform.position = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, _tickDeltaTime * _speed);
+            Vector3 newPosition = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, _tickDeltaTime * _speed);
+
+            Debug.Log(Vector3.Distance(transform.position, newPosition));
+            _animator.SetFloat("Speed", Vector3.Distance(transform.position, newPosition));
+
+            transform.position = newPosition;
             transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, _tickDeltaTime * _speed);
             Quaternion facing = Quaternion.Lerp(player.Head.transform.rotation, ServerTransformState.Value.Facing, _tickDeltaTime * _speed);
             player.Head.transform.rotation = facing;
@@ -210,6 +220,8 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void HandleMovement(Vector3 moveInput, Vector3 rotationInput)
     {
+        _animator.SetFloat("Speed", Vector3.Distance(Vector3.zero, moveInput));
+
         transform.Translate(_speed * _tickRate * moveInput);
         transform.Rotate(_tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0));
 
