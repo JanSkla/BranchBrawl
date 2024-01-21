@@ -8,11 +8,11 @@ public class GameManager : NetworkBehaviour
 {
     private int _goalCrowns = 3;
 
-    private NetworkList<int> _roundsList = new();
+    public NetworkList<int> RoundsList = new();
 
     public NetworkList<PlayerGameData> PlayersGameData = new();
 
-    private int _currentRoundListIndex = 0;
+    public int CurrentRoundListIndex = 0;
     private bool _currentRoundActive = false;
     void Awake()
     {
@@ -39,10 +39,9 @@ public class GameManager : NetworkBehaviour
             });
         }
 
-        _roundsList.Add((int)RoundType.Upgrade); //REMOVE
-        _roundsList.Add((int)RoundType.FirstCombat);
-        _roundsList.Add((int)RoundType.Upgrade);
-        _roundsList.Add((int)RoundType.Combat);
+        RoundsList.Add((int)RoundType.FirstCombat);
+        RoundsList.Add((int)RoundType.Upgrade);
+        RoundsList.Add((int)RoundType.Combat);
         StartCurrentRound();
     }
     private void StartCurrentRound()
@@ -63,7 +62,7 @@ public class GameManager : NetworkBehaviour
         if (isWin) return;
 
         if (_currentRoundActive) return;
-        RoundType currentType = (RoundType)_roundsList[_currentRoundListIndex];
+        RoundType currentType = (RoundType)RoundsList[CurrentRoundListIndex];
         switch (currentType)
         {
             case RoundType.FirstCombat:
@@ -71,8 +70,8 @@ public class GameManager : NetworkBehaviour
                 break;
             case RoundType.Combat:
                 StartCombatRound();
-                _roundsList.Add((int)RoundType.Upgrade);
-                _roundsList.Add((int)RoundType.Combat);
+                RoundsList.Add((int)RoundType.Upgrade);
+                RoundsList.Add((int)RoundType.Combat);
                 break;
             case RoundType.Upgrade:
                 StartUpgradeRound();
@@ -108,8 +107,8 @@ public class GameManager : NetworkBehaviour
         if (!NetworkManager.IsServer) return;
 
         _currentRoundActive = false;
-        _currentRoundListIndex++;
-        if (_roundsList.Count < _currentRoundListIndex) return;
+        CurrentRoundListIndex++;
+        if (RoundsList.Count < CurrentRoundListIndex) return;
         StartCurrentRound();
     }
 

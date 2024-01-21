@@ -2,18 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
     [SerializeField]
     private GameObject _quitDialog;
-
-    // PlayBtn
-
-    public void PlayGame()
-    {
-        SceneManager.LoadScene("HostJoinMenu");
-    }
 
     // SettingsBtn
 

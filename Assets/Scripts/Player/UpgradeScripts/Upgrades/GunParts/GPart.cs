@@ -11,7 +11,15 @@ public abstract class GPart : NetworkBehaviour
     [SerializeField]
     private Outline _totalOutline;
 
-    public void Shoot(ShootData shot) { }
+    void Start()
+    {
+        if(_partOutline)
+            _partOutline.enabled = false;
+        if (_totalOutline)
+            _totalOutline.enabled = false;
+    }
+
+    public abstract void Shoot(ShootData shot);
     public void DestroyPartRecursive()
     {
         if (GameObject.Find("GunPlaceholder") != null)
@@ -48,12 +56,14 @@ public abstract class GPart : NetworkBehaviour
         {
             if (GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().IsDelete && !GetComponent<GUpgrade>().IsUnityNull())
             {
-                SetOutlineTotal(true);
+                if (_totalOutline)
+                    SetOutlineTotal(true);
             }
             else if (!GetComponent<GUpgrade>().IsUnityNull() || !GetComponent<GMuzzle>().IsUnityNull())
             {
                 GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().HoveredPart = this;
-                SetOutlinePart(true);
+                if (_partOutline)
+                    SetOutlinePart(true);
             }
         }
     }
@@ -61,8 +71,10 @@ public abstract class GPart : NetworkBehaviour
     {
         if (GameObject.Find("GunPlaceholder") != null)
         {
-            SetOutlineTotal(false);
-            SetOutlinePart(false);
+            if (_totalOutline)
+                SetOutlineTotal(false);
+            if (_partOutline)
+                SetOutlinePart(false);
             if (!GetComponent<GUpgrade>().IsUnityNull() || !GetComponent<GMuzzle>().IsUnityNull())
             {
                 GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().HoveredPart = null;
@@ -116,11 +128,27 @@ public abstract class GPart : NetworkBehaviour
 
     public void SetOutlineTotal(bool isOutline)
     {
-        _totalOutline.OutlineMode = isOutline ? Outline.Mode.OutlineVisible : Outline.Mode.OutlineHidden;
+        if (isOutline)
+        {
+            _totalOutline.enabled = true;
+            _totalOutline.OutlineMode = Outline.Mode.OutlineAndSilhouette;
+        }
+        else
+        {
+            _totalOutline.enabled = false;
+        }
     }
     public void SetOutlinePart(bool isOutline)
     {
-        _partOutline.OutlineMode = isOutline ? Outline.Mode.OutlineVisible : Outline.Mode.OutlineHidden;
+        if (isOutline)
+        {
+            _partOutline.enabled = true;
+            _partOutline.OutlineMode = Outline.Mode.OutlineAndSilhouette;
+        }
+        else
+        {
+            _partOutline.enabled = false;
+        }
     }
 
 

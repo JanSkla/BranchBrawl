@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class GSplitter : GUpgrade
 {
-    public new void Shoot(ShootData shot)
+    public override void Shoot( ShootData shot)
     {
         foreach (var dest in Destiny)
         {

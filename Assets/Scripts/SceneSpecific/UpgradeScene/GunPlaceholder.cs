@@ -98,6 +98,10 @@ public class GunPlaceholder : MonoBehaviour
             PartBuilderInv.Selected = null;
             CursorHandler.Cross();
         }
+        else
+        {
+            CursorHandler.Default();
+        }
 
         _deleteBtn.GetComponent<Image>().color = IsDelete ? Color.gray : Color.white;
     }

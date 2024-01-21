@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class GEnhancer : GUpgrade
 {
-    public new void Shoot(ShootData shot)
+    public override void Shoot(ShootData shot)
     {
         Destiny[0].Part.Shoot(shot);
     }

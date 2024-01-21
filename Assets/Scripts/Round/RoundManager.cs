@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Security.Cryptography;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -54,14 +55,6 @@ public class RoundManager : NetworkBehaviour
         while (enumerator.MoveNext())
         {
             Debug.Log(enumerator.Current.Crowns);
-        }
-
-        if (IsServer)
-        {
-            foreach (var client in NetworkManager.Singleton.ConnectedClients)
-            {
-                client.Value.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.GunCurrentData.Value.NetworkSpawn();
-            }
         }
 
         StartGame();
@@ -125,6 +118,13 @@ public class RoundManager : NetworkBehaviour
             foreach (var client in NetworkManager.Singleton.ConnectedClients)
             {
                 client.Value.PlayerObject.GetComponent<PlayerManager>().SpawnPlayerObject();
+
+                if (_gameManager.RoundsList[_gameManager.CurrentRoundListIndex] == 1)
+                {
+                    GBase gun = client.Value.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.GunCurrentData.Value.NetworkSpawn();
+
+                    StartCoroutine(EquipInitItem(gun, client));
+                }
             }
             _alivePlayerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
             SetAlivePlayerCountClientRpc(AlivePlayerCount);
@@ -134,6 +134,22 @@ public class RoundManager : NetworkBehaviour
 
         State = RoundState.Running;
     }
+
+    IEnumerator EquipInitItem(GBase gun, System.Collections.Generic.KeyValuePair<ulong, NetworkClient> client)
+    {
+        //Wait for the specified delay time before continuing.
+        yield return new WaitForSeconds(1);
+
+
+        client.Value.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<PlayerInventory>().EquipItem(new Item()
+        {
+            Id = 0,
+            NetworkObjectId = gun.GetComponent<NetworkObject>().NetworkObjectId
+        });
+
+        //Do the action after the delay time has finished.
+    }
+
     public void PlayAgain()
     {
         if (NetworkManager.IsServer)

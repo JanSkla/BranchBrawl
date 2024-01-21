@@ -8,14 +8,17 @@ using UnityEngine;
 
 public class PlayerInventory : NetworkBehaviour
 {
-    public NetworkVariable<Item> EquippedItem = new NetworkVariable<Item>();
+    public NetworkVariable<Item> EquippedItem = new ();
 
     private Player player;
+    private GameManager _gameManager;
 
-    public static Item _emptyItem = new Item();
+    public static Item _emptyItem = new ();
     void Start()
     {
         player = GetComponent<Player>();
+        _gameManager = GameObject.Find("GameManager(Clone)").GetComponent<GameManager>();
+
         if (NetworkManager.IsClient) //equip item on load
         {
             if (EquippedItem.Value.Equals(_emptyItem)) return;
@@ -24,53 +27,59 @@ public class PlayerInventory : NetworkBehaviour
 
             if (go != null)
             {
-                go.GetComponent<Rigidbody>().isKinematic = false;
+                if(go.GetComponent<Rigidbody>())
+                    go.GetComponent<Rigidbody>().isKinematic = false;
                 //go.transform.SetParent(transform);
-                go.GetComponent<NetworkTransform>().enabled = false;
+                if (go.GetComponent<NetworkTransform>())
+                    go.GetComponent<NetworkTransform>().enabled = false;
             }
         }
     }
     void Update()
     {
-        if (player.IsLocalPlayer && Input.GetKeyDown(KeyCode.E) && EquippedItem.Value.Equals(_emptyItem))
-        {
-            GameObject pickableObject = player.GetComponent<PlayerCamera>().GetFacingPickable();
-            if (pickableObject != null)
-            {
-                if (pickableObject.CompareTag("Stick"))
-                {
-                    Vector3 stickPartLocalPos = pickableObject.transform.localPosition;
-                    //while (pickableObject.transform.parent != null)
-                    //{
-                    //    pickableObject = pickableObject.transform.parent.gameObject;
-                    //}
 
-                    EquipItem(new Item()
+        if (_gameManager.RoundsList[_gameManager.CurrentRoundListIndex] == 0)
+        {
+            if (player.IsLocalPlayer && Input.GetKeyDown(KeyCode.E) && EquippedItem.Value.Equals(_emptyItem))
+            {
+                GameObject pickableObject = player.GetComponent<PlayerCamera>().GetFacingPickable();
+                if (pickableObject != null)
+                {
+                    if (pickableObject.CompareTag("Stick"))
+                    {
+                        Vector3 stickPartLocalPos = pickableObject.transform.localPosition;
+                        //while (pickableObject.transform.parent != null)
+                        //{
+                        //    pickableObject = pickableObject.transform.parent.gameObject;
+                        //}
+
+                        EquipItem(new Item()
                         {
                             Id = 0,
                             NetworkObjectId = pickableObject.GetComponent<NetworkObject>().NetworkObjectId,
                             PositionOffset = stickPartLocalPos,
                         }
-                    );
-                }
-                else
-                {
-                    //while (pickableObject.transform.parent != null)
-                    //{
-                    //    pickableObject = pickableObject.transform.parent.gameObject;
-                    //}
-
-                    EquipItem(new Item()
+                        );
+                    }
+                    else
                     {
-                        Id = 0,
-                        NetworkObjectId = pickableObject.GetComponent<NetworkObject>().NetworkObjectId,
-                    });
+                        //while (pickableObject.transform.parent != null)
+                        //{
+                        //    pickableObject = pickableObject.transform.parent.gameObject;
+                        //}
+
+                        EquipItem(new Item()
+                        {
+                            Id = 0,
+                            NetworkObjectId = pickableObject.GetComponent<NetworkObject>().NetworkObjectId,
+                        });
+                    }
                 }
             }
-        }
-        if (player.IsLocalPlayer && Input.GetKeyDown(KeyCode.Q) && !EquippedItem.Value.Equals(_emptyItem))
-        {
-            UnequipItem();
+            if (player.IsLocalPlayer && Input.GetKeyDown(KeyCode.Q) && !EquippedItem.Value.Equals(_emptyItem))
+            {
+                UnequipItem();
+            }
         }
     }
 
@@ -78,6 +87,11 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (NetworkManager.IsServer)
         {
+            if (!EquippedItem.Value.Equals(_emptyItem))
+            {
+                UnequipItem();
+            }
+
             EquippedItem.Value = itemToEquip;
 
             GameObject equipGO = GetNetworkObject(EquippedItem.Value.NetworkObjectId).gameObject;
@@ -88,7 +102,7 @@ public class PlayerInventory : NetworkBehaviour
             }
 
             Transform handTransform = player.Hand.transform;
-            equipGO.GetComponent<NetworkObject>().TrySetParent(handTransform).ToString();
+            equipGO.GetComponent<NetworkObject>().TrySetParent(handTransform.gameObject, false).ToString();
 
             SharedServerClientEquipActions(equipGO, itemToEquip);
 
@@ -150,7 +164,8 @@ public class PlayerInventory : NetworkBehaviour
                 n = n.transform.parent.gameObject;
             }
 
-            n.GetComponent<NetworkTransform>().enabled = false;
+            if (n.GetComponent<NetworkTransform>())
+                n.GetComponent<NetworkTransform>().enabled = false;
 
             SharedServerClientEquipActions(n, newItem);
         }
@@ -158,7 +173,8 @@ public class PlayerInventory : NetworkBehaviour
         {
             GameObject prevGO = GetNetworkObject(previousItem.NetworkObjectId).gameObject;
 
-            prevGO.GetComponent<NetworkTransform>().enabled = true;
+            if (prevGO.GetComponent<NetworkTransform>())
+                prevGO.GetComponent<NetworkTransform>().enabled = true;
 
             SharedServerClientUnequipActions(prevGO);
         }
@@ -181,17 +197,23 @@ public class PlayerInventory : NetworkBehaviour
         equipGO.transform.localPosition = new Vector3();
         equipGO.transform.localRotation = new Quaternion();
 
-        equipGO.GetComponent<Rigidbody>().isKinematic = true;
+        if(equipGO.GetComponent<Rigidbody>())
+            equipGO.GetComponent<Rigidbody>().isKinematic = true;
 
         if (equipGO.CompareTag("Gun"))
         {
             player.GetComponent<PlayerShoot>().shootInput += equipGO.GetComponent<Gun>().Shoot;
         }
+        else if (equipGO.GetComponent<GBase>())
+        {
+            player.GetComponent<PlayerShoot>().shootInput += equipGO.GetComponent<GBase>().Shoot;
+            Debug.Log("Shot assigned");
+        }
 
         int changeLayer = player.IsLocalPlayer ? LayerMask.NameToLayer("LocalPlayer") : LayerMask.NameToLayer("Player");
 
 
-        ChangeLayerWithChildren(equipGO, changeLayer);
+        Tools.ChangeLayerWithChildren(equipGO, changeLayer);
         //equipGO.layer = changeLayer;
         //foreach (Transform child in equipGO.transform)
         //{
@@ -217,17 +239,8 @@ public class PlayerInventory : NetworkBehaviour
 
         int changeLayer = LayerMask.NameToLayer("Pickable");
 
-        ChangeLayerWithChildren(unequippedGO, changeLayer);
+        Tools.ChangeLayerWithChildren(unequippedGO, changeLayer);
 
         unequippedGO.GetComponent<Rigidbody>().isKinematic = false;
-    }
-
-    private void ChangeLayerWithChildren(GameObject gameObject, LayerMask layerMask)
-    {
-        gameObject.layer = layerMask;
-        foreach (Transform child in gameObject.transform)
-        {
-            ChangeLayerWithChildren(child.gameObject, layerMask);
-        }
     }
 }

@@ -16,7 +16,7 @@ MonoBehaviour:
   damage: 54
   firerate: 123
   isAuto: 0
-  currentAmmo: 123
+  currentAmmo: 105
   magSize: 123
   reloadTime: 1
   reloading: 0
