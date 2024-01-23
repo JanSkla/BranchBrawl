@@ -100,6 +100,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: pejvl_anim
       objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: 885f6f902750f5b4ba3ccce63fefdaf8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: 885f6f902750f5b4ba3ccce63fefdaf8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: 885f6f902750f5b4ba3ccce63fefdaf8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

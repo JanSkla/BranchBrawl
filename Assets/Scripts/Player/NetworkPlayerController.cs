@@ -25,6 +25,7 @@ public class NetworkPlayerController : NetworkBehaviour
     private Player player;
 
     private float _rotationX = 0;
+    private bool _isGrounded = false;
 
     private int _tick = 0;
     private float _tickRate = 1.0f / 90.0f;
@@ -117,6 +118,13 @@ public class NetworkPlayerController : NetworkBehaviour
     void Update()
     {
         _tickDeltaTime += Time.deltaTime;
+
+        if (!_isGrounded && GroundCheck())
+        {
+            _isGrounded = true;
+            _animator.SetBool("IsGrounded", true);
+        }
+
         if (IsLocalPlayer)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -237,7 +245,9 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         if (GroundCheck())
         {
+            _isGrounded = false;
             GetComponent<Rigidbody>().AddForce(Vector3.up * _jumpPower, ForceMode.Impulse);
+            _animator.SetBool("IsGrounded", false);
         }
     }
 
