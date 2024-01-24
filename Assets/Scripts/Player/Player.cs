@@ -2,6 +2,7 @@
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class Player : NetworkBehaviour
 {
@@ -11,6 +12,8 @@ public class Player : NetworkBehaviour
     public GameObject Head;
     [SerializeField]
     private TextMeshPro _nameTag;
+    [SerializeField]
+    private TwoBoneIKConstraint _handIKConstraint;
 
     public GameObject Hand;
     private NetworkVariable<ulong> _handNwId = new();
@@ -67,7 +70,9 @@ public class Player : NetworkBehaviour
             Hand.GetComponent<NetworkObject>().Spawn();
             _handNwId.Value = Hand.GetComponent<NetworkObject>().NetworkObjectId;
             Hand.GetComponent<NetworkObject>().TrySetParent(transform, false);
+
         }
+        _handIKConstraint.data.target = Hand.transform;
         _nameTag.text = PlayerManager.gameObject.GetComponent<PlayerManager>().PlayerName.Value.ToString();
     }
 

@@ -362,6 +362,7 @@ MonoBehaviour:
   handPrefab: {fileID: 687474098396233784, guid: a0fec42cab157a54c8ad1c799c7b45d0, type: 3}
   Head: {fileID: 3038660739255097365}
   _nameTag: {fileID: 2168465890358727320}
+  _handIKConstraint: {fileID: 6386175892680558081}
   Hand: {fileID: 0}
   PlayerManager: {fileID: 0}
 --- !u!114 &8519787474207634002
@@ -751,6 +752,10 @@ PrefabInstance:
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
       objectReference: {fileID: 3119448568434514637}
+    - target: {fileID: 8279986142540980457, guid: 25c8525273afbc64cb1e6abd3ebda236, type: 3}
+      propertyPath: m_Name
+      value: RightHandHold
+      objectReference: {fileID: 0}
     - target: {fileID: 8398815777808283476, guid: 25c8525273afbc64cb1e6abd3ebda236, type: 3}
       propertyPath: m_Name
       value: Pejvl
@@ -792,6 +797,17 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 7482986243113974216, guid: 25c8525273afbc64cb1e6abd3ebda236, type: 3}
   m_PrefabInstance: {fileID: 2587661389833472268}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6386175892680558081 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8883765267820695309, guid: 25c8525273afbc64cb1e6abd3ebda236, type: 3}
+  m_PrefabInstance: {fileID: 2587661389833472268}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeda7bfbf984f2a4da5ab4b8967b115d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7439903744582092602 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4960399822280363574, guid: 25c8525273afbc64cb1e6abd3ebda236, type: 3}
