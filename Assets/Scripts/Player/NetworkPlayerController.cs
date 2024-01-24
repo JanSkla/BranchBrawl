@@ -119,10 +119,11 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         _tickDeltaTime += Time.deltaTime;
 
-        if (!_isGrounded && GroundCheck())
+        bool groundCheck = GroundCheck();
+        if (_isGrounded != groundCheck)
         {
-            _isGrounded = true;
-            _animator.SetBool("IsGrounded", true);
+            _isGrounded = groundCheck;
+            _animator.SetBool("IsGrounded", groundCheck);
         }
 
         if (IsLocalPlayer)
@@ -243,7 +244,7 @@ public class NetworkPlayerController : NetworkBehaviour
     }
     private void HandleJump()
     {
-        if (GroundCheck())
+        if (_isGrounded)
         {
             _isGrounded = false;
             GetComponent<Rigidbody>().AddForce(Vector3.up * _jumpPower, ForceMode.Impulse);
