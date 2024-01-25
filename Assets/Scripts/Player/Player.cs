@@ -63,6 +63,7 @@ public class Player : NetworkBehaviour
         {
             name = "Local Player";
             GetComponent<LocalPlayer>().enabled = true;
+            _nameTag.enabled = false;
         }
         if (NetworkManager.IsServer)
         {
@@ -76,6 +77,7 @@ public class Player : NetworkBehaviour
 
         }
         _nameTag.text = PlayerManager.gameObject.GetComponent<PlayerManager>().PlayerName.Value.ToString();
+        Tools.ChangeLayerWithChildren(_nameTag.gameObject, IsLocalPlayer ? 8 : 6);
     }
 
     //public override void OnNetworkDespawn()
