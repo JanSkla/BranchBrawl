@@ -153,6 +153,15 @@ public class PlayerInventory : NetworkBehaviour
 
     private void OnEquippedItemChange(Item previousItem, Item newItem)
     {
+        if (!newItem.Equals(_emptyItem))
+        {
+            player.SetHandInPosition();
+        }
+        else
+        {
+            player.SetHandInOffPosition();
+        }
+
         if (NetworkManager.IsServer) return;
 
         if (!newItem.Equals(_emptyItem))
@@ -168,6 +177,7 @@ public class PlayerInventory : NetworkBehaviour
                 n.GetComponent<NetworkTransform>().enabled = false;
 
             SharedServerClientEquipActions(n, newItem);
+
         }
         else
         {

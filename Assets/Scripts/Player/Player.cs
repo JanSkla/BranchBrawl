@@ -15,6 +15,9 @@ public class Player : NetworkBehaviour
     [SerializeField]
     private TwoBoneIKConstraint _handIKConstraint;
 
+    [SerializeField]
+    private RigBuilder _rigBuilder;
+
     public GameObject Hand;
     private NetworkVariable<ulong> _handNwId = new();
 
@@ -72,7 +75,6 @@ public class Player : NetworkBehaviour
             Hand.GetComponent<NetworkObject>().TrySetParent(transform, false);
 
         }
-        _handIKConstraint.data.target = Hand.transform;
         _nameTag.text = PlayerManager.gameObject.GetComponent<PlayerManager>().PlayerName.Value.ToString();
     }
 
@@ -84,7 +86,16 @@ public class Player : NetworkBehaviour
     //        _handNwId.OnValueChanged -= OnHandNwIdChange;
     //    }
     //}
-
+    public void SetHandInOffPosition()
+    {
+        _handIKConstraint.data.target = null;
+        _rigBuilder.Build();
+    }
+    public void SetHandInPosition()
+    {
+        _handIKConstraint.data.target = Hand.transform;
+        _rigBuilder.Build();
+    }
     public void Die()
     {
         RoundManager roundManager = GameObject.Find("RoundManager").GetComponent<RoundManager>();
