@@ -25,7 +25,6 @@ public static class Tools
             progress = Mathf.Cos(progress);
             progress = progress / 2f + 0.5f;
             progress = 1 - progress;
-            Debug.Log(progress);
             action(originVal, goalAmount, progress * progress);
             timer += Time.deltaTime;
             yield return null;

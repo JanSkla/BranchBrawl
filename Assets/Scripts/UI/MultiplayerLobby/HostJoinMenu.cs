@@ -93,8 +93,6 @@ public class HostJoinMenu : MonoBehaviour
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relaySeverData);
         NetworkManager.Singleton.StartHost();
 
-        loadingView.SetActive(false);
-
         GameObject networkDataManager = Instantiate(networkDataManagerPrefab);
         networkDataManager.GetComponent<NetworkObject>().Spawn(false);
         networkDataManager.GetComponent<NetworkData>().JoinCode.Value = createJoinCode;
@@ -136,8 +134,6 @@ public class HostJoinMenu : MonoBehaviour
 
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
         NetworkManager.Singleton.StartClient();
-
-        loadingView.SetActive(false);
 
         return relayServerData;
     }

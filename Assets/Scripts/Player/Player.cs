@@ -46,6 +46,7 @@ public class Player : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        gameObject.layer = 6;
         if (NetworkManager.IsServer)
         {
             _playerManagerNwId.Value = PlayerManager.NetworkObjectId; //IsLocalPlayer works after

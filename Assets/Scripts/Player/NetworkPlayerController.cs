@@ -214,7 +214,6 @@ public class NetworkPlayerController : NetworkBehaviour
         {
             Vector3 newPosition = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, _tickDeltaTime * _speed);
 
-            Debug.Log(Vector3.Distance(transform.position, newPosition));
             _animator.SetFloat("Speed", Vector3.Distance(transform.position, newPosition));
 
             transform.position = newPosition;
