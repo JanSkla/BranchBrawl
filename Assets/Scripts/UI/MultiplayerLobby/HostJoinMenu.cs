@@ -29,11 +29,13 @@ public class HostJoinMenu : MonoBehaviour
 
     void Start()
     {
+
         if (!GameObject.Find("NetworkManager"))
         {
             var nm = Instantiate(_networkManagerPrefab);
             nm.name = "NetworkManager";
         }
+        gameObject.SetActive(false);
     }
 
     public void OnHostClick()
