@@ -218,10 +218,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 939416094}
     m_Modifications:
     - target: {fileID: 1296914294481797539, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
-      propertyPath: prefixTextValue
-      value: 'Play next '
-      objectReference: {fileID: 0}
-    - target: {fileID: 1296914294481797539, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
       propertyPath: _onFullfilled.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -253,10 +249,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayAgainBtn
       objectReference: {fileID: 0}
-    - target: {fileID: 3226702814259076643, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
-      propertyPath: m_text
-      value: Play next
-      objectReference: {fileID: 0}
     - target: {fileID: 6697506695718617734, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -287,11 +279,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6697506695718617734, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 160
+      value: 82
       objectReference: {fileID: 0}
     - target: {fileID: 6697506695718617734, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 30
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 6697506695718617734, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
       propertyPath: m_LocalPosition.x

@@ -256,9 +256,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2
+  m_Height: 1.9246747
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.037662625, z: 0}
 --- !u!114 &3231654685975952999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,7 +406,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FirstPersonCameraPrefab: {fileID: 1793215923367635377, guid: 167ab319e1654734b84c1593dfd4d884, type: 3}
-  CameraOffset: {x: 0, y: 0.5, z: 0.3}
   FpsCam: {fileID: 0}
 --- !u!1 &6529876884829048263
 GameObject:

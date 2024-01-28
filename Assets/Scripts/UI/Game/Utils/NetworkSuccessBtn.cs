@@ -10,10 +10,7 @@ using UnityEngine.Events;
 public class NetworkSuccessBtn : NetworkBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI text;
-
-    [SerializeField]
-    private string prefixTextValue;
+    private TextMeshProUGUI _totalText;
 
     [SerializeField]
     private UnityEvent _onFullfilled;
@@ -23,6 +20,14 @@ public class NetworkSuccessBtn : NetworkBehaviour
 
     private NetworkVariable<int> _readyCount = new NetworkVariable<int>();
 
+    private void Start()
+    {
+        _totalText.gameObject.SetActive(false);
+        if (_onFullfilled.GetPersistentEventCount() == 0)
+        {
+            Debug.LogWarning("No OnFullfill event assigned");
+        }
+    }
     void OnEnable()
     {
         if (NetworkManager.IsServer)
@@ -76,11 +81,15 @@ public class NetworkSuccessBtn : NetworkBehaviour
 
     private void UpdateText(int readyCount)
     {
-        text.text = $"{prefixTextValue}{readyCount}/{_playerCount}";
+        _totalText.text = $"{readyCount}/{_playerCount}";
     }
 
     private void OnReadyCountChange(int prevCount, int newCount)
     {
+        if (!_totalText.gameObject.activeSelf)
+        {
+            _totalText.gameObject.SetActive(true);
+        }
         UpdateText(newCount);
         if (NetworkManager.IsServer && newCount == _playerCount)
         {
