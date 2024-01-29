@@ -14,8 +14,10 @@ public class MPLobby : NetworkBehaviour
     private GameObject clientView;
     [SerializeField]
     private TextMeshProUGUI _joinCodeDisplay;
+    [SerializeField]
+    private PlayerStandPlacehodlerManager _playerStandPlacehodlerManager;
 
-    private GameObject _networkDataManager;
+    private NetworkData _networkDataManager;
     void Start()
     {
         if (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
@@ -28,17 +30,43 @@ public class MPLobby : NetworkBehaviour
             hostView.SetActive(false);
             clientView.SetActive(true);
         }
-        _networkDataManager = GameObject.Find("NetworkDataManager(Clone)");
-        _joinCodeDisplay.text = _networkDataManager.GetComponent<NetworkData>().JoinCode.Value.ToString();
+        _networkDataManager = GameObject.Find("NetworkDataManager(Clone)").GetComponent<NetworkData>();
+        _joinCodeDisplay.text = _networkDataManager.JoinCode.Value.ToString();
+        _networkDataManager.PlayerObjectNwIds.OnListChanged += OnPlayerNwIdsChange;
+
+
+        ulong[] list = new ulong[_networkDataManager.PlayerObjectNwIds.Count];
+
+        for (int i = 0; i < _networkDataManager.PlayerObjectNwIds.Count; i++)
+        {
+            list[i] = _networkDataManager.PlayerObjectNwIds[i];
+        }
+
+        _playerStandPlacehodlerManager.RerenderCurrentPlayers(list);
+    }
+    private void OnDestroy()
+    {
+        _networkDataManager.PlayerObjectNwIds.OnListChanged -= OnPlayerNwIdsChange;
     }
     public void StartGame()
     {
-        _networkDataManager.GetComponent<NetworkData>().StartNewGame();
+        _networkDataManager.StartNewGame();
         //gminstance.GetComponent<GameManager>().StartGame();
     }
     public void GoBack()
     {
         NetworkManager.Singleton.Shutdown();
         SceneManager.LoadScene("Menu");
+    }
+    private void OnPlayerNwIdsChange(NetworkListEvent<ulong> changeEvent)
+    {
+        ulong[] list = new ulong[_networkDataManager.PlayerObjectNwIds.Count];
+
+        for (int i = 0; i < _networkDataManager.PlayerObjectNwIds.Count; i++)
+        {
+            list[i] = _networkDataManager.PlayerObjectNwIds[i];
+        }
+
+        _playerStandPlacehodlerManager.RerenderCurrentPlayers(list);
     }
 }

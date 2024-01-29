@@ -5,6 +5,14 @@ using UnityEngine;
 
 public static class Tools
 {
+    public static void DestroyWithChildren(GameObject gameObject)
+    {
+        foreach (Transform child in gameObject.transform)
+        {
+            DestroyWithChildren(child.gameObject);
+        }
+        UnityEngine.Object.Destroy(gameObject);
+    }
     public static void ChangeLayerWithChildren(GameObject gameObject, LayerMask layerMask)
     {
         gameObject.layer = layerMask;
