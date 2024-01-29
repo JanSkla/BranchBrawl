@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerStandPlacehodlerManager : NetworkBehaviour
+public class PlayerStandPlacehodlerManager : MonoBehaviour
 {
     [SerializeField]
     private PlayerStand _playerstandPrefab;
@@ -31,50 +31,40 @@ public class PlayerStandPlacehodlerManager : NetworkBehaviour
         if(_networkData == null)
             _networkData = GameObject.Find("NetworkDataManager(Clone)").GetComponent<NetworkData>();
 
+        int j = 1;
         for (int i = 0; i < playerNwIds.Length; i++)
         {
-            int row = (int)Mathf.Ceil((float)i / 2);
-            int sideLROffset = (int)Mathf.Pow(-1, i) * row;
-
-            Vector3 pos = new(sideLROffset * 5, -1, row * 4);
 
             var go = Instantiate(_playerstandPrefab.gameObject);
             go.transform.SetParent(transform, false);
-            go.transform.localPosition = pos;
 
-            Debug.Log(_networkData);
-            foreach (var a in _networkData.PlayerObjectNwIds)
-            {
-                Debug.Log(a);
-            }
-            Debug.Log(_networkData.PlayerObjectNwIds[i]);
-            Debug.Log(NetworkManager.Singleton.SpawnManager.SpawnedObjects[_networkData.PlayerObjectNwIds[i]]);
-            Debug.Log(NetworkManager.Singleton.SpawnManager.SpawnedObjects[_networkData.PlayerObjectNwIds[i]].GetComponent<PlayerManager>());
-            Debug.Log(NetworkManager.Singleton.SpawnManager.SpawnedObjects[_networkData.PlayerObjectNwIds[i]].GetComponent<PlayerManager>());
 
             var playerManager = NetworkManager.Singleton.SpawnManager.SpawnedObjects[_networkData.PlayerObjectNwIds[i]].GetComponent<PlayerManager>();
 
 
             go.GetComponent<PlayerStand>().SetNickname(playerManager.PlayerName.Value.ToString());
-
+            Vector3 pos;
             if (playerManager.IsLocalPlayer)
             {
                 go.GetComponent<PlayerStand>().SetNameVisibility(false);
+
+                pos = new(0, -1, 0);
             }
             else
             {
+                j++;
+                int row = (int)Mathf.Ceil((float)j / 2);
+                int sideLROffset = (int)Mathf.Pow(-1, j) * row;
+
+                pos = new(sideLROffset * 5, -1, row * 4);
                 if (_readyButton.ReadyList.Contains((ulong)i))
                 {
                     go.GetComponent<PlayerStand>().SetReady(true);
                 }
             }
+            go.transform.localPosition = pos;
             _playerStands.Add((ulong)i, go.GetComponent<PlayerStand>());
         }
-    }
-    [ServerRpc]
-    private void RerenderStandsServerRpc()
-    {
-
     }
     private void OnListChange(NetworkListEvent<ulong> changeEvent)
     {

@@ -20,7 +20,7 @@ public class PlayerStand : MonoBehaviour
         if (isReady)
         {
             _readyText.text = "READY";
-            _readyText.color = new Color(6, 190, 24);
+            _readyText.color = new Color(0.0235f, 0.7451f, 0.0941f);
         }
         else
         {
