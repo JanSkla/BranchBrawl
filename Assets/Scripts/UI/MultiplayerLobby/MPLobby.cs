@@ -60,6 +60,7 @@ public class MPLobby : NetworkBehaviour
     }
     private void OnPlayerNwIdsChange(NetworkListEvent<ulong> changeEvent)
     {
+        Debug.Log("AA" + _networkDataManager.PlayerObjectNwIds.Count);
         ulong[] list = new ulong[_networkDataManager.PlayerObjectNwIds.Count];
 
         for (int i = 0; i < _networkDataManager.PlayerObjectNwIds.Count; i++)

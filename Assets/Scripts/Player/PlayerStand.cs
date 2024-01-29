@@ -19,13 +19,13 @@ public class PlayerStand : MonoBehaviour
     {
         if (isReady)
         {
-            _nickText.text = "Ready";
-            _nickText.color = Color.green;
+            _readyText.text = "READY";
+            _readyText.color = new Color(6, 190, 24);
         }
         else
         {
-            _nickText.text = "Unready";
-            _nickText.color = Color.red;
+            _readyText.text = "UNREADY";
+            _readyText.color = Color.red;
         }
     }
     public void SetNameVisibility(bool visibility)

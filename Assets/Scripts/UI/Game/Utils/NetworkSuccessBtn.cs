@@ -18,7 +18,7 @@ public class NetworkSuccessBtn : NetworkBehaviour
     private int _playerCount;
     private bool _isReady = false;
 
-    private NetworkList<ulong> _readyList = new NetworkList<ulong>();
+    public NetworkList<ulong> ReadyList = new NetworkList<ulong>();
 
     private void Start()
     {
@@ -38,7 +38,7 @@ public class NetworkSuccessBtn : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        _readyList.OnListChanged += OnReadyListChange;
+        ReadyList.OnListChanged += OnReadyListChange;
 
 
         if (NetworkManager.IsServer || NetworkManager.IsHost)
@@ -52,7 +52,7 @@ public class NetworkSuccessBtn : NetworkBehaviour
     }
     public override void OnNetworkDespawn()
     {
-        _readyList.OnListChanged -= OnReadyListChange;
+        ReadyList.OnListChanged -= OnReadyListChange;
     }
 
     public void OnButtonPress()
@@ -62,18 +62,18 @@ public class NetworkSuccessBtn : NetworkBehaviour
             _isReady = !_isReady;
             if (_isReady)
             {
-                _readyList.Add(NetworkManager.Singleton.LocalClientId);
+                ReadyList.Add(NetworkManager.Singleton.LocalClientId);
             }
             else
             {
-                _readyList.Remove(NetworkManager.Singleton.LocalClientId);
+                ReadyList.Remove(NetworkManager.Singleton.LocalClientId);
             }
-            UpdateText(_readyList.Count);
+            UpdateText(ReadyList.Count);
         }
         else
         {
             _isReady = !_isReady;
-            UpdateText(_readyList.Count + (_isReady ? 1 : -1)); //simulated count increase
+            UpdateText(ReadyList.Count + (_isReady ? 1 : -1)); //simulated count increase
             IsReadyServerRPC(_isReady, NetworkManager.Singleton.LocalClientId);
         }
     }
@@ -89,8 +89,8 @@ public class NetworkSuccessBtn : NetworkBehaviour
         {
             _totalText.gameObject.SetActive(true);
         }
-        UpdateText(_readyList.Count);
-        if (NetworkManager.IsServer && _readyList.Count == _playerCount)
+        UpdateText(ReadyList.Count);
+        if (NetworkManager.IsServer && ReadyList.Count == _playerCount)
         {
             Fullfilled();
         }
@@ -106,11 +106,11 @@ public class NetworkSuccessBtn : NetworkBehaviour
     {
         if (isReady)
         {
-            _readyList.Add(clientId);
+            ReadyList.Add(clientId);
         }
         else
         {
-            _readyList.Remove(clientId);
+            ReadyList.Remove(clientId);
         }
     }
     [ServerRpc(RequireOwnership = false)]
