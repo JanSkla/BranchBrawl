@@ -25,6 +25,8 @@ public class Player : NetworkBehaviour
     private NetworkVariable<ulong> _playerManagerNwId = new();
 
     private bool _isAlive = true;
+    //movement restrictors
+    public bool AreControlsDisabled = false;
     public bool IsAlive
     {
         get { return _isAlive; }

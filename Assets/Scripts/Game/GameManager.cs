@@ -1,6 +1,7 @@
 
 using Unity.Netcode;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -23,7 +24,7 @@ public class GameManager : NetworkBehaviour
 
         StartGame();
     }
-    public void StartGame()
+        public void StartGame()
     {
         if (!NetworkManager.IsServer) return;
 

@@ -29,7 +29,16 @@ public class InGameUI : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SetMenu(!_menu.activeSelf);
+            if (_menu.activeSelf)
+            {
+                SetMenu(false);
+                CurrentPlayer.AreControlsDisabled = false;
+            }
+            else
+            {
+                SetMenu(true);
+                CurrentPlayer.AreControlsDisabled = true;
+            }
         }
         if (Input.GetKeyDown(KeyCode.Tab))
         {

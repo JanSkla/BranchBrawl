@@ -17,6 +17,9 @@ public class PlayerCamera : NetworkBehaviour
 
     public GameObject FpsCam;
 
+    [SerializeField]
+    private float _pickupRange;
+
     void Start()
     {
         _player = GetComponent<Player>();
@@ -32,7 +35,7 @@ public class PlayerCamera : NetworkBehaviour
         if (FpsCam && _inGameUI)
         {
             RaycastHit hit = new();
-            if (Physics.Raycast(FpsCam.transform.position, FpsCam.transform.TransformDirection(Vector3.forward), out hit, 4, LayerMask.GetMask("Pickable")))
+            if (Physics.Raycast(FpsCam.transform.position, FpsCam.transform.TransformDirection(Vector3.forward), out hit, _pickupRange, LayerMask.GetMask("Pickable")))
             {
                 _inGameUI.GetComponent<InGameUI>().Game.GetComponent<GameUI>().ChangeCursorColor(Color.cyan);
             }
@@ -46,7 +49,7 @@ public class PlayerCamera : NetworkBehaviour
     public GameObject GetFacingPickable()
     {
         RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(FpsCam.transform.position, FpsCam.transform.TransformDirection(Vector3.forward), out hit, 4, LayerMask.GetMask("Pickable")))
+        if (Physics.Raycast(FpsCam.transform.position, FpsCam.transform.TransformDirection(Vector3.forward), out hit, _pickupRange, LayerMask.GetMask("Pickable")))
         {
             return hit.collider.gameObject;
         }

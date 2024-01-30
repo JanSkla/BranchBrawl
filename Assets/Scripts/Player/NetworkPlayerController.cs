@@ -126,7 +126,7 @@ public class NetworkPlayerController : NetworkBehaviour
             _animator.SetBool("IsGrounded", groundCheck);
         }
 
-        if (IsLocalPlayer)
+        if (IsLocalPlayer && !player.AreControlsDisabled)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {

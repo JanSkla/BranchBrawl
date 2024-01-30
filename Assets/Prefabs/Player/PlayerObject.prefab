@@ -366,6 +366,7 @@ MonoBehaviour:
   _rigBuilder: {fileID: 1395740257178290133}
   Hand: {fileID: 0}
   PlayerManager: {fileID: 0}
+  AreControlsDisabled: 0
 --- !u!114 &8519787474207634002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -407,6 +408,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FirstPersonCameraPrefab: {fileID: 1793215923367635377, guid: 167ab319e1654734b84c1593dfd4d884, type: 3}
   FpsCam: {fileID: 0}
+  _pickupRange: 8
 --- !u!1 &6529876884829048263
 GameObject:
   m_ObjectHideFlags: 0
