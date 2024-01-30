@@ -51,6 +51,7 @@ MonoBehaviour:
   _partOutline: {fileID: 3516383147716665304}
   _totalOutline: {fileID: 0}
   _muzzle: {fileID: 7072128863992936949}
+  _line: {fileID: 2715633788094868975, guid: 631734ac1b911674895300ad228031d3, type: 3}
 --- !u!65 &4997086827252699035
 BoxCollider:
   m_ObjectHideFlags: 0

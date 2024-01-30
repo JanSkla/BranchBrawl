@@ -68,7 +68,6 @@ public class PlayerStandPlacehodlerManager : MonoBehaviour
     }
     private void OnListChange(NetworkListEvent<ulong> changeEvent)
     {
-        Debug.Log("a");
         for (int i = 0; i < _playerStands.Count; i++)
         {
             if (_readyButton.ReadyList.Contains((ulong)i))

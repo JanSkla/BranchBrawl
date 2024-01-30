@@ -32,12 +32,10 @@ public class InGameUI : MonoBehaviour
             if (_menu.activeSelf)
             {
                 SetMenu(false);
-                CurrentPlayer.AreControlsDisabled = false;
             }
             else
             {
                 SetMenu(true);
-                CurrentPlayer.AreControlsDisabled = true;
             }
         }
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -65,6 +63,7 @@ public class InGameUI : MonoBehaviour
     {
         Game.SetActive(!visible);
         _menu.SetActive(visible);
+        CurrentPlayer.AreControlsDisabled = visible;
         if (visible)
         {
             Cursor.lockState = CursorLockMode.None;
