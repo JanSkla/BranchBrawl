@@ -172,7 +172,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunData: {fileID: 11400000, guid: 17798b0798a73074c9ba39a597214eaa, type: 2}
-  muzzle: {fileID: 2224836195491636775}
+  _muzzle: {fileID: 2224836195491636775}
+  _line: {fileID: 2715633788094868975, guid: 631734ac1b911674895300ad228031d3, type: 3}
 --- !u!65 &3490600923366458863
 BoxCollider:
   m_ObjectHideFlags: 0

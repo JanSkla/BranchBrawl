@@ -9,7 +9,9 @@ public class Gun : NetworkBehaviour
     [SerializeField]
     private GunData gunData;
     [SerializeField]
-    private GameObject muzzle;
+    private GameObject _muzzle;
+    [SerializeField]
+    private LineRenderer _line;
 
     private float _timeSinceLastShot = 0f;
 
@@ -54,13 +56,29 @@ public class Gun : NetworkBehaviour
 
         ShootSendNetworkRpc(hitData);
         _timeSinceLastShot = 0f;
+        ShotVisual();
+    }
+
+    private void ShotVisual()
+    {
+        Debug.Log("a");
+        RaycastHit hit;
+        Vector3 pointOfInterest = _muzzle.transform.position + _muzzle.transform.forward * 100;
+        if (Physics.Raycast(_muzzle.transform.position, transform.forward * 100, out hit, 100, 8))
+        {
+            pointOfInterest = hit.point;
+            Debug.Log("hit" + hit.point);
+        }
+
+        LineRenderer line = Instantiate(_line.gameObject).GetComponent<LineRenderer>();
+        line.SetPositions(new Vector3[] { _muzzle.transform.position, pointOfInterest });
     }
 
     private bool CanShoot() => !gunData.reloading && _timeSinceLastShot > 1f / gunData.firerate;
 
     private void SimulatedShoot()
     {
-        Debug.DrawRay(muzzle.transform.position, transform.forward * 100, Color.blue, 1);
+        Debug.DrawRay(_muzzle.transform.position, transform.forward * 100, Color.blue, 1);
     }
 
     private void ShootSendNetworkRpc(HitData hit)

@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4627901039589073751}
   - component: {fileID: 2715633788094868975}
+  - component: {fileID: 5393860423462877886}
   m_Layer: 0
-  m_Name: GunShot
+  m_Name: BulletTrail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!120 &2715633788094868975
 LineRenderer:
@@ -136,3 +137,15 @@ LineRenderer:
   m_UseWorldSpace: 0
   m_Loop: 0
   m_ApplyActiveColorSpace: 0
+--- !u!114 &5393860423462877886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7467279920378418934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28850f406a1be8c4babd90a5ae0778e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
