@@ -89,6 +89,7 @@ public class RoundManager : NetworkBehaviour
         //~
 
         StartCoroutine(nameof(StartNewRoundCountdown));
+        StartNewRoundCountdownClientRpc();
     }
     IEnumerator StartNewRoundCountdown()
     {
@@ -98,7 +99,20 @@ public class RoundManager : NetworkBehaviour
 
         for (int i = 0; i < time; i++)
         {
-            cTxt.text = (time - i).ToString();
+            int timeLeft = time - i;
+            switch (timeLeft)
+            {
+                case 1:
+                    cTxt.color = Color.red;
+                    break;
+                case 2:
+                    cTxt.color = Color.yellow;
+                    break;
+                default:
+                    break;
+            }
+
+            cTxt.text = (timeLeft).ToString();
             yield return new WaitForSeconds(1);
         }
         cTxt.text = (time - 0).ToString();
@@ -109,7 +123,7 @@ public class RoundManager : NetworkBehaviour
     [ClientRpc]
     private void StartNewRoundCountdownClientRpc()
     {
-        StartNewRoundCountdown();
+        StartCoroutine(nameof(StartNewRoundCountdown));
     }
     private void StartGame()
     {
