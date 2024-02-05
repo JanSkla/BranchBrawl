@@ -88,42 +88,7 @@ public class RoundManager : NetworkBehaviour
         }
         //~
 
-        StartCoroutine(nameof(StartNewRoundCountdown));
-        StartNewRoundCountdownClientRpc();
-    }
-    IEnumerator StartNewRoundCountdown()
-    {
-        var cTxt = _inGameUI.Game.GetComponent<GameUI>().CountDownText;
-
-        int time = 5;
-
-        for (int i = 0; i < time; i++)
-        {
-            int timeLeft = time - i;
-            switch (timeLeft)
-            {
-                case 1:
-                    cTxt.color = Color.red;
-                    break;
-                case 2:
-                    cTxt.color = Color.yellow;
-                    break;
-                default:
-                    break;
-            }
-
-            cTxt.text = (timeLeft).ToString();
-            yield return new WaitForSeconds(1);
-        }
-        cTxt.text = (time - 0).ToString();
-        PlayAgain();
-        yield return null;
-    }
-
-    [ClientRpc]
-    private void StartNewRoundCountdownClientRpc()
-    {
-        StartCoroutine(nameof(StartNewRoundCountdown));
+        _inGameUI.Game.GetComponent<GameUI>().CountDownText.StartCountDown();
     }
     private void StartGame()
     {

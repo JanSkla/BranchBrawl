@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7664200300234537540}
   - component: {fileID: 2945192151627474987}
+  - component: {fileID: 2263590523700600949}
   - component: {fileID: 2127164839743782562}
+  - component: {fileID: 9077507531605397870}
   m_Layer: 5
   m_Name: CountdownTxt
   m_TagString: Untagged
@@ -46,6 +48,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1546299374439676941}
   m_CullTransparentMesh: 1
+--- !u!114 &2263590523700600949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1546299374439676941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c507f45bc158848a3651ea68490fa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timeLength: 10
 --- !u!114 &2127164839743782562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,3 +150,23 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &9077507531605397870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1546299374439676941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
