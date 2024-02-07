@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MultiplayerLobby.unity
     guid: 665961ff40e611f489d87e509f143ec8
   - enabled: 1
-    path: Assets/Scenes/CombatRound.unity
+    path: Assets/Scenes/CombatRound old.unity
     guid: 47b6fbe4b2e6a4c4ea5abd6a01b5a56b
   - enabled: 0
     path: Assets/Scenes/HostJoinMenu.unity
@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/UpgradeRound.unity
     guid: 0f9655b9f42fb6c4082abdf471f75f3c
+  - enabled: 1
+    path: Assets/Scenes/CombatRound.unity
+    guid: 66860a14a00c6f8479ddfa088f8170c5
   m_configObjects: {}
