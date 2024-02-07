@@ -223,7 +223,7 @@ public class PlayerInventory : NetworkBehaviour
         int changeLayer = player.IsLocalPlayer ? LayerMask.NameToLayer("LocalPlayer") : LayerMask.NameToLayer("Player");
 
 
-        Tools.ChangeLayerWithChildren(equipGO, changeLayer);
+        Utils.ChangeLayerWithChildren(equipGO, changeLayer);
         //equipGO.layer = changeLayer;
         //foreach (Transform child in equipGO.transform)
         //{
@@ -249,7 +249,7 @@ public class PlayerInventory : NetworkBehaviour
 
         int changeLayer = LayerMask.NameToLayer("Pickable");
 
-        Tools.ChangeLayerWithChildren(unequippedGO, changeLayer);
+        Utils.ChangeLayerWithChildren(unequippedGO, changeLayer);
 
         unequippedGO.GetComponent<Rigidbody>().isKinematic = false;
     }

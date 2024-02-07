@@ -21,7 +21,7 @@ public class HealthDisplay : MonoBehaviour
 
     public void ChangeAmount(float prevVal, float value)
     {
-        StartCoroutine(Tools.SmoothLerpMoveTo(prevVal, value, 1, RenderAmount));
+        StartCoroutine(Utils.SmoothLerpMoveTo(prevVal, value, 1, RenderAmount));
     }
 
     private void RenderAmount(float value)

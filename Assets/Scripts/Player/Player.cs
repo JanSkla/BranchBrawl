@@ -60,7 +60,7 @@ public class Player : NetworkBehaviour
 
             Hand = NetworkManager.SpawnManager.SpawnedObjects[_handNwId.Value].gameObject;
 
-            Tools.ChangeLayerWithChildren(Hand, IsLocalPlayer ? 8 : 6);
+            Utils.ChangeLayerWithChildren(Hand, IsLocalPlayer ? 8 : 6);
         }
         if (IsLocalPlayer)
         {
@@ -72,7 +72,7 @@ public class Player : NetworkBehaviour
         {
             Hand = Instantiate(handPrefab);
 
-            Tools.ChangeLayerWithChildren(Hand, IsLocalPlayer ? 8 : 6);
+            Utils.ChangeLayerWithChildren(Hand, IsLocalPlayer ? 8 : 6);
 
             Hand.GetComponent<NetworkObject>().Spawn();
             _handNwId.Value = Hand.GetComponent<NetworkObject>().NetworkObjectId;
@@ -80,7 +80,7 @@ public class Player : NetworkBehaviour
 
         }
         _nameTag.text = PlayerManager.gameObject.GetComponent<PlayerManager>().PlayerName.Value.ToString();
-        Tools.ChangeLayerWithChildren(_nameTag.gameObject, IsLocalPlayer ? 8 : 6);
+        Utils.ChangeLayerWithChildren(_nameTag.gameObject, IsLocalPlayer ? 8 : 6);
     }
 
     //public override void OnNetworkDespawn()
