@@ -97,10 +97,11 @@ public class GMuzzle : GPart
     {
         Debug.Log("a");
         RaycastHit hit;
-        Vector3 pointOfInterest = Vector3.zero;
-        if (Physics.Raycast(_muzzle.transform.position, transform.forward * 100, out hit, 1))
+        Vector3 pointOfInterest = _muzzle.transform.position + _muzzle.transform.forward * 100;
+        if (Physics.Raycast(_muzzle.transform.position, transform.forward * 100, out hit, 100, 8))
         {
-            pointOfInterest = hit.transform.InverseTransformPoint(hit.point);
+            pointOfInterest = hit.point;
+            Debug.Log("hit" + hit.point);
         }
 
         LineRenderer line = Instantiate(_line.gameObject).GetComponent<LineRenderer>();

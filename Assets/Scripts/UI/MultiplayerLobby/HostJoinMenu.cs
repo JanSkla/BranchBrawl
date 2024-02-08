@@ -70,6 +70,7 @@ public class HostJoinMenu : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError($"Relay create allocation request failed {e.Message}");
+            loadingView.SetActive(false);
             throw;
         }
 
@@ -84,7 +85,7 @@ public class HostJoinMenu : MonoBehaviour
         catch
         {
             Debug.LogError("Relay create join code request failed");
-            SceneManager.LoadScene("HostJoinMenu");
+            loadingView.SetActive(false);
             throw;
         }
 
@@ -124,7 +125,7 @@ public class HostJoinMenu : MonoBehaviour
         catch
         {
             Debug.LogError("Relay create join code request failed");
-            SceneManager.LoadScene("HostJoinMenu");
+            loadingView.SetActive(false);
             throw;
         }
 
