@@ -19,12 +19,6 @@ public class InGameUI : MonoBehaviour
     private GameObject _tab;
 
     public Player CurrentPlayer;
-
-    void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))

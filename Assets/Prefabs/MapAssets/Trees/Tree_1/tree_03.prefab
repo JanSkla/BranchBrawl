@@ -9,8 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 281761527229718065}
-  - component: {fileID: 3311823098327811763}
-  - component: {fileID: -3572414110360344115}
+  - component: {fileID: 406357167650368111}
   m_Layer: 0
   m_Name: tree_03
   m_TagString: Untagged
@@ -34,33 +33,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!205 &3311823098327811763
-LODGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6299629793842300959}
-  serializedVersion: 2
-  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
-  m_Size: 1
-  m_FadeMode: 0
-  m_AnimateCrossFading: 0
-  m_LastLODIsBillboard: 0
-  m_LODs:
-  - screenRelativeHeight: 0.39752063
-    fadeTransitionWidth: 0
-    renderers:
-    - renderer: {fileID: 6353746500504629684}
-  - screenRelativeHeight: 0.15855338
-    fadeTransitionWidth: 0
-    renderers: []
-  - screenRelativeHeight: 0.031965576
-    fadeTransitionWidth: 0
-    renderers: []
-  m_Enabled: 1
---- !u!64 &-3572414110360344115
-MeshCollider:
+--- !u!136 &406357167650368111
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -77,10 +51,11 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -7566248732120651985, guid: 7a510383cec05ee468eb5765d704e960, type: 3}
+  serializedVersion: 2
+  m_Radius: 0.80188364
+  m_Height: 35.150105
+  m_Direction: 1
+  m_Center: {x: 0.17679328, y: 16.84754, z: -0.15482682}
 --- !u!1001 &5759153286113865008
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -137,6 +112,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: cremastogyne_03
       objectReference: {fileID: 0}
+    - target: {fileID: 4742473837712756890, guid: 7a510383cec05ee468eb5765d704e960, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.91184986
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742473837712756890, guid: 7a510383cec05ee468eb5765d704e960, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.6058656
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -145,10 +128,5 @@ PrefabInstance:
 --- !u!4 &5216899120046426843 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7a510383cec05ee468eb5765d704e960, type: 3}
-  m_PrefabInstance: {fileID: 5759153286113865008}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &6353746500504629684 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 7a510383cec05ee468eb5765d704e960, type: 3}
   m_PrefabInstance: {fileID: 5759153286113865008}
   m_PrefabAsset: {fileID: 0}

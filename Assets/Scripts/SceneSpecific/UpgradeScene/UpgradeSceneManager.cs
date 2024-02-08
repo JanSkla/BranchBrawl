@@ -20,8 +20,6 @@ public class UpgradeSceneManager : NetworkBehaviour
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
         _upgradeSelect.SetActive(true);
         _gunBuilder.SetActive(false);
 
@@ -36,6 +34,9 @@ public class UpgradeSceneManager : NetworkBehaviour
             var newOption = new UpgradeOption(newCard, newUpgrade.Id);
             _upgradeOptions.Add(newOption);
         }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void UpgradeSelected(int id)
