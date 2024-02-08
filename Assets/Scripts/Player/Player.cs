@@ -2,6 +2,7 @@
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class Player : NetworkBehaviour
 {
@@ -11,6 +12,11 @@ public class Player : NetworkBehaviour
     public GameObject Head;
     [SerializeField]
     private TextMeshPro _nameTag;
+    [SerializeField]
+    private TwoBoneIKConstraint _handIKConstraint;
+
+    [SerializeField]
+    private RigBuilder _rigBuilder;
 
     public GameObject Hand;
     private NetworkVariable<ulong> _handNwId = new();
@@ -19,6 +25,8 @@ public class Player : NetworkBehaviour
     private NetworkVariable<ulong> _playerManagerNwId = new();
 
     private bool _isAlive = true;
+    //movement restrictors
+    public bool AreControlsDisabled = false;
     public bool IsAlive
     {
         get { return _isAlive; }
@@ -40,6 +48,7 @@ public class Player : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        gameObject.layer = 6;
         if (NetworkManager.IsServer)
         {
             _playerManagerNwId.Value = PlayerManager.NetworkObjectId; //IsLocalPlayer works after
@@ -57,6 +66,7 @@ public class Player : NetworkBehaviour
         {
             name = "Local Player";
             GetComponent<LocalPlayer>().enabled = true;
+            _nameTag.enabled = false;
         }
         if (NetworkManager.IsServer)
         {
@@ -67,8 +77,10 @@ public class Player : NetworkBehaviour
             Hand.GetComponent<NetworkObject>().Spawn();
             _handNwId.Value = Hand.GetComponent<NetworkObject>().NetworkObjectId;
             Hand.GetComponent<NetworkObject>().TrySetParent(transform, false);
+
         }
         _nameTag.text = PlayerManager.gameObject.GetComponent<PlayerManager>().PlayerName.Value.ToString();
+        Tools.ChangeLayerWithChildren(_nameTag.gameObject, IsLocalPlayer ? 8 : 6);
     }
 
     //public override void OnNetworkDespawn()
@@ -79,7 +91,16 @@ public class Player : NetworkBehaviour
     //        _handNwId.OnValueChanged -= OnHandNwIdChange;
     //    }
     //}
-
+    public void SetHandInOffPosition()
+    {
+        _handIKConstraint.data.target = null;
+        _rigBuilder.Build();
+    }
+    public void SetHandInPosition()
+    {
+        _handIKConstraint.data.target = Hand.transform;
+        _rigBuilder.Build();
+    }
     public void Die()
     {
         RoundManager roundManager = GameObject.Find("RoundManager").GetComponent<RoundManager>();

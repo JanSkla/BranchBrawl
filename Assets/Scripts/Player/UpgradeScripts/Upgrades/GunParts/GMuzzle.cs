@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GMuzzle : GPart
 {
     [SerializeField]
     private GameObject _muzzle;
+    [SerializeField]
+    private LineRenderer _line;
     public override void Shoot(ShootData shot) //TODO precalculateShot
     {
         if (!_muzzle) Debug.LogError("No muzzle assigned");
@@ -17,7 +20,7 @@ public class GMuzzle : GPart
 
         Vector3 playerCameraPos = NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<PlayerCamera>().FpsCam.transform.position;
 
-        if (Physics.Raycast(playerCameraPos, transform.forward, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Player")))
+        if (Physics.Raycast(playerCameraPos, _muzzle.transform.forward, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Player")))
         {
             hitData.IsHit = true;
             GameObject hitTarget = hit.collider.gameObject;
@@ -40,8 +43,9 @@ public class GMuzzle : GPart
             hitData.IsHit = false;
             Debug.DrawRay(playerCameraPos, transform.forward * 100, Color.red, 1);
         }
-
+        Debug.Log("Hit" + hitData.IsHit);
         ShootSendNetworkRpc(shot, hitData);
+        ShotVisual();
     }
     private void ShootSendNetworkRpc(ShootData shootData, HitData hit)
     {
@@ -87,6 +91,21 @@ public class GMuzzle : GPart
     private void SimulatedShoot()
     {
         Debug.DrawRay(_muzzle.transform.position, transform.forward * 100, Color.blue, 1);
+        ShotVisual();
+    }
+    private void ShotVisual()
+    {
+        Debug.Log("a");
+        RaycastHit hit;
+        Vector3 pointOfInterest = _muzzle.transform.position + _muzzle.transform.forward * 100;
+        if (Physics.Raycast(_muzzle.transform.position, transform.forward * 100, out hit, 100, 8))
+        {
+            pointOfInterest = hit.point;
+            Debug.Log("hit" + hit.point);
+        }
+
+        LineRenderer line = Instantiate(_line.gameObject).GetComponent<LineRenderer>();
+        line.SetPositions(new Vector3[] { _muzzle.transform.position, pointOfInterest });
     }
 
     public void ReplaceMuzzle(UpgradeWithPart guPrefab, bool isNetwork = false)

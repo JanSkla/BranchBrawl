@@ -22,14 +22,21 @@ public class InGameUI : MonoBehaviour
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SetMenu(!_menu.activeSelf);
+            if (_menu.activeSelf)
+            {
+                SetMenu(false);
+            }
+            else
+            {
+                SetMenu(true);
+            }
         }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -56,6 +63,7 @@ public class InGameUI : MonoBehaviour
     {
         Game.SetActive(!visible);
         _menu.SetActive(visible);
+        CurrentPlayer.AreControlsDisabled = visible;
         if (visible)
         {
             Cursor.lockState = CursorLockMode.None;

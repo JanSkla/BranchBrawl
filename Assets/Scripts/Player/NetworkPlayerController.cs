@@ -15,11 +15,17 @@ public class NetworkPlayerController : NetworkBehaviour
     [SerializeField]
     private float _jumpPower = 1;
 
+
+    [SerializeField]
+    private Animator _animator;
+
+
     private float _terrainColliderHeight = 0f;
 
     private Player player;
 
     private float _rotationX = 0;
+    private bool _isGrounded = false;
 
     private int _tick = 0;
     private float _tickRate = 1.0f / 90.0f;
@@ -112,7 +118,15 @@ public class NetworkPlayerController : NetworkBehaviour
     void Update()
     {
         _tickDeltaTime += Time.deltaTime;
-        if (IsLocalPlayer)
+
+        bool groundCheck = GroundCheck();
+        if (_isGrounded != groundCheck)
+        {
+            _isGrounded = groundCheck;
+            _animator.SetBool("IsGrounded", groundCheck);
+        }
+
+        if (IsLocalPlayer && !player.AreControlsDisabled)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -198,7 +212,11 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         if (!NetworkManager.IsServer)
         {
-            transform.position = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, _tickDeltaTime * _speed);
+            Vector3 newPosition = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, _tickDeltaTime * _speed);
+
+            _animator.SetFloat("Speed", Vector3.Distance(transform.position, newPosition));
+
+            transform.position = newPosition;
             transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, _tickDeltaTime * _speed);
             Quaternion facing = Quaternion.Lerp(player.Head.transform.rotation, ServerTransformState.Value.Facing, _tickDeltaTime * _speed);
             player.Head.transform.rotation = facing;
@@ -210,6 +228,8 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void HandleMovement(Vector3 moveInput, Vector3 rotationInput)
     {
+        _animator.SetFloat("Speed", Vector3.Distance(Vector3.zero, moveInput));
+
         transform.Translate(_speed * _tickRate * moveInput);
         transform.Rotate(_tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0));
 
@@ -223,9 +243,11 @@ public class NetworkPlayerController : NetworkBehaviour
     }
     private void HandleJump()
     {
-        if (GroundCheck())
+        if (_isGrounded)
         {
+            _isGrounded = false;
             GetComponent<Rigidbody>().AddForce(Vector3.up * _jumpPower, ForceMode.Impulse);
+            _animator.SetBool("IsGrounded", false);
         }
     }
 

@@ -10,10 +10,7 @@ using UnityEngine.Events;
 public class NetworkSuccessBtn : NetworkBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI text;
-
-    [SerializeField]
-    private string prefixTextValue;
+    private TextMeshProUGUI _totalText;
 
     [SerializeField]
     private UnityEvent _onFullfilled;
@@ -21,8 +18,16 @@ public class NetworkSuccessBtn : NetworkBehaviour
     private int _playerCount;
     private bool _isReady = false;
 
-    private NetworkVariable<int> _readyCount = new NetworkVariable<int>();
+    public NetworkList<ulong> ReadyList = new NetworkList<ulong>();
 
+    private void Start()
+    {
+        _totalText.gameObject.SetActive(false);
+        if (_onFullfilled.GetPersistentEventCount() == 0)
+        {
+            Debug.LogWarning("No OnFullfill event assigned");
+        }
+    }
     void OnEnable()
     {
         if (NetworkManager.IsServer)
@@ -33,12 +38,11 @@ public class NetworkSuccessBtn : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        _readyCount.OnValueChanged += OnReadyCountChange;
+        ReadyList.OnListChanged += OnReadyListChange;
 
 
         if (NetworkManager.IsServer || NetworkManager.IsHost)
         {
-            _readyCount.Value = 0;
             _playerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
         }
         else
@@ -48,7 +52,7 @@ public class NetworkSuccessBtn : NetworkBehaviour
     }
     public override void OnNetworkDespawn()
     {
-        _readyCount.OnValueChanged -= OnReadyCountChange;
+        ReadyList.OnListChanged -= OnReadyListChange;
     }
 
     public void OnButtonPress()
@@ -58,31 +62,35 @@ public class NetworkSuccessBtn : NetworkBehaviour
             _isReady = !_isReady;
             if (_isReady)
             {
-                _readyCount.Value++;
+                ReadyList.Add(NetworkManager.Singleton.LocalClientId);
             }
             else
             {
-                _readyCount.Value--;
+                ReadyList.Remove(NetworkManager.Singleton.LocalClientId);
             }
-            UpdateText(_readyCount.Value);
+            UpdateText(ReadyList.Count);
         }
         else
         {
             _isReady = !_isReady;
-            UpdateText(_readyCount.Value + (_isReady ? 1 : -1)); //simulated count increase
-            IsReadyServerRPC(_isReady);
+            UpdateText(ReadyList.Count + (_isReady ? 1 : -1)); //simulated count increase
+            IsReadyServerRPC(_isReady, NetworkManager.Singleton.LocalClientId);
         }
     }
 
     private void UpdateText(int readyCount)
     {
-        text.text = $"{prefixTextValue}{readyCount}/{_playerCount}";
+        _totalText.text = $"{readyCount}/{_playerCount}";
     }
 
-    private void OnReadyCountChange(int prevCount, int newCount)
+    private void OnReadyListChange(NetworkListEvent<ulong> changeEvent)
     {
-        UpdateText(newCount);
-        if (NetworkManager.IsServer && newCount == _playerCount)
+        if (!_totalText.gameObject.activeSelf)
+        {
+            _totalText.gameObject.SetActive(true);
+        }
+        UpdateText(ReadyList.Count);
+        if (NetworkManager.IsServer && ReadyList.Count == _playerCount)
         {
             Fullfilled();
         }
@@ -94,15 +102,15 @@ public class NetworkSuccessBtn : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void IsReadyServerRPC(bool isReady)
+    private void IsReadyServerRPC(bool isReady, ulong clientId)
     {
         if (isReady)
         {
-            _readyCount.Value++;
+            ReadyList.Add(clientId);
         }
         else
         {
-            _readyCount.Value--;
+            ReadyList.Remove(clientId);
         }
     }
     [ServerRpc(RequireOwnership = false)]

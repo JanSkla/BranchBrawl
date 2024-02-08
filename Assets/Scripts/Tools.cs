@@ -5,6 +5,14 @@ using UnityEngine;
 
 public static class Tools
 {
+    public static void DestroyWithChildren(GameObject gameObject)
+    {
+        foreach (Transform child in gameObject.transform)
+        {
+            DestroyWithChildren(child.gameObject);
+        }
+        UnityEngine.Object.Destroy(gameObject);
+    }
     public static void ChangeLayerWithChildren(GameObject gameObject, LayerMask layerMask)
     {
         gameObject.layer = layerMask;
@@ -25,7 +33,6 @@ public static class Tools
             progress = Mathf.Cos(progress);
             progress = progress / 2f + 0.5f;
             progress = 1 - progress;
-            Debug.Log(progress);
             action(originVal, goalAmount, progress * progress);
             timer += Time.deltaTime;
             yield return null;

@@ -29,11 +29,13 @@ public class HostJoinMenu : MonoBehaviour
 
     void Start()
     {
+
         if (!GameObject.Find("NetworkManager"))
         {
             var nm = Instantiate(_networkManagerPrefab);
             nm.name = "NetworkManager";
         }
+        gameObject.SetActive(false);
     }
 
     public void OnHostClick()
@@ -68,6 +70,7 @@ public class HostJoinMenu : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError($"Relay create allocation request failed {e.Message}");
+            loadingView.SetActive(false);
             throw;
         }
 
@@ -82,7 +85,7 @@ public class HostJoinMenu : MonoBehaviour
         catch
         {
             Debug.LogError("Relay create join code request failed");
-            SceneManager.LoadScene("HostJoinMenu");
+            loadingView.SetActive(false);
             throw;
         }
 
@@ -92,8 +95,6 @@ public class HostJoinMenu : MonoBehaviour
 
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relaySeverData);
         NetworkManager.Singleton.StartHost();
-
-        loadingView.SetActive(false);
 
         GameObject networkDataManager = Instantiate(networkDataManagerPrefab);
         networkDataManager.GetComponent<NetworkObject>().Spawn(false);
@@ -124,7 +125,7 @@ public class HostJoinMenu : MonoBehaviour
         catch
         {
             Debug.LogError("Relay create join code request failed");
-            SceneManager.LoadScene("HostJoinMenu");
+            loadingView.SetActive(false);
             throw;
         }
 
@@ -136,8 +137,6 @@ public class HostJoinMenu : MonoBehaviour
 
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
         NetworkManager.Singleton.StartClient();
-
-        loadingView.SetActive(false);
 
         return relayServerData;
     }

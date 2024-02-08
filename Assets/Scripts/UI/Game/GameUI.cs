@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameUI : MonoBehaviour
+public class GameUI : NetworkBehaviour
 {
     [SerializeField]
     private InGameUI _inGameUI;
@@ -27,7 +28,7 @@ public class GameUI : MonoBehaviour
     public TextMeshProUGUI PlacementText;
 
     [SerializeField]
-    public TextMeshProUGUI CountDownText;
+    public NetworkCountdownText CountDownText;
 
     private GameManager _gameManager;
 

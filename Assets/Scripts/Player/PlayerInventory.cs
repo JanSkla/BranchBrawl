@@ -38,9 +38,9 @@ public class PlayerInventory : NetworkBehaviour
     void Update()
     {
 
-        if (_gameManager.RoundsList[_gameManager.CurrentRoundListIndex] == 0)
+        if (_gameManager.RoundsList[_gameManager.CurrentRoundListIndex] == 0 && player.IsLocalPlayer && !player.AreControlsDisabled)
         {
-            if (player.IsLocalPlayer && Input.GetKeyDown(KeyCode.E) && EquippedItem.Value.Equals(_emptyItem))
+            if (Input.GetKeyDown(KeyCode.E) && EquippedItem.Value.Equals(_emptyItem))
             {
                 GameObject pickableObject = player.GetComponent<PlayerCamera>().GetFacingPickable();
                 if (pickableObject != null)
@@ -76,7 +76,7 @@ public class PlayerInventory : NetworkBehaviour
                     }
                 }
             }
-            if (player.IsLocalPlayer && Input.GetKeyDown(KeyCode.Q) && !EquippedItem.Value.Equals(_emptyItem))
+            if (Input.GetKeyDown(KeyCode.Q) && !EquippedItem.Value.Equals(_emptyItem))
             {
                 UnequipItem();
             }
@@ -153,6 +153,15 @@ public class PlayerInventory : NetworkBehaviour
 
     private void OnEquippedItemChange(Item previousItem, Item newItem)
     {
+        if (!newItem.Equals(_emptyItem))
+        {
+            player.SetHandInPosition();
+        }
+        else
+        {
+            player.SetHandInOffPosition();
+        }
+
         if (NetworkManager.IsServer) return;
 
         if (!newItem.Equals(_emptyItem))
@@ -168,6 +177,7 @@ public class PlayerInventory : NetworkBehaviour
                 n.GetComponent<NetworkTransform>().enabled = false;
 
             SharedServerClientEquipActions(n, newItem);
+
         }
         else
         {
