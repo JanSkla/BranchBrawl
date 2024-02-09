@@ -1,6 +1,7 @@
 
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -21,7 +22,7 @@ public class Player : NetworkBehaviour
     public GameObject Hand;
     private NetworkVariable<ulong> _handNwId = new();
 
-    public NetworkObject PlayerManager;
+    public PlayerManager PlayerManager;
     private NetworkVariable<ulong> _playerManagerNwId = new();
 
     private bool _isAlive = true;
@@ -48,6 +49,16 @@ public class Player : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        var igui = GameObject.Find("InGameUI");
+        if (!igui.IsUnityNull())
+        {
+            igui.GetComponent<InGameUI>().CurrentPlayer = this;
+        }
+        else
+        {
+            Debug.LogWarning("InGameUI not found in the scene, something is wrong!");
+        }
+
         gameObject.layer = 6;
         if (NetworkManager.IsServer)
         {
@@ -56,17 +67,20 @@ public class Player : NetworkBehaviour
         else if (NetworkManager.IsClient)
         {
 
-            PlayerManager = NetworkManager.SpawnManager.SpawnedObjects[_playerManagerNwId.Value].gameObject.GetComponent<NetworkObject>();
+            PlayerManager = NetworkManager.SpawnManager.SpawnedObjects[_playerManagerNwId.Value].gameObject.GetComponent<PlayerManager>();
 
             Hand = NetworkManager.SpawnManager.SpawnedObjects[_handNwId.Value].gameObject;
 
             Utils.ChangeLayerWithChildren(Hand, IsLocalPlayer ? 8 : 6);
+
+            PlayerManager.PlayerObject = this;
         }
         if (IsLocalPlayer)
         {
             name = "Local Player";
             GetComponent<LocalPlayer>().enabled = true;
             _nameTag.enabled = false;
+            GetComponent<LocalPlayer>().InGameUI = igui.GetComponent<InGameUI>();
         }
         if (NetworkManager.IsServer)
         {

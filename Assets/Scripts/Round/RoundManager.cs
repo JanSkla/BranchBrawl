@@ -10,9 +10,14 @@ public class RoundManager : NetworkBehaviour
 {
     private InGameUI _inGameUI;
 
+    [SerializeField]
+    private GameObject _waitingForOthersScreen;
+
     private GameManager _gameManager;
 
     private int _alivePlayerCount;
+
+    private int _clientsLoaded;
     public int AlivePlayerCount
     {
         get { return _alivePlayerCount; }
@@ -57,6 +62,27 @@ public class RoundManager : NetworkBehaviour
             Debug.Log(enumerator.Current.Crowns);
         }
 
+        if (IsClient)
+        {
+            SceneLoadedServerRPC();
+        }
+
+    }
+    [ServerRpc(RequireOwnership = false)]
+    private void SceneLoadedServerRPC()
+    {
+        _clientsLoaded++;
+        if (_clientsLoaded >= NetworkManager.Singleton.ConnectedClients.Count)
+        {
+            Debug.Log(_clientsLoaded);
+            EveryoneLoadedClientRPC();
+        }
+    }
+
+    [ClientRpc]
+    private void EveryoneLoadedClientRPC()
+    {
+        Debug.Log("bre");
         StartGame();
     }
     private void GameSetRunning()
@@ -108,8 +134,9 @@ public class RoundManager : NetworkBehaviour
             _alivePlayerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
             SetAlivePlayerCountClientRpc(AlivePlayerCount);
         }
+        _waitingForOthersScreen.SetActive(false);
         _inGameUI = GameObject.Find("InGameUI").GetComponent<InGameUI>();
-        _inGameUI.OnRoundStarted();
+        //_inGameUI.OnRoundStarted();
 
         State = RoundState.Running;
     }

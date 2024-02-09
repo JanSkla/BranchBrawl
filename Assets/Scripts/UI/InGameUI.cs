@@ -10,6 +10,9 @@ using UnityEngine.UI;
 public class InGameUI : MonoBehaviour
 {
     [SerializeField]
+    private bool _hideCursorWhenExitingMenu;
+
+    [SerializeField]
     public GameObject Game;
     [SerializeField]
     private GameObject _menu;
@@ -47,11 +50,11 @@ public class InGameUI : MonoBehaviour
             _tab.SetActive(false);
         }
     }
-    public void OnRoundStarted()
-    {
-        CurrentPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>();
-        CurrentPlayer.GetComponent<LocalPlayer>().InGameUI = this;
-    }
+    //public void OnRoundStarted()
+    //{
+    //    //CurrentPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>();
+    //    //CurrentPlayer.GetComponent<LocalPlayer>().InGameUI = this;
+    //}
 
     //menu control
     public void CloseMenu()
@@ -64,7 +67,7 @@ public class InGameUI : MonoBehaviour
         Game.SetActive(!visible);
         _menu.SetActive(visible);
         CurrentPlayer.AreControlsDisabled = visible;
-        if (visible)
+        if (visible || !_hideCursorWhenExitingMenu)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
