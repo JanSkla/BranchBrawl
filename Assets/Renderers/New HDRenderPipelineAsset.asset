@@ -70,8 +70,8 @@ MonoBehaviour:
     highQualityLineRenderingMemoryBudget: 128
     msaaSampleCount: 1
     supportMotionVectors: 1
-    supportScreenSpaceLensFlare: 1
-    supportDataDrivenLensFlare: 1
+    supportScreenSpaceLensFlare: 0
+    supportDataDrivenLensFlare: 0
     supportDitheringCrossFade: 1
     supportRuntimeAOVAPI: 0
     supportTerrainHole: 0
@@ -115,7 +115,7 @@ MonoBehaviour:
       maxDecalsOnScreen: 512
       maxLightsPerClusterCell: 8
       maxLocalVolumetricFogSize: 0
-      maxLocalVolumetricFogOnScreen: 256
+      maxLocalVolumetricFogOnScreen: 242
     hdShadowInitParams:
       maxShadowRequests: 128
       directionalShadowsDepthBits: 32
@@ -326,7 +326,7 @@ MonoBehaviour:
   allowShaderVariantStripping: 1
   enableSRPBatcher: 1
   availableMaterialQualityLevels: -1
-  m_DefaultMaterialQualityLevel: 4
+  m_DefaultMaterialQualityLevel: 2
   diffusionProfileSettings: {fileID: 0}
   m_VolumeProfile: {fileID: 0}
   virtualTexturingSettings:
