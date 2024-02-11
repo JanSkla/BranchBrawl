@@ -18,6 +18,9 @@ public class RoundManager : NetworkBehaviour
     [SerializeField]
     private GameObject _waitingForOthersScreen;
 
+    [SerializeField]
+    private NetworkCountdownText _startRoundCountdown;
+
     private GameManager _gameManager;
 
     private int _alivePlayerCount;
@@ -36,7 +39,7 @@ public class RoundManager : NetworkBehaviour
         }
     }
 
-    private RoundState _state;
+    private RoundState _state = RoundState.PreGame;
     public RoundState State
     {
         get { return _state; }
@@ -88,7 +91,37 @@ public class RoundManager : NetworkBehaviour
     private void EveryoneLoadedClientRPC()
     {
         Debug.Log("bre");
-        StartGame();
+        StartCountdown();
+    }
+    public void StartCountdown()
+    {
+        _startRoundCountdown.StartCountDown();
+
+        if (NetworkManager.IsServer || NetworkManager.IsHost)
+        {
+            for (int i = 0; i < _playerSpawns.Count; i++)
+            {
+                Transform tmp = _playerSpawns[i];
+                int r = Random.Range(i, _playerSpawns.Count);
+                _playerSpawns[i] = _playerSpawns[r];
+                _playerSpawns[r] = tmp;
+            }
+            foreach (var client in NetworkManager.Singleton.ConnectedClients)
+            {
+                client.Value.PlayerObject.GetComponent<PlayerManager>().SpawnPlayerObject(_playerSpawns[(int)client.Key % _playerSpawns.Count].position);
+
+                if (_gameManager.RoundsList[_gameManager.CurrentRoundListIndex] == 1)
+                {
+                    GBase gun = client.Value.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.GunCurrentData.Value.NetworkSpawn();
+
+                    StartCoroutine(EquipInitItem(gun, client));
+                }
+                NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.AreControlsDisabled = true;
+            }
+            _alivePlayerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
+            SetAlivePlayerCountClientRpc(AlivePlayerCount);
+        }
+        _waitingForOthersScreen.SetActive(false);
     }
     private void GameSetRunning()
     {
@@ -121,39 +154,18 @@ public class RoundManager : NetworkBehaviour
 
         _inGameUI.Game.GetComponent<GameUI>().CountDownText.StartCountDown();
     }
-    private void StartGame()
+    public void StartGame()
     {
-        if (NetworkManager.IsServer || NetworkManager.IsHost)
-        {
-            for (int i = 0; i < _playerSpawns.Count; i++)
-            {
-                Transform tmp = _playerSpawns[i];
-                int r = Random.Range(i, _playerSpawns.Count);
-                _playerSpawns[i] = _playerSpawns[r];
-                _playerSpawns[r] = tmp;
-            }
-            foreach (var client in NetworkManager.Singleton.ConnectedClients)
-            {
-                client.Value.PlayerObject.GetComponent<PlayerManager>().SpawnPlayerObject(_playerSpawns[(int)client.Key % _playerSpawns.Count].position);
-
-                if (_gameManager.RoundsList[_gameManager.CurrentRoundListIndex] == 1)
-                {
-                    GBase gun = client.Value.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.GunCurrentData.Value.NetworkSpawn();
-
-                    StartCoroutine(EquipInitItem(gun, client));
-                }
-            }
-            _alivePlayerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
-            SetAlivePlayerCountClientRpc(AlivePlayerCount);
-        }
-        _waitingForOthersScreen.SetActive(false);
         _inGameUI = GameObject.Find("InGameUI").GetComponent<InGameUI>();
         //_inGameUI.OnRoundStarted();
 
         State = RoundState.Running;
+
+        //enable movement
+        NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.AreControlsDisabled = false;
     }
 
-    IEnumerator EquipInitItem(GBase gun, System.Collections.Generic.KeyValuePair<ulong, NetworkClient> client)
+    IEnumerator EquipInitItem(GBase gun, KeyValuePair<ulong, NetworkClient> client)
     {
         //Wait for the specified delay time before continuing.
         yield return new WaitForSeconds(1);
@@ -188,6 +200,7 @@ public class RoundManager : NetworkBehaviour
 }
 public enum RoundState
 {
+    PreGame,
     Running,
     Over
 }

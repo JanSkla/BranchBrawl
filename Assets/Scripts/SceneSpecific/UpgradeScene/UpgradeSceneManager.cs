@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +15,7 @@ public class UpgradeSceneManager : NetworkBehaviour
     [SerializeField]
     private GameObject _upgradeCardprefab;
 
-    private int _selectCount = 3;
+    private readonly int _selectCount = 3;
 
     private List<UpgradeOption> _upgradeOptions = new();
 
@@ -30,6 +31,7 @@ public class UpgradeSceneManager : NetworkBehaviour
             var newCard = Instantiate(_upgradeCardprefab);
             newCard.transform.SetParent(_upgradeSelect.transform);
             newCard.GetComponent<Button>().onClick.AddListener(() => UpgradeSelected(newUpgrade.Id));
+            newCard.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = newUpgrade.Description;
 
             var newOption = new UpgradeOption(newCard, newUpgrade.Id);
             _upgradeOptions.Add(newOption);
@@ -75,9 +77,6 @@ public class UpgradeSceneManager : NetworkBehaviour
     [ClientRpc]
     public void SaveGBDClientRPC()
     {
-        Debug.Log("aaaa");
-        Debug.Log(GameObject.Find("GunPlaceholder"));
-        Debug.Log(GameObject.Find("GunPlaceholder").transform.GetChild(0));
         GameObject gunObject = GameObject.Find("GunPlaceholder").transform.GetChild(0).gameObject;
         GBase gunBase = gunObject.GetComponent<GBase>();
         if (gunBase == null) Debug.LogError("No gbase in gunplaceholder");

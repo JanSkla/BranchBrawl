@@ -15,6 +15,8 @@ public class NetworkPlayerController : NetworkBehaviour
     [SerializeField]
     private float _jumpPower = 1;
 
+    private float _roomForError = 0.6f;
+
 
     [SerializeField]
     private Animator _animator;
@@ -64,7 +66,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
 
         TransformState calculatedState = _transformStates.First(localState => localState.Tick == serverState.Tick);
-        if (Vector3.Distance(calculatedState.Position, serverState.Position) < 0.3 && Mathf.Abs(calculatedState.Position.y - serverState.Position.y) < 1) return;
+        if (Vector3.Distance(calculatedState.Position, serverState.Position) < _roomForError && Mathf.Abs(calculatedState.Position.y - serverState.Position.y) < 1) return;
 
         TeleportPlayer(serverState);
 

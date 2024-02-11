@@ -12,6 +12,8 @@ public class GameUI : NetworkBehaviour
 
 
     [SerializeField]
+    private GameObject _preGame;
+    [SerializeField]
     private GameObject _running;
     [SerializeField]
     private GameObject _over;
@@ -32,6 +34,12 @@ public class GameUI : NetworkBehaviour
 
     private GameManager _gameManager;
 
+    void Start()
+    {
+        _preGame.SetActive(true);
+        _running.SetActive(false);
+        _over.SetActive(false);
+    }
     private void OnEnable()
     {
         if (_running.activeSelf)
@@ -44,6 +52,7 @@ public class GameUI : NetworkBehaviour
     {
         Cursor.lockState = isOver ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = isOver;
+        _preGame.SetActive(false);
         _running.SetActive(!isOver);
         _over.SetActive(isOver);
     }
