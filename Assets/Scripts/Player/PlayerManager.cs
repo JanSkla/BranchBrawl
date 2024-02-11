@@ -85,9 +85,10 @@ public class PlayerManager : NetworkBehaviour
         }
     }
     //PO
-    public void SpawnPlayerObject()
+    public void SpawnPlayerObject(Vector3 spawnPosition)
     {
         PlayerObject = Instantiate(playerPrefab).GetComponent<Player>(); ;
+        PlayerObject.transform.position = spawnPosition;
         PlayerObject.GetComponent<Player>().PlayerManager = this;
         PlayerObject.GetComponent<NetworkObject>().Spawn();
         _playerObjectNwId.Value = PlayerObject.GetComponent<NetworkObject>().NetworkObjectId;

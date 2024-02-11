@@ -1,14 +1,19 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class RoundManager : NetworkBehaviour
 {
     private InGameUI _inGameUI;
+
+    [SerializeField]
+    private List<Transform> _playerSpawns;
 
     [SerializeField]
     private GameObject _waitingForOthersScreen;
@@ -120,9 +125,16 @@ public class RoundManager : NetworkBehaviour
     {
         if (NetworkManager.IsServer || NetworkManager.IsHost)
         {
+            for (int i = 0; i < _playerSpawns.Count; i++)
+            {
+                Transform tmp = _playerSpawns[i];
+                int r = Random.Range(i, _playerSpawns.Count);
+                _playerSpawns[i] = _playerSpawns[r];
+                _playerSpawns[r] = tmp;
+            }
             foreach (var client in NetworkManager.Singleton.ConnectedClients)
             {
-                client.Value.PlayerObject.GetComponent<PlayerManager>().SpawnPlayerObject();
+                client.Value.PlayerObject.GetComponent<PlayerManager>().SpawnPlayerObject(_playerSpawns[(int)client.Key % _playerSpawns.Count].position);
 
                 if (_gameManager.RoundsList[_gameManager.CurrentRoundListIndex] == 1)
                 {
