@@ -23,7 +23,7 @@ public class PartBuilderInvChild : MonoBehaviour
     {
         UpgradeId = gud.UpgradeId;
         Count.text = (gud.TotalCount - gud.UsedCount).ToString() + "x";
-        NamePlaceholder.text = UpgradeManager.GetUpgradeById(gud.UpgradeId).Description;
+        NamePlaceholder.text = UpgradeManager.GetUpgradeById(gud.UpgradeId).Name;
 
         GetComponent<Button>().onClick.AddListener(OnClick);
     }

@@ -12,9 +12,6 @@ public class UpgradeSceneManager : NetworkBehaviour
     [SerializeField]
     private GameObject _gunBuilder;
 
-    [SerializeField]
-    private GameObject _upgradeCardprefab;
-
     private readonly int _selectCount = 3;
 
     private List<UpgradeOption> _upgradeOptions = new();
@@ -28,12 +25,11 @@ public class UpgradeSceneManager : NetworkBehaviour
         {
             var newUpgrade = UpgradeManager.GetRandomUpgrade();
 
-            var newCard = Instantiate(_upgradeCardprefab);
+            var newCard = newUpgrade.InstantiateSelectionCard(UpgradeSelected);
             newCard.transform.SetParent(_upgradeSelect.transform);
-            newCard.GetComponent<Button>().onClick.AddListener(() => UpgradeSelected(newUpgrade.Id));
-            newCard.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = newUpgrade.Description;
+            newCard.Button.onClick.AddListener(() => UpgradeSelected(newUpgrade.Id));
 
-            var newOption = new UpgradeOption(newCard, newUpgrade.Id);
+            var newOption = new UpgradeOption(newCard.gameObject, newUpgrade.Id);
             _upgradeOptions.Add(newOption);
         }
 
@@ -41,7 +37,7 @@ public class UpgradeSceneManager : NetworkBehaviour
         Cursor.visible = true;
     }
 
-    private void UpgradeSelected(int id)
+    public void UpgradeSelected(int id)
     {
         var upgrade = UpgradeManager.GetUpgradeById(id);
         Debug.Log("Selected" + upgrade.Id + ":" + id);
