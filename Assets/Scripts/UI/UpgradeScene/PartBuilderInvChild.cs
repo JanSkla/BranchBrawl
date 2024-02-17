@@ -17,13 +17,13 @@ public class PartBuilderInvChild : MonoBehaviour
     public PartBuilderInv PartBuilderInv;
     //obj ref
     public TextMeshProUGUI Count;
-    public TextMeshProUGUI NamePlaceholder;
+    public Image Icon;
 
     public void SetGUpgradeData(GUpgradeData gud) //init called by PartBuilderInv on being Instanced
     {
         UpgradeId = gud.UpgradeId;
         Count.text = (gud.TotalCount - gud.UsedCount).ToString() + "x";
-        NamePlaceholder.text = UpgradeManager.GetUpgradeById(gud.UpgradeId).Name;
+        Icon.sprite = UpgradeManager.GetUpgradeById(gud.UpgradeId).GetIconSprite();
 
         GetComponent<Button>().onClick.AddListener(OnClick);
     }

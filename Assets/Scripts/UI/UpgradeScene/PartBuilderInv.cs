@@ -30,6 +30,7 @@ public class PartBuilderInv : MonoBehaviour
         {
             var newObj = Instantiate(_childPrefab);
             newObj.transform.SetParent(_listObject.transform);
+            newObj.transform.localScale = Vector3.one;
             PartBuilderInvChild p = newObj.GetComponent<PartBuilderInvChild>();
 
             p.PartBuilderInv = this;

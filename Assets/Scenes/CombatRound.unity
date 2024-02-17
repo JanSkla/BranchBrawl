@@ -2661,9 +2661,21 @@ PrefabInstance:
       propertyPath: _onFullfilled.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 742503048908721849, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     - target: {fileID: 1480226499350143942, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
       propertyPath: m_Name
       value: InGameUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 2346855183864009576, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2547814017631722297, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 2588226959488154946, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -2674,8 +2686,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 198949041}
     - target: {fileID: 4838097630706576177, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
+      propertyPath: HideCursorWhenExitingMenu
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4838097630706576177, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
       propertyPath: _hideCursorWhenExitingMenu
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4838097630706576177, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
+      propertyPath: AllowControlsWhenExitingMenu
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4897344134191775483, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
       propertyPath: m_IsActive
@@ -2765,6 +2785,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6072897280262495677, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     - target: {fileID: 7216584242213077082, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
       propertyPath: m_fontSize
       value: 12.99
@@ -2772,6 +2796,10 @@ PrefabInstance:
     - target: {fileID: 7216584242213077082, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
       propertyPath: m_fontSizeBase
       value: 12.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 7216584242213077082, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 8653814063570884301, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -2781,7 +2809,7 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5530238313171075778, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
-      insertIndex: -1
+      insertIndex: 0
       addedObject: {fileID: 198949042}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e67479687dc3db044b4b0fba91f959fc, type: 3}
@@ -4711,6 +4739,10 @@ PrefabInstance:
       propertyPath: _doneAction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 922455557}
+    - target: {fileID: 8952020930726115693, guid: 4da654a0d2727a94ab4da0d7aca7494d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12403,7 +12435,7 @@ Transform:
   m_GameObject: {fileID: 523104169}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.423217, y: 0, z: 4.811185}
+  m_LocalPosition: {x: 6.423217, y: -0.29, z: 4.811185}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -36029,7 +36061,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1394247295
 RectTransform:
   m_ObjectHideFlags: 0

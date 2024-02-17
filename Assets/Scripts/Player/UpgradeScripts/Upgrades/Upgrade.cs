@@ -23,10 +23,18 @@ public abstract class Upgrade
         var newCard = Object.Instantiate(upgradeCardprefab);
         UpgradeCard card = newCard.GetComponent<UpgradeCard>();
 
-        card.Image.sprite = Resources.Load<Sprite>("Images/Upgrades/" + Name + "/Image");
-        card.Icon.sprite = Resources.Load<Sprite>("Images/Upgrades/" + Name + "/Icon");
+        card.Image.sprite = GetImageSprite();
+        card.Icon.sprite = GetIconSprite();
         card.Button.onClick.AddListener(() => upgradeSelected.Invoke(Id));
         card.Name.text = Name;
         return card;
+    }
+    public Sprite GetImageSprite()
+    {
+        return Resources.Load<Sprite>("Images/Upgrades/" + Name + "/Image"); ;
+    }
+    public Sprite GetIconSprite()
+    {
+        return Resources.Load<Sprite>("Images/Upgrades/" + Name + "/Icon"); ;
     }
 }

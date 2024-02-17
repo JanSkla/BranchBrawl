@@ -163,6 +163,7 @@ public class RoundManager : NetworkBehaviour
 
         //enable movement
         NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.AreControlsDisabled = false;
+       _inGameUI.AllowControlsWhenExitingMenu = true;
     }
 
     IEnumerator EquipInitItem(GBase gun, KeyValuePair<ulong, NetworkClient> client)

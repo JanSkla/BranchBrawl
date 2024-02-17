@@ -457,7 +457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inGameUI: {fileID: 0}
-  PreGame: {fileID: 1578368141659776285}
+  _preGame: {fileID: 0}
   _running: {fileID: 2559910878095828152}
   _over: {fileID: 8952020930726115693}
   _cursor: {fileID: 5655748566398729890}

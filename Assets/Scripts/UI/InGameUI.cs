@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms;
@@ -9,8 +10,8 @@ using UnityEngine.UI;
 
 public class InGameUI : MonoBehaviour
 {
-    [SerializeField]
-    private bool _hideCursorWhenExitingMenu;
+    public bool HideCursorWhenExitingMenu;
+    public bool AllowControlsWhenExitingMenu;
 
     [SerializeField]
     public GameObject Game;
@@ -64,13 +65,23 @@ public class InGameUI : MonoBehaviour
 
     private void SetMenu(bool visible)
     {
-        Game.SetActive(!visible);
+        //Game.SetActive(!visible);
         _menu.SetActive(visible);
-        CurrentPlayer.AreControlsDisabled = visible;
-        if (visible || !_hideCursorWhenExitingMenu)
+        if (visible)
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+                CurrentPlayer.AreControlsDisabled = true;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+        }
+        else
+        {
+            if (AllowControlsWhenExitingMenu)
+                CurrentPlayer.AreControlsDisabled = false;
+            if (HideCursorWhenExitingMenu)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
         }
     }
 

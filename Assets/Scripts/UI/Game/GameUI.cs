@@ -37,10 +37,10 @@ public class GameUI : NetworkBehaviour
     void Start()
     {
         _preGame.SetActive(true);
-        _running.SetActive(false);
+        _running.SetActive(true);
         _over.SetActive(false);
     }
-    private void OnEnable()
+    public void OnMenuClose()
     {
         if (_running.activeSelf)
         {
