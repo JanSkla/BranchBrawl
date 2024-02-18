@@ -92,8 +92,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UpgradeId: 0
+  Count: 0
   PartBuilderInv: {fileID: 0}
-  Count: {fileID: 7042319204658342645}
+  CountText: {fileID: 7042319204658342645}
   Icon: {fileID: 7269821032090144947}
 --- !u!114 &631150859602412265
 MonoBehaviour:
@@ -206,8 +207,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 1x
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32b0073c5adc9484baab4c31e9737214, type: 2}
-  m_sharedMaterial: {fileID: 6862630110153332163, guid: 32b0073c5adc9484baab4c31e9737214, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a3338d1adf507944994b1eaf5b5b95c7, type: 2}
+  m_sharedMaterial: {fileID: 6862630110153332163, guid: a3338d1adf507944994b1eaf5b5b95c7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

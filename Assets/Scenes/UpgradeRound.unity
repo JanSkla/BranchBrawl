@@ -617,6 +617,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _upgradeSelect: {fileID: 1394986287}
   _gunBuilder: {fileID: 939416093}
+  GunPlaceholder: {fileID: 103195043}
 --- !u!4 &699812389
 Transform:
   m_ObjectHideFlags: 0
@@ -1595,8 +1596,20 @@ PrefabInstance:
       value: 23.3
       objectReference: {fileID: 0}
     - target: {fileID: 7042319204658342645, guid: 76a32c635045e8b4e89b0af303765c0a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: a3338d1adf507944994b1eaf5b5b95c7, type: 2}
+    - target: {fileID: 7042319204658342645, guid: 76a32c635045e8b4e89b0af303765c0a, type: 3}
       propertyPath: m_fontSizeBase
       value: 23.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7042319204658342645, guid: 76a32c635045e8b4e89b0af303765c0a, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 6862630110153332163, guid: a3338d1adf507944994b1eaf5b5b95c7, type: 2}
+    - target: {fileID: 7042319204658342645, guid: 76a32c635045e8b4e89b0af303765c0a, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7269821032090144947, guid: 76a32c635045e8b4e89b0af303765c0a, type: 3}
       propertyPath: m_Sprite
@@ -1959,6 +1972,10 @@ PrefabInstance:
       propertyPath: _childPrefab
       value: 
       objectReference: {fileID: 1484188916166362531, guid: 76a32c635045e8b4e89b0af303765c0a, type: 3}
+    - target: {fileID: 4753755789543787948, guid: da298d6a3322465499f75313d39357bb, type: 3}
+      propertyPath: GunPlaceholder
+      value: 
+      objectReference: {fileID: 103195043}
     - target: {fileID: 6690158616050915550, guid: da298d6a3322465499f75313d39357bb, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

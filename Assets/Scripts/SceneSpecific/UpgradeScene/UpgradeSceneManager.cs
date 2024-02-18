@@ -11,6 +11,8 @@ public class UpgradeSceneManager : NetworkBehaviour
     private GameObject _upgradeSelect;
     [SerializeField]
     private GameObject _gunBuilder;
+    [SerializeField]
+    public GunPlaceholder GunPlaceholder;
 
     private readonly int _selectCount = 3;
 
@@ -45,6 +47,7 @@ public class UpgradeSceneManager : NetworkBehaviour
 
         _upgradeSelect.SetActive(false);
         _gunBuilder.SetActive(true);
+        GunPlaceholder.PartBuilderInv.UpdateList();
     }
 
     private struct UpgradeOption
