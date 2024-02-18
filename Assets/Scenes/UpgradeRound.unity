@@ -195,8 +195,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1394986288}
   - {fileID: 939416094}
+  - {fileID: 1394986288}
   m_Father: {fileID: 1931447628}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -243,6 +243,14 @@ PrefabInstance:
     - target: {fileID: 2680596518697103354, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
       propertyPath: m_Name
       value: PlayAgainBtn
+      objectReference: {fileID: 0}
+    - target: {fileID: 3226702814259076643, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 5502774663748100209, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 6697506695718617734, guid: f9b5e6758fa278f4e80ad0da465e690e, type: 3}
       propertyPath: m_Pivot.x
@@ -1225,15 +1233,15 @@ RectTransform:
   m_GameObject: {fileID: 1394986287}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.2, y: 2.2, z: 2.2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 322034804}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1105.0374, y: 381.8849}
+  m_SizeDelta: {x: 689.14, y: 381.8849}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1394986289
 MonoBehaviour:
@@ -1244,7 +1252,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1394986287}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -1253,14 +1261,12 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 200, y: 200}
+  m_Spacing: {x: 0, y: 0}
+  m_Constraint: 0
+  m_ConstraintCount: 2
 --- !u!1 &1444714362
 GameObject:
   m_ObjectHideFlags: 0
@@ -1834,6 +1840,10 @@ PrefabInstance:
     - target: {fileID: 5582503431263526120, guid: 2a1901567eae80a4db45de81282c4f87, type: 3}
       propertyPath: m_text
       value: Delete
+      objectReference: {fileID: 0}
+    - target: {fileID: 5582503431263526120, guid: 2a1901567eae80a4db45de81282c4f87, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 7946639484805383946, guid: 2a1901567eae80a4db45de81282c4f87, type: 3}
       propertyPath: m_Colors.m_NormalColor.b
