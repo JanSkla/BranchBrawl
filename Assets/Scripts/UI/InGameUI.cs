@@ -22,8 +22,23 @@ public class InGameUI : MonoBehaviour
     [SerializeField]
     private GameObject _tab;
 
-    public Player CurrentPlayer;
-
+    private Player _currentPlayer;
+    public Player CurrentPlayer
+    {
+        get { return _currentPlayer; }
+        set
+        {
+            _currentPlayer = value;
+            OnCurrentPlayerSet();
+        }
+    }
+    private void OnCurrentPlayerSet()
+    {
+        if (CurrentPlayer.IsUnityNull()) return;
+        var gameUI = Game.GetComponent<GameUI>();
+        if (gameUI.IsUnityNull()) return;
+        gameUI.HealthDiplay.ConnectHealthToPlayer(CurrentPlayer);
+    }
     void Start()
     {
         //Cursor.lockState = CursorLockMode.Locked;

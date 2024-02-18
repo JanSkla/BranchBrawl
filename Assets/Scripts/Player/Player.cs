@@ -50,11 +50,7 @@ public class Player : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         var igui = GameObject.Find("InGameUI");
-        if (!igui.IsUnityNull())
-        {
-            igui.GetComponent<InGameUI>().CurrentPlayer = this;
-        }
-        else
+        if (igui.IsUnityNull())
         {
             Debug.LogWarning("InGameUI not found in the scene, something is wrong!");
         }
@@ -81,6 +77,7 @@ public class Player : NetworkBehaviour
             GetComponent<LocalPlayer>().enabled = true;
             _nameTag.enabled = false;
             GetComponent<LocalPlayer>().InGameUI = igui.GetComponent<InGameUI>();
+            igui.GetComponent<InGameUI>().CurrentPlayer = this;
         }
         if (NetworkManager.IsServer)
         {

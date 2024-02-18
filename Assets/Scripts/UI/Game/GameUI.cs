@@ -24,6 +24,8 @@ public class GameUI : NetworkBehaviour
     private GameObject _cursor;
     [SerializeField]
     private GameObject _deathScreen;
+    [SerializeField]
+    public HealthDisplayText HealthDiplay;
 
     //Over
     [SerializeField]
