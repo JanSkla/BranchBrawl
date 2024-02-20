@@ -237,7 +237,7 @@ public class GunBaseSaveData : INetworkSerializable
         }
         else
         {
-            MuzzleInstantiateOnDestiny(desitny);
+            MuzzleManager.MuzzleInstantiateOnDestiny(desitny);
         }
     }
     private static void GBDNetworkSpawnShared(GunBaseChildData childData, GDestiny desitny)
@@ -248,7 +248,7 @@ public class GunBaseSaveData : INetworkSerializable
         }
         else
         {
-            NetworkMuzzleInstantiateOnDestiny(desitny);
+            MuzzleManager.NetworkMuzzleInstantiateOnDestiny(desitny);
         }
     }
 }

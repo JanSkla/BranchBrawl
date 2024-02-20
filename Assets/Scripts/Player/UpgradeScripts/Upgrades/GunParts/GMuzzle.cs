@@ -45,13 +45,13 @@ public class GMuzzle : GPart
         }
         Debug.Log("Hit" + hitData.IsHit);
         ShootSendNetworkRpc(shot, hitData);
-        ShotVisual();
+        ShotVisual(shot);
     }
     private void ShootSendNetworkRpc(ShootData shootData, HitData hit)
     {
         if (IsServer || IsHost)
         {
-            ShootClientRpc();
+            ShootClientRpc(shootData);
         }
         else
         {
@@ -68,7 +68,7 @@ public class GMuzzle : GPart
             hitTargetGO.GetComponent<PlayerHealth>().Damage(shootData.Amount);
         }
 
-        SimulatedShoot();
+        SimulatedShoot(shootData);
 
         //wont call origin client
         ulong[] ignoreClients = { serverRpcParams.Receive.SenderClientId };
@@ -80,20 +80,20 @@ public class GMuzzle : GPart
                 TargetClientIds = clientIds.ToList(),
             }
         };
-        ShootClientRpc(clientRpcParams);
+        ShootClientRpc(shootData, clientRpcParams);
     }
 
     [ClientRpc]
-    private void ShootClientRpc(ClientRpcParams clientRpcParams = default)
+    private void ShootClientRpc(ShootData shootData, ClientRpcParams clientRpcParams = default)
     {
-        SimulatedShoot();
+        SimulatedShoot(shootData);
     }
-    private void SimulatedShoot()
+    private void SimulatedShoot(ShootData shootData)
     {
         Debug.DrawRay(_muzzle.transform.position, transform.forward * 100, Color.blue, 1);
-        ShotVisual();
+        ShotVisual(shootData);
     }
-    private void ShotVisual()
+    private void ShotVisual(ShootData shootData)
     {
         Debug.Log("a");
         RaycastHit hit;
@@ -105,6 +105,9 @@ public class GMuzzle : GPart
         }
 
         LineRenderer line = Instantiate(_line.gameObject).GetComponent<LineRenderer>();
+        line.startColor = new(shootData.Amount / 100, 1, 1);
+        line.startWidth = shootData.Amount / 10;
+        line.endWidth = shootData.Amount / 10;
         line.SetPositions(new Vector3[] { _muzzle.transform.position, pointOfInterest });
     }
 
@@ -152,9 +155,9 @@ public class GMuzzle : GPart
         for (int i = 0; i < guDLength; i++) //spawn muzzle for new endings
         {
             if (isNetwork)
-                PlayerGunManager.NetworkMuzzleInstantiateOnDestiny(gu.Destiny[i]);
+                MuzzleManager.NetworkMuzzleInstantiateOnDestiny(gu.Destiny[i]);
             else
-                PlayerGunManager.MuzzleInstantiateOnDestiny(gu.Destiny[i]);
+                MuzzleManager.MuzzleInstantiateOnDestiny(gu.Destiny[i]);
         }
 
         DestroyPartRecursive();

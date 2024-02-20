@@ -129,9 +129,9 @@ public abstract class GUpgrade : GPart
         for (int i = Destiny.Length; i < guDLength; i++) //spawn muzzle for new endings
         {
             if (isNetwork)
-                PlayerGunManager.NetworkMuzzleInstantiateOnDestiny(gu.Destiny[i]);
+                MuzzleManager.NetworkMuzzleInstantiateOnDestiny(gu.Destiny[i]);
             else
-                PlayerGunManager.MuzzleInstantiateOnDestiny(gu.Destiny[i]);
+                MuzzleManager.MuzzleInstantiateOnDestiny(gu.Destiny[i]);
         }
 
         DestroyPartRecursive();

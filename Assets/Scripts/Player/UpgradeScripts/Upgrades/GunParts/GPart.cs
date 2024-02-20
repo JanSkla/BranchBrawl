@@ -112,9 +112,9 @@ public abstract class GPart : NetworkBehaviour
                 //
 
                 if (NetworkObject.IsSpawned)
-                    PlayerGunManager.NetworkMuzzleInstantiateOnDestiny(parentGDestRef);
+                    MuzzleManager.NetworkMuzzleInstantiateOnDestiny(parentGDestRef);
                 else
-                    PlayerGunManager.MuzzleInstantiateOnDestiny(parentGDestRef);
+                    MuzzleManager.MuzzleInstantiateOnDestiny(parentGDestRef);
 
                 DestroyPartRecursive();
                 GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().PartBuilderInv.UpdateList();
