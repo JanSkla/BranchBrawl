@@ -5,7 +5,7 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class GMuzzle : GPart
+public class GConeMuzzle : GPart
 {
     [SerializeField]
     private GameObject _muzzle;
