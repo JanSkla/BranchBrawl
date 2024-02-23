@@ -42,13 +42,13 @@ MonoBehaviour:
     m_Value: 1000
   baseHeight:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: -6.9
   maximumHeight:
     m_OverrideState: 1
-    m_Value: 50
+    m_Value: 162.85
   meanFreePath:
     m_OverrideState: 1
-    m_Value: 400
+    m_Value: 749.9
   enableVolumetricFog:
     m_OverrideState: 1
     m_Value: 0
@@ -1666,13 +1666,13 @@ MonoBehaviour:
   active: 1
   quality:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 3
   threshold:
     m_OverrideState: 1
     m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0
   scatter:
     m_OverrideState: 1
     m_Value: 0.7
@@ -1690,13 +1690,13 @@ MonoBehaviour:
     m_Value: 1
   m_Resolution:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 4
   m_HighQualityPrefiltering:
     m_OverrideState: 1
     m_Value: 0
   m_HighQualityFiltering:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
 --- !u!114 &1818700377913887227
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1731,7 +1731,7 @@ MonoBehaviour:
   active: 1
   skyType:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 4
   cloudType:
     m_OverrideState: 1
     m_Value: 0
@@ -1740,10 +1740,10 @@ MonoBehaviour:
     m_Value: 1
   windOrientation:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 8
   windSpeed:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 2
   fogType:
     m_OverrideState: 1
     m_Value: 0
@@ -2212,10 +2212,10 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 0.088
   smoothness:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 1
   roundness:
     m_OverrideState: 1
     m_Value: 1
