@@ -5,49 +5,37 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class GConeMuzzle : GPart
+public class GConeMuzzle : GMuzzle
 {
     [SerializeField]
     private GameObject _muzzle;
     [SerializeField]
-    private LineRenderer _line;
+    private Projectile _projectilePrefab;
+
+    [SerializeField]
+    private GameObject _shotIndicator;
+
+    private void Start()
+    {
+        _shotIndicator.SetActive(false);
+    }
+
     public override void Shoot(ShootData shot) //TODO precalculateShot
     {
         if (!_muzzle) Debug.LogError("No muzzle assigned");
         Debug.Log("Shoots successfully");
 
-        HitData hitData = new();
+        Projectile projectile = Instantiate(_projectilePrefab.gameObject).GetComponent<Projectile>();
+        projectile.transform.position = _muzzle.transform.position;
+        projectile.transform.rotation = _muzzle.transform.rotation;
 
-        Vector3 playerCameraPos = NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<PlayerCamera>().FpsCam.transform.position;
+        projectile.GetComponent<NetworkObject>().Spawn();
+        projectile.ApplyForce(_muzzle.transform.forward);
 
-        if (Physics.Raycast(playerCameraPos, _muzzle.transform.forward, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Player")))
-        {
-            hitData.IsHit = true;
-            GameObject hitTarget = hit.collider.gameObject;
-
-            while (hitTarget.transform.parent != null)
-            {
-                hitTarget = hitTarget.transform.parent.gameObject;
-            }
-
-            hitData.HitNwID = hitTarget.GetComponent<NetworkObject>().NetworkObjectId;
-            Debug.DrawRay(playerCameraPos, transform.forward * hit.distance, Color.green, 1);
-
-            if (IsServer)
-            {
-                hitTarget.GetComponent<PlayerHealth>().Damage(shot.Amount);
-            }
-        }
-        else
-        {
-            hitData.IsHit = false;
-            Debug.DrawRay(playerCameraPos, transform.forward * 100, Color.red, 1);
-        }
-        Debug.Log("Hit" + hitData.IsHit);
-        ShootSendNetworkRpc(shot, hitData);
+        ShootSendNetworkRpc(shot);
         ShotVisual(shot);
     }
-    private void ShootSendNetworkRpc(ShootData shootData, HitData hit)
+    private void ShootSendNetworkRpc(ShootData shootData)
     {
         if (IsServer || IsHost)
         {
@@ -55,19 +43,13 @@ public class GConeMuzzle : GPart
         }
         else
         {
-            ShootServerRpc(shootData, hit);
+            ShootServerRpc(shootData);
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ShootServerRpc(ShootData shootData, HitData hit, ServerRpcParams serverRpcParams = default)
+    private void ShootServerRpc(ShootData shootData, ServerRpcParams serverRpcParams = default)
     {
-        if (hit.IsHit)
-        {
-            GameObject hitTargetGO = GetNetworkObject(hit.HitNwID).gameObject;
-            hitTargetGO.GetComponent<PlayerHealth>().Damage(shootData.Amount);
-        }
-
         SimulatedShoot(shootData);
 
         //wont call origin client
@@ -90,74 +72,18 @@ public class GConeMuzzle : GPart
     }
     private void SimulatedShoot(ShootData shootData)
     {
-        Debug.DrawRay(_muzzle.transform.position, transform.forward * 100, Color.blue, 1);
         ShotVisual(shootData);
     }
     private void ShotVisual(ShootData shootData)
     {
-        Debug.Log("a");
-        RaycastHit hit;
-        Vector3 pointOfInterest = _muzzle.transform.position + _muzzle.transform.forward * 100;
-        if (Physics.Raycast(_muzzle.transform.position, transform.forward * 100, out hit, 100, 8))
-        {
-            pointOfInterest = hit.point;
-            Debug.Log("hit" + hit.point);
-        }
-
-        LineRenderer line = Instantiate(_line.gameObject).GetComponent<LineRenderer>();
-        line.startColor = new(shootData.Amount / 100, 1, 1);
-        line.SetPositions(new Vector3[] { _muzzle.transform.position, pointOfInterest });
+        _shotIndicator.SetActive(true);
+        StartCoroutine(nameof(HideShotVisual), 1);
+        Debug.Log("shoootts");
     }
-
-    public void ReplaceMuzzle(UpgradeWithPart guPrefab, bool isNetwork = false)
+    private void HideShotVisual()
     {
-        Debug.Log("ReplaceMuzzle");
-        GUpgrade gu = guPrefab.InstantiatePrefab();
+        if(_shotIndicator.activeSelf)
+            _shotIndicator.SetActive(false);
 
-        GPoint gp = transform.parent.GetComponent<GPoint>();
-
-        GameObject parentparentGO = gp.Parent;
-
-        GDestiny parentGDestRef;
-
-        if (parentparentGO.GetComponent<GUpgrade>())
-        {
-            int di = gp.DestinyIndex;
-
-            parentGDestRef = parentparentGO.GetComponent<GUpgrade>().Destiny[di];
-        }
-        else if (parentparentGO.GetComponent<GBase>())
-        {
-            parentGDestRef = parentparentGO.GetComponent<GBase>().Destiny;
-        }
-        else
-        {
-            Debug.Log("There is no GUpgrade nor GBase");
-            return;
-        }
-
-        if (isNetwork)
-        {
-            gu.NetworkObject.Spawn();
-            gu.NetworkObject.TrySetParent(parentGDestRef.PositionPoint.transform, false); //TODO
-        }
-        else
-        {
-            gu.NetworkObject.AutoObjectParentSync = false;
-            gu.transform.SetParent(parentGDestRef.PositionPoint.transform, false);
-        }
-        parentGDestRef.Part = gu;
-
-        int guDLength = gu.Destiny.Length;
-
-        for (int i = 0; i < guDLength; i++) //spawn muzzle for new endings
-        {
-            if (isNetwork)
-                MuzzleManager.NetworkMuzzleInstantiateOnDestiny(gu.Destiny[i]);
-            else
-                MuzzleManager.MuzzleInstantiateOnDestiny(gu.Destiny[i]);
-        }
-
-        DestroyPartRecursive();
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 public class Projectile : NetworkBehaviour
 {
     [SerializeField]
-    private Vector3 _force;
+    private float _forceMultiplier;
     private int _damageAmount;
     private Player _owner;
     [SerializeField]
@@ -16,14 +16,15 @@ public class Projectile : NetworkBehaviour
 
     void Start()
     {
-        ApplyForce();
+        Debug.Log("projectile here");
+        //ApplyForce();
     }
 
-    private void ApplyForce()
+    public void ApplyForce(Vector3 facing)
     {
         //if (!NetworkManager.IsServer) return;
 
-        _rb.AddForce(_force);
+        _rb.AddRelativeForce(facing*_forceMultiplier);
     }
     private void OnCollisionEnter(Collision collision)
     {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GBase : GPart
@@ -67,6 +68,16 @@ public class GBase : GPart
         childNwObject.AutoObjectParentSync = false;
         childNwObject.transform.SetParent(Destiny.PositionPoint.transform, false);
         Destiny.Part = childNwObject.GetComponent<GPart>();
+        GUpgrade gUpgrade = Destiny.Part.GetComponent<GUpgrade>();
+
+        if (gUpgrade.IsUnityNull()) return;
+
+        int[] previousUpgradeIds = new int[1];
+        previousUpgradeIds[0] = gUpgrade.UpgradeId;
+        foreach (GDestiny dest in gUpgrade.Destiny)
+        {
+            dest.PreviousUpgradeIds = previousUpgradeIds;
+        }
     }
 
     public void NetworkAddParentOnDestiny(ulong childNwId)

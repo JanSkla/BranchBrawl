@@ -1,7 +1,11 @@
+using NUnit.Framework.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public abstract class GUpgrade : GPart
@@ -52,6 +56,21 @@ public abstract class GUpgrade : GPart
         childNwObject.AutoObjectParentSync = false;
         childNwObject.transform.SetParent(destiny.PositionPoint.transform, false);
         destiny.Part = childNwObject.GetComponent<GPart>();
+        GUpgrade gUpgrade = destiny.Part.GetComponent<GUpgrade>();
+
+        if (gUpgrade.IsUnityNull()) return;
+
+        GDestiny parentDest = transform.parent.gameObject.GetComponent<GDestiny>();
+        int[] previousUpgradeIds = new int[parentDest.PreviousUpgradeIds.Length + 1];
+        for (int i = 0; i < previousUpgradeIds.Length; i++)
+        {
+            previousUpgradeIds[i] = parentDest.PreviousUpgradeIds[i];
+        }
+        previousUpgradeIds[parentDest.PreviousUpgradeIds.Length] = gUpgrade.UpgradeId;
+        foreach (GDestiny dest in gUpgrade.Destiny)
+        {
+            dest.PreviousUpgradeIds = previousUpgradeIds;
+        }
     }
 
     public void NetworkAddParentOnDestiny(int destinyIndex, ulong childNwId)
