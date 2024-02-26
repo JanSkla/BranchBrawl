@@ -24,6 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6299629793842300959}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 84.42114, y: -0.7077677, z: -3.71644}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,7 +32,6 @@ Transform:
   m_Children:
   - {fileID: 2461094857959541769}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &7522952582687969286
 CapsuleCollider:
@@ -114,7 +114,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4742473837712756890, guid: 0e29f6155f732764c8da4976a1d5ed37, type: 3}
       propertyPath: m_LODs.Array.data[0].screenRelativeHeight
-      value: 0.9476797
+      value: 0.999
       objectReference: {fileID: 0}
     - target: {fileID: 4742473837712756890, guid: 0e29f6155f732764c8da4976a1d5ed37, type: 3}
       propertyPath: m_LODs.Array.data[1].screenRelativeHeight

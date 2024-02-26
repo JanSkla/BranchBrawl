@@ -709,7 +709,7 @@
     "m_StageCapability": 3,
     "m_BareResource": false,
     "m_Texture": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"c0d12a0ce78a14b4ebd7b9a106be441b\",\"type\":3}}",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"e8550eb0f534b5044980d00ba25ed5f1\",\"type\":3}}",
         "m_Guid": ""
     },
     "m_DefaultType": 0
