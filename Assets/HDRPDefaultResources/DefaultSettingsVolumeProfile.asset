@@ -167,16 +167,16 @@ MonoBehaviour:
   active: 1
   quality:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 3
   intensity:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 0
   maximumVelocity:
     m_OverrideState: 1
-    m_Value: 200
+    m_Value: 0
   minimumVelocity:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 0
   cameraMotionBlur:
     m_OverrideState: 1
     m_Value: 1
@@ -197,7 +197,7 @@ MonoBehaviour:
     m_Value: 1
   m_SampleCount:
     m_OverrideState: 1
-    m_Value: 8
+    m_Value: 2
 --- !u!114 &-7044702493942776326
 MonoBehaviour:
   m_ObjectHideFlags: 3
