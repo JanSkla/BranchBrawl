@@ -20,6 +20,8 @@ public class NetworkPlayerController : NetworkBehaviour
 
     [SerializeField]
     private Animator _animator;
+    [SerializeField]
+    private Rigidbody _rb;
 
 
     private float _terrainColliderHeight = 0f;
@@ -231,9 +233,11 @@ public class NetworkPlayerController : NetworkBehaviour
     private void HandleMovement(Vector3 moveInput, Vector3 rotationInput)
     {
         _animator.SetFloat("Speed", Vector3.Distance(Vector3.zero, moveInput));
-
-        transform.Translate(_speed * _tickRate * moveInput);
-        transform.Rotate(_tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0));
+        var newPos = transform.TransformDirection(_speed * _tickRate * moveInput);
+        _rb.MovePosition(transform.position + newPos);
+        var newRot = _tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0);
+        //transform.Translate(_speed * _tickRate * moveInput);
+        transform.Rotate(newRot);
 
         _rotationX -= rotationInput.x * _turnSpeed * _tickRate;
         _rotationX = Mathf.Clamp(_rotationX, -90, 90);
