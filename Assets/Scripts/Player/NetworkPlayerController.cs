@@ -80,7 +80,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
         foreach (InputState inputState in inputs)
         {
-            HandleMovement(inputState.movementInput, inputState.rotationInput);
+            HandleMovement(inputState.movementInput, inputState.rotationInput, _tickRate);
 
             TransformState newTransformState = new TransformState()
             {
@@ -169,7 +169,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
         if (NetworkManager.IsServer)
         {
-            HandleMovement(moveInput, rotationInput);
+            HandleMovement(moveInput, rotationInput, Time.deltaTime);
 
             TransformState state = new TransformState()
             {
@@ -183,7 +183,7 @@ public class NetworkPlayerController : NetworkBehaviour
         }
         else
         {
-            HandleMovement(moveInput, rotationInput);
+            HandleMovement(moveInput, rotationInput, Time.deltaTime);
             MovePlayerRequestServerRpc(_tick, moveInput, rotationInput);
 
             //transform.position = ServerTransformState.Value.Position;
@@ -230,10 +230,10 @@ public class NetworkPlayerController : NetworkBehaviour
         UpdateTick();
     }
 
-    private void HandleMovement(Vector3 moveInput, Vector3 rotationInput)
+    private void HandleMovement(Vector3 moveInput, Vector3 rotationInput, float tickRate)
     {
         _animator.SetFloat("Speed", Vector3.Distance(Vector3.zero, moveInput));
-        var newPos = transform.TransformDirection(_speed * _tickRate * moveInput);
+        var newPos = transform.TransformDirection(_speed * tickRate * moveInput);
         _rb.MovePosition(transform.position + newPos);
         var newRot = _tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0);
         //transform.Translate(_speed * _tickRate * moveInput);
@@ -276,7 +276,7 @@ public class NetworkPlayerController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void MovePlayerRequestServerRpc(int tick, Vector3 moveInput, Vector3 rotationInput)
     {
-        HandleMovement(moveInput, rotationInput);
+        HandleMovement(moveInput, rotationInput, _tickRate);
 
         TransformState state = new TransformState()
         {
