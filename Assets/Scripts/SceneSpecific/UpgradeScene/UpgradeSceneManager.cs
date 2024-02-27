@@ -10,6 +10,8 @@ public class UpgradeSceneManager : NetworkBehaviour
     [SerializeField]
     private GameObject _upgradeSelect;
     [SerializeField]
+    private GameObject _upgradeSelectContainer;
+    [SerializeField]
     private GameObject _gunBuilder;
     [SerializeField]
     public GunPlaceholder GunPlaceholder;
@@ -21,14 +23,13 @@ public class UpgradeSceneManager : NetworkBehaviour
     void Start()
     {
         _upgradeSelect.SetActive(true);
-        _gunBuilder.SetActive(false);
 
         for (int i = 0; i < _selectCount; i++)
         {
             var newUpgrade = UpgradeManager.GetRandomUpgrade();
 
             var newCard = newUpgrade.InstantiateSelectionCard(UpgradeSelected);
-            newCard.transform.SetParent(_upgradeSelect.transform, false);
+            newCard.transform.SetParent(_upgradeSelectContainer.transform, false);
             newCard.Button.onClick.AddListener(() => UpgradeSelected(newUpgrade.Id));
 
             var newOption = new UpgradeOption(newCard.gameObject, newUpgrade.Id);

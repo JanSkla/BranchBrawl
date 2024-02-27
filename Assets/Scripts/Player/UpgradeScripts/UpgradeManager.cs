@@ -8,8 +8,8 @@ public class UpgradeManager : MonoBehaviour
 
     private static List<Upgrade> _upgradeTypes = new() {
         new UpgradeG2Splitter(1),
-        //new UpgradeGEmptyEnhancer(2),
-        //new UpgradeGChargeEnhancer(3),
+        new UpgradeGEmptyEnhancer(2),
+        new UpgradeGChargeEnhancer(3),
         new UpgradeGConeEnhancer(4),
     };
 
