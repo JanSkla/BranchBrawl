@@ -8,8 +8,9 @@ public class Projectile : NetworkBehaviour
 {
     [SerializeField]
     private float _forceMultiplier;
-    private int _damageAmount;
-    private Player _owner;
+    public int DamageAmount;
+    //public NetworkVariable<ulong> OwnerNwId;
+    public Player Owner;
     [SerializeField]
     private Rigidbody _rb;
 
@@ -28,11 +29,17 @@ public class Projectile : NetworkBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log("Collided" + NetworkManager.IsServer);
         if (!NetworkManager.IsServer) return;
 
         var targetPlayer = collision.gameObject.GetComponent<Player>();
+        Debug.Log("Collided" + 1 + targetPlayer);
         if (targetPlayer.IsUnityNull()) return;
 
-        targetPlayer.GetComponent<PlayerHealth>().Damage(_damageAmount);
+        Debug.Log("Collided" + 2);
+        if (Owner == targetPlayer) return;
+        Debug.Log("Collided" + 3);
+
+        targetPlayer.GetComponent<PlayerHealth>().Damage(DamageAmount);
     }
 }

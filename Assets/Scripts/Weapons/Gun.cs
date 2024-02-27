@@ -21,7 +21,7 @@ public class Gun : NetworkBehaviour
         _timeSinceLastShot += Time.deltaTime;
     }
 
-    public void Shoot(bool firstShot)
+    public void Shoot(bool firstShot, Player owner)
     {
         if (!gunData.isAuto && !firstShot) return;
         if (!CanShoot() || gunData.currentAmmo <= 0) return;

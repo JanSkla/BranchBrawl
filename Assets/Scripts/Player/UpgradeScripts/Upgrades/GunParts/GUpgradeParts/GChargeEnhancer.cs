@@ -14,7 +14,7 @@ public class GChargeEnhancer : GEnhancer
     {
         Destiny = new GDestiny[1];
     }
-    public override void Shoot(ShootData shot)
+    public override void Shoot(ShootData shot, Player owner)
     {
         _childModelStates[_currentCharges].SetActive(false);
         _currentCharges++;
@@ -24,7 +24,7 @@ public class GChargeEnhancer : GEnhancer
         if (_currentCharges >= _requiredCharges)
         {
             shot.Amount *= _requiredCharges;
-            Destiny[0].Part.Shoot(shot);
+            Destiny[0].Part.Shoot(shot, owner);
             _currentCharges = 0;
 
             Debug.Log("afterSHOT " + _currentCharges + " " + _requiredCharges);

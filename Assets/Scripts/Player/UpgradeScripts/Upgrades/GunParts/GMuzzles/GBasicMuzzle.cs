@@ -11,7 +11,7 @@ public class GBasicMuzzle : GMuzzle
     private GameObject _muzzle;
     [SerializeField]
     private LineRenderer _line;
-    public override void Shoot(ShootData shot) //TODO precalculateShot
+    public override void Shoot(ShootData shot, Player owner) //TODO precalculateShot
     {
         if (!_muzzle) Debug.LogError("No muzzle assigned");
 

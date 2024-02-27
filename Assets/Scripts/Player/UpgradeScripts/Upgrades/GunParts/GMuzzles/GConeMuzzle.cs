@@ -20,7 +20,7 @@ public class GConeMuzzle : GMuzzle
         _shotIndicator.SetActive(false);
     }
 
-    public override void Shoot(ShootData shot) //TODO precalculateShot
+    public override void Shoot(ShootData shot, Player owner) //TODO precalculateShot
     {
         if (!_muzzle) Debug.LogError("No muzzle assigned");
         Debug.Log("Shoots successfully");
@@ -30,6 +30,8 @@ public class GConeMuzzle : GMuzzle
         projectile.transform.rotation = _muzzle.transform.rotation;
 
         projectile.GetComponent<NetworkObject>().Spawn();
+        projectile.Owner = owner;
+        projectile.DamageAmount = shot.Amount;
         projectile.ApplyForce(_muzzle.transform.forward);
 
         ShootSendNetworkRpc(shot);

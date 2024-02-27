@@ -21,12 +21,12 @@ public class GBase : GPart
         _timeSinceLastShot += Time.deltaTime;
     }
 
-    public void Shoot(bool firstShot)
+    public void Shoot(bool firstShot, Player owner)
     {
         if (!gunData.isAuto && !firstShot) return;
         if (!CanShoot() || gunData.currentAmmo <= 0) return;
 
-        Destiny.Part.Shoot(_shotData);
+        Destiny.Part.Shoot(_shotData, owner);
 
         gunData.currentAmmo--;
         _timeSinceLastShot = 0f;
@@ -84,5 +84,5 @@ public class GBase : GPart
     {
         _childsOnDesitny.Add(childNwId);
     }
-    public override void Shoot(ShootData shootData) { }
+    public override void Shoot(ShootData shootData, Player owner) { }
 }
