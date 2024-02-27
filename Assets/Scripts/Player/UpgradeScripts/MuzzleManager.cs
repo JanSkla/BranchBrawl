@@ -37,18 +37,19 @@ public static class MuzzleManager
 
         gMuzzle.NetworkObject.Spawn(true);
 
-        GameObject parentGO = parentDestiny.PositionPoint.Parent;
+        GPart parentGO = parentDestiny.PositionPoint.Parent;
 
         if (parentGO.GetComponent<GBase>() != null)
         {
-            parentDestiny.PositionPoint.Parent.GetComponent<GBase>().NetworkAddParentOnDestiny(gMuzzle.NetworkObjectId);
+            parentGO.GetComponent<GBase>().NetworkAddParentOnDestiny(gMuzzle.NetworkObjectId);
         }
         else if (parentGO.GetComponent<GUpgrade>() != null)
         {
-            parentDestiny.PositionPoint.Parent.GetComponent<GUpgrade>().NetworkAddParentOnDestiny(parentDestiny.PositionPoint.DestinyIndex, gMuzzle.NetworkObjectId);
+            parentGO.GetComponent<GUpgrade>().NetworkAddParentOnDestiny(parentDestiny.PositionPoint.DestinyIndex, gMuzzle.NetworkObjectId);
         }
         else
         {
+            Debug.Log(parentGO);
             Debug.LogError("Neco je zle");
         }
 

@@ -14,7 +14,7 @@ public abstract class GMuzzle : GPart
 
         GPoint gp = transform.parent.GetComponent<GPoint>();
 
-        GameObject parentparentGO = gp.Parent;
+        GameObject parentparentGO = gp.Parent.gameObject;
 
         GDestiny parentGDestRef;
 

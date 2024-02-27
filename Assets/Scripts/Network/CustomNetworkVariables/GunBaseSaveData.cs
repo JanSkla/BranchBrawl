@@ -210,7 +210,7 @@ public class GunBaseSaveData : INetworkSerializable
 
             gUpgrade.NetworkObject.Spawn(true);
 
-            GameObject parentGO = parentDestiny.PositionPoint.Parent;
+            GameObject parentGO = parentDestiny.PositionPoint.Parent.gameObject;
 
             if(parentGO.GetComponent<GBase>() != null)
             {

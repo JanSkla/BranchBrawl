@@ -90,7 +90,7 @@ public abstract class GPart : NetworkBehaviour
 
                 GPoint gp = transform.parent.GetComponent<GPoint>();
 
-                GameObject parentparentGO = gp.Parent;
+                GameObject parentparentGO = gp.Parent.gameObject;
 
                 GDestiny parentGDestRef;
 

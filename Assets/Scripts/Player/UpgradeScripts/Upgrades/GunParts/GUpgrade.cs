@@ -59,9 +59,25 @@ public abstract class GUpgrade : GPart
 
         if (gUpgrade.IsUnityNull()) return;
 
-        GDestiny parentDest = transform.parent.gameObject.GetComponent<GDestiny>();
+        var parent = transform.parent;
+        Debug.Log(parent);
+        var gPoint = parent.GetComponent<GPoint>();
+
+        GDestiny parentDest;
+        if (gPoint.Parent.GetComponent<GBase>())
+        {
+            parentDest = gPoint.Parent.GetComponent<GBase>().Destiny;
+        }
+        else if (gPoint.Parent.GetComponent<GUpgrade>())
+        {
+            parentDest = gPoint.Parent.GetComponent<GUpgrade>().Destiny[gPoint.DestinyIndex];
+        }
+        else return;
+
+
+        Debug.Log(parentDest);
         int[] previousUpgradeIds = new int[parentDest.PreviousUpgradeIds.Length + 1];
-        for (int i = 0; i < previousUpgradeIds.Length; i++)
+        for (int i = 0; i < parentDest.PreviousUpgradeIds.Length; i++)
         {
             previousUpgradeIds[i] = parentDest.PreviousUpgradeIds[i];
         }
@@ -87,7 +103,7 @@ public abstract class GUpgrade : GPart
 
         GPoint gp = transform.parent.GetComponent<GPoint>();
 
-        GameObject parentparentGO = gp.Parent;
+        GameObject parentparentGO = gp.Parent.gameObject;
 
         GDestiny parentGDestRef;
 
