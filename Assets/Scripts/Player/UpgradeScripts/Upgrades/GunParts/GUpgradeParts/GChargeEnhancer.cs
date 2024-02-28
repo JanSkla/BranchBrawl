@@ -8,24 +8,28 @@ public class GChargeEnhancer : GEnhancer
     private int _currentCharges = 0;
     [SerializeField]
     private int _requiredCharges = 4;
+    //[SerializeField]
+    //private GameObject[] _childModelStates;
     [SerializeField]
-    private GameObject[] _childModelStates;
+    private Animator _animator;
     public GChargeEnhancer()
     {
         Destiny = new GDestiny[1];
     }
     public override void Shoot(ShootData shot, Player owner)
     {
-        _childModelStates[_currentCharges].SetActive(false);
+        //_childModelStates[_currentCharges].SetActive(false);
         _currentCharges++;
-        _childModelStates[_currentCharges].SetActive(true);
+        _animator.SetInteger("charges", _currentCharges);
+        //_childModelStates[_currentCharges].SetActive(true);
         Debug.Log("charging " + _currentCharges + " " + _requiredCharges);
 
-        if (_currentCharges >= _requiredCharges)
+        if (_currentCharges > _requiredCharges)
         {
             shot.Amount *= _requiredCharges;
             Destiny[0].Part.Shoot(shot, owner);
             _currentCharges = 0;
+            _animator.SetInteger("charges", _currentCharges);
 
             Debug.Log("afterSHOT " + _currentCharges + " " + _requiredCharges);
         }

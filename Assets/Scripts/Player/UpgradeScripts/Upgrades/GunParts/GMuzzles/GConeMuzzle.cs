@@ -12,12 +12,12 @@ public class GConeMuzzle : GMuzzle
     [SerializeField]
     private Projectile _projectilePrefab;
 
-    [SerializeField]
-    private GameObject _shotIndicator;
+    //[SerializeField]
+    //private GameObject _shotIndicator;
 
     private void Start()
     {
-        _shotIndicator.SetActive(false);
+        //_shotIndicator.SetActive(false);
     }
 
     public override void Shoot(ShootData shot, Player owner) //TODO precalculateShot
@@ -78,14 +78,14 @@ public class GConeMuzzle : GMuzzle
     }
     private void ShotVisual(ShootData shootData)
     {
-        _shotIndicator.SetActive(true);
+        //_shotIndicator.SetActive(true);
         StartCoroutine(nameof(HideShotVisual), 1);
         Debug.Log("shoootts");
     }
     private void HideShotVisual()
     {
-        if(_shotIndicator.activeSelf)
-            _shotIndicator.SetActive(false);
+        //if(_shotIndicator.activeSelf)
+        //    _shotIndicator.SetActive(false);
 
     }
 }

@@ -13,7 +13,10 @@ public class NetworkSuccessBtn : NetworkBehaviour
     private TextMeshProUGUI _totalText;
 
     [SerializeField]
-    private UnityEvent _onFullfilled;
+    private UnityEvent _onServerFullfilled;
+
+    [SerializeField]
+    private UnityEvent _onPreFullfilled;
 
     private int _playerCount;
     private bool _isReady = false;
@@ -23,7 +26,7 @@ public class NetworkSuccessBtn : NetworkBehaviour
     private void Start()
     {
         _totalText.gameObject.SetActive(false);
-        if (_onFullfilled.GetPersistentEventCount() == 0)
+        if (_onServerFullfilled.GetPersistentEventCount() == 0)
         {
             Debug.LogWarning("No OnFullfill event assigned");
         }
@@ -90,15 +93,19 @@ public class NetworkSuccessBtn : NetworkBehaviour
             _totalText.gameObject.SetActive(true);
         }
         UpdateText(ReadyList.Count);
-        if (NetworkManager.IsServer && ReadyList.Count == _playerCount)
+        if(ReadyList.Count == _playerCount)
         {
-            Fullfilled();
+            _onPreFullfilled.Invoke();
+            if (NetworkManager.IsServer)
+            {
+                Fullfilled();
+            }
         }
     }
 
     private void Fullfilled()
     {
-        _onFullfilled.Invoke();
+        _onServerFullfilled.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]
