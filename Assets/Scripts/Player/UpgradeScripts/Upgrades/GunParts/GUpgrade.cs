@@ -137,22 +137,20 @@ public abstract class GUpgrade : GPart
 
         int guDLength = gu.Destiny.Length;
 
-        Debug.Log("gud" + guDLength);
-        Debug.Log("d" + Destiny.Length);
-
         for (int i = 0; i < Destiny.Length; i++)
         {
             if (i < guDLength) //keep exissting
             {
                 gu.Destiny[i].Part = Destiny[i].Part;
+                Destiny[i].Part = null;
 
                 if (isNetwork)
                 {
-                    Destiny[i].Part.NetworkObject.TrySetParent(gu.Destiny[i].PositionPoint.transform, false);
+                    gu.Destiny[i].Part.NetworkObject.TrySetParent(gu.Destiny[i].PositionPoint.transform, false);
                 }
                 else
                 {
-                    Destiny[i].Part.transform.SetParent(gu.Destiny[i].PositionPoint.transform, false);
+                    gu.Destiny[i].Part.transform.SetParent(gu.Destiny[i].PositionPoint.transform, false);
                 }
             }
             else //destroy overflowing

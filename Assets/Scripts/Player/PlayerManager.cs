@@ -111,9 +111,6 @@ public class PlayerManager : NetworkBehaviour
         PlayerGunManager.gameObject.GetComponent<NetworkObject>().Spawn();
         _playerGunManagerNwId.Value = PlayerGunManager.GetComponent<NetworkObject>().NetworkObjectId;
 
-        Debug.Log(PlayerGunManager);
-        Debug.Log(PlayerGunManager.GetComponent<NetworkObject>());
-        Debug.Log(PlayerGunManager.GetComponent<NetworkObject>().NetworkObjectId);
         //_player.GetComponent<NetworkObject>().TrySetParent(transform);
     }
     public void DespawnPlayerGunManager()

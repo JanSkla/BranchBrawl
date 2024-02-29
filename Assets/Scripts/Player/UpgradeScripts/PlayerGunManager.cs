@@ -80,16 +80,18 @@ public class PlayerGunManager : NetworkBehaviour
         var findSimiliar = FindGUpgradeDataByUpId(upgradeId);
         if (findSimiliar != null)
         {
-            if (findSimiliar.UsedCount < findSimiliar.TotalCount)
-            {
-                findSimiliar.UsedCount++;
-                return true;
-            }
-            else
-            {
-                Debug.Log("Can't use more than in inventory");
-                return false;
-            }
+            findSimiliar.UsedCount++;
+            return true;
+            //if (findSimiliar.UsedCount < findSimiliar.TotalCount)
+            //{
+            //    findSimiliar.UsedCount++;
+            //    return true;
+            //}
+            //else
+            //{
+            //    Debug.Log("Can't use more than in inventory");
+            //    return false;
+            //}
         }
         else
         {
@@ -102,16 +104,19 @@ public class PlayerGunManager : NetworkBehaviour
         var findSimiliar = FindGUpgradeDataByUpId(upgradeId);
         if (findSimiliar != null)
         {
-            if (findSimiliar.UsedCount > 0)
-            {
-                findSimiliar.UsedCount--;
-                return true;
-            }
-            else
-            {
-                Debug.Log("Can't unuse less than in inventory");
-                return false;
-            }
+            Debug.Log(findSimiliar.UsedCount);
+            findSimiliar.UsedCount--;
+            return true;
+            //if (findSimiliar.UsedCount > 0)
+            //{
+            //    findSimiliar.UsedCount--;
+            //    return true;
+            //}
+            //else
+            //{
+            //    Debug.Log("Can't unuse less than in inventory");
+            //    return false;
+            //}
         }
         else
         {

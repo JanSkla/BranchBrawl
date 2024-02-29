@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1374675262
+  GlobalObjectIdHash: 1538099265
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -74,6 +74,7 @@ MonoBehaviour:
   _destiny:
   - PositionPoint: {fileID: 259589973364454505}
     Part: {fileID: 0}
+    PreviousUpgradeIds: 
 --- !u!65 &5387516616437242147
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -106,7 +107,7 @@ PrefabInstance:
     - target: {fileID: 3304836077341377491, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}
       propertyPath: Parent
       value: 
-      objectReference: {fileID: 2493872122252708250}
+      objectReference: {fileID: 7425020705442528791}
     - target: {fileID: 3304836077341377491, guid: 2847ebaa55c1ae0409de9fc567322cc9, type: 3}
       propertyPath: parent
       value: 

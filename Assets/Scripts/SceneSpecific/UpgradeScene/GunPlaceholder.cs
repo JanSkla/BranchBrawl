@@ -55,8 +55,8 @@ public class GunPlaceholder : MonoBehaviour
                     Debug.Log("one of requested are not in list!");
                     return;
                 }
+                //localPlayerGunManager.UnuseGUpgrade(hoverGUID); //decrease used count for the unused
                 localPlayerGunManager.UseGUpgrade(PartBuilderInv.Selected.UpgradeId); //increase used count for the used
-                localPlayerGunManager.UnuseGUpgrade(hoverGUID); //decrease used count for the unused
 
 
                 hoveredGU.ReplacePart(uwp);
@@ -107,7 +107,9 @@ public class GunPlaceholder : MonoBehaviour
             CursorHandler.Default();
         }
 
-        _deleteBtn.GetComponent<Image>().color = IsDelete ? Color.gray : Color.white;
+        var deleteBtnImage = _deleteBtn.GetComponent<Image>();
+        if (deleteBtnImage)
+            _deleteBtn.GetComponent<Image>().color = IsDelete ? Color.gray : Color.white;
     }
 
     public void InvPartClicked(PartBuilderInvChild invPart)

@@ -65,10 +65,6 @@ public class RoundManager : NetworkBehaviour
         _gameManager = GameObject.Find("GameManager(Clone)").GetComponent<GameManager>();
 
         var enumerator = _gameManager.PlayersGameData.GetEnumerator();
-        while (enumerator.MoveNext())
-        {
-            Debug.Log(enumerator.Current.Crowns);
-        }
 
         if (IsClient)
         {
@@ -82,7 +78,6 @@ public class RoundManager : NetworkBehaviour
         _clientsLoaded++;
         if (_clientsLoaded >= NetworkManager.Singleton.ConnectedClients.Count)
         {
-            Debug.Log(_clientsLoaded);
             EveryoneLoadedClientRPC();
         }
     }
@@ -90,7 +85,6 @@ public class RoundManager : NetworkBehaviour
     [ClientRpc]
     private void EveryoneLoadedClientRPC()
     {
-        Debug.Log("bre");
         StartCountdown();
     }
     public void StartCountdown()

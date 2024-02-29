@@ -22,19 +22,22 @@ public abstract class GPart : NetworkBehaviour
     public abstract void Shoot(ShootData shot, Player owner);
     public void DestroyPartRecursive()
     {
+        Debug.Log("AA");
         if (GameObject.Find("GunPlaceholder") != null)
         {
             var localPlayerGunManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager;
             AssignToInvR(GetComponent<GUpgrade>());
             void AssignToInvR(GUpgrade gu)
             {
+                Debug.Log("AAAA");
                 if (gu == null) return;
 
                 localPlayerGunManager.UnuseGUpgrade(gu.UpgradeId);
 
                 for (int i = 0; i < gu.Destiny.Length; i++)
                 {
-                    AssignToInvR(gu.Destiny[i].Part.GetComponent<GUpgrade>());
+                    if(gu.Destiny[i].Part)
+                        AssignToInvR(gu.Destiny[i].Part.GetComponent<GUpgrade>());
                 }
             }
         }

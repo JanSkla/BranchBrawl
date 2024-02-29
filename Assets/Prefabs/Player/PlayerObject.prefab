@@ -296,7 +296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d31df0ccd1a8ed645af8edd9e596dcb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 30
+  _speed: 15
   _turnSpeed: 300
   _jumpPower: 250
   _animator: {fileID: 4913937390947922116}

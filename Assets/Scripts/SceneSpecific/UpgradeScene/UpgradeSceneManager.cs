@@ -43,7 +43,6 @@ public class UpgradeSceneManager : NetworkBehaviour
     public void UpgradeSelected(int id)
     {
         var upgrade = UpgradeManager.GetUpgradeById(id);
-        Debug.Log("Selected" + upgrade.Id + ":" + id);
         NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<UpgradeManager>().AddUpgrade(upgrade);
 
         _upgradeSelect.SetActive(false);
