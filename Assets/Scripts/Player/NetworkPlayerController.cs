@@ -218,6 +218,8 @@ public class NetworkPlayerController : NetworkBehaviour
         {
             Vector3 newPosition = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, _tickDeltaTime * _speed);
 
+            _animator.SetFloat("SpeedX", transform.InverseTransformPoint(newPosition).x);
+            _animator.SetFloat("SpeedY", transform.InverseTransformPoint(newPosition).y);
             _animator.SetFloat("Speed", Vector3.Distance(transform.position, newPosition));
 
             transform.position = newPosition;
@@ -232,6 +234,8 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void HandleMovement(Vector3 moveInput, Vector3 rotationInput, float tickRate)
     {
+        _animator.SetFloat("SpeedX", moveInput.x);
+        _animator.SetFloat("SpeedY", moveInput.z);
         _animator.SetFloat("Speed", Vector3.Distance(Vector3.zero, moveInput));
         var newPos = transform.TransformDirection(_speed * tickRate * moveInput);
         _rb.MovePosition(transform.position + newPos);
