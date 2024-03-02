@@ -63,6 +63,7 @@ public class RoundManager : NetworkBehaviour
     {
         GameOver += OnGameOver;
         _gameManager = GameObject.Find("GameManager(Clone)").GetComponent<GameManager>();
+        CursorHandler.Default();
 
         var enumerator = _gameManager.PlayersGameData.GetEnumerator();
 

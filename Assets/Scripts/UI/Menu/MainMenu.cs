@@ -30,6 +30,6 @@ public class MainMenu : MonoBehaviour
 
     public void Quit()
     {
-        Quit();
+        Application.Quit();
     }
 }

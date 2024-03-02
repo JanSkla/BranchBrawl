@@ -25,6 +25,8 @@ public class GameUI : NetworkBehaviour
     [SerializeField]
     private GameObject _deathScreen;
     [SerializeField]
+    private GameObject _deathBackdrop;
+    [SerializeField]
     public HealthDisplayText HealthDiplay;
 
     //Over
@@ -69,6 +71,7 @@ public class GameUI : NetworkBehaviour
         Cursor.lockState = !isAlive ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = !isAlive;
         _deathScreen.SetActive(!isAlive);
+        _deathBackdrop.SetActive(!isAlive);
         _cursor.SetActive(isAlive);
     }
 }
