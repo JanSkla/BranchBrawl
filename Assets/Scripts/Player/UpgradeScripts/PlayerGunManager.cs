@@ -95,7 +95,7 @@ public class PlayerGunManager : NetworkBehaviour
         }
         else
         {
-            Debug.Log("GUpgradeData type does not exist in the list");
+            Debug.LogWarning("GUpgradeData type does not exist in the list");
             return false;
         }
     }
@@ -104,7 +104,6 @@ public class PlayerGunManager : NetworkBehaviour
         var findSimiliar = FindGUpgradeDataByUpId(upgradeId);
         if (findSimiliar != null)
         {
-            Debug.Log(findSimiliar.UsedCount);
             findSimiliar.UsedCount--;
             return true;
             //if (findSimiliar.UsedCount > 0)
@@ -120,7 +119,7 @@ public class PlayerGunManager : NetworkBehaviour
         }
         else
         {
-            Debug.Log("GUpgradeData type does not exist in the list");
+            Debug.LogWarning("GUpgradeData type does not exist in the list");
             return false;
         }
     }

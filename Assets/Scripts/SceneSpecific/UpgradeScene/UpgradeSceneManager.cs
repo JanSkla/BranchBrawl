@@ -30,7 +30,7 @@ public class UpgradeSceneManager : NetworkBehaviour
 
             var newCard = newUpgrade.InstantiateSelectionCard(UpgradeSelected);
             newCard.transform.SetParent(_upgradeSelectContainer.transform, false);
-            newCard.Button.onClick.AddListener(() => UpgradeSelected(newUpgrade.Id));
+            //newCard.Button.onClick.AddListener(() => UpgradeSelected(newUpgrade.Id));
 
             var newOption = new UpgradeOption(newCard.gameObject, newUpgrade.Id);
             _upgradeOptions.Add(newOption);

@@ -39,8 +39,10 @@ public class ItemDistributor : MonoBehaviour
                 Physics.Raycast(new Vector3(pos.x, transform.position.y, pos.y), Vector3.down, out RaycastHit hit, 500, LayerMask.GetMask("Terrain"));
                 var obj = Instantiate(_itemToSpawn);
                 obj.transform.position = new(hit.point.x, hit.point.y + 1, hit.point.z);
+                obj.transform.rotation = Random.rotation;
 
                 obj.GetComponent<NetworkObject>().Spawn();
+                obj.GetComponent<NetworkObject>().DestroyWithScene = true;
             }
         }
     }

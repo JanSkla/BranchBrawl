@@ -43,6 +43,17 @@ public abstract class GMuzzle : GPart
         {
             gu.NetworkObject.AutoObjectParentSync = false;
             gu.transform.SetParent(parentGDestRef.PositionPoint.transform, false);
+
+            int[] previousUpgradeIds = new int[parentGDestRef.PreviousUpgradeIds.Length + 1];
+            for (int i = 0; i < parentGDestRef.PreviousUpgradeIds.Length; i++)
+            {
+                previousUpgradeIds[i] = parentGDestRef.PreviousUpgradeIds[i];
+            }
+            previousUpgradeIds[parentGDestRef.PreviousUpgradeIds.Length] = gu.UpgradeId;
+            foreach (GDestiny dest in gu.Destiny)
+            {
+                dest.PreviousUpgradeIds = previousUpgradeIds;
+            }
         }
         parentGDestRef.Part = gu;
 

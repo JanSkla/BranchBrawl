@@ -42,15 +42,15 @@ public abstract class GPart : NetworkBehaviour
             }
         }
 
-        DestroyR(transform);
-        void DestroyR(Transform t)
-        {
-            foreach (Transform child in t)
-            {
-                DestroyR(child);
-            }
-            Destroy(t.gameObject);
-        }
+        Utils.DestroyWithChildren(transform.gameObject);
+        //void DestroyR(Transform t)
+        //{
+        //    foreach (Transform child in t)
+        //    {
+        //        DestroyR(child);
+        //    }
+        //    Destroy(t.gameObject);
+        //}
     }
 
     void OnMouseOver()

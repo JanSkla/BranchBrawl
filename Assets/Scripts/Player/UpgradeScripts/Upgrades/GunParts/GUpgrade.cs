@@ -132,6 +132,18 @@ public abstract class GUpgrade : GPart
         {
             gu.NetworkObject.AutoObjectParentSync = false;
             gu.transform.SetParent(parentGDestRef.PositionPoint.transform, false);
+
+            int[] previousUpgradeIds = new int[parentGDestRef.PreviousUpgradeIds.Length + 1];
+            for (int i = 0; i < parentGDestRef.PreviousUpgradeIds.Length; i++)
+            {
+                previousUpgradeIds[i] = parentGDestRef.PreviousUpgradeIds[i];
+            }
+            previousUpgradeIds[parentGDestRef.PreviousUpgradeIds.Length] = gu.UpgradeId;
+            foreach (GDestiny dest in gu.Destiny)
+            {
+                dest.PreviousUpgradeIds = previousUpgradeIds;
+            }
+
         }
         parentGDestRef.Part = gu;
 
@@ -139,7 +151,7 @@ public abstract class GUpgrade : GPart
 
         for (int i = 0; i < Destiny.Length; i++)
         {
-            if (i < guDLength) //keep exissting
+            if (i < guDLength) //keep existing
             {
                 gu.Destiny[i].Part = Destiny[i].Part;
                 Destiny[i].Part = null;
@@ -158,6 +170,12 @@ public abstract class GUpgrade : GPart
                 Destiny[i].Part.DestroyPartRecursive();
             }
         }
+
+        foreach (GDestiny dest in gu.Destiny)
+        {
+            RefreshPrevUIdDataForAllChilds(dest);
+        }
+
         for (int i = Destiny.Length; i < guDLength; i++) //spawn muzzle for new endings
         {
             if (isNetwork)
@@ -167,5 +185,32 @@ public abstract class GUpgrade : GPart
         }
 
         DestroyPartRecursive();
+    }
+    private static void RefreshPrevUIdDataForAllChilds(GDestiny originDestiny)
+    {
+        Debug.Log(originDestiny);
+        Debug.Log(originDestiny.Part);
+        Debug.Log(originDestiny.Part.GetComponent<GUpgrade>());
+        var part = originDestiny.Part.GetComponent<GUpgrade>();
+
+        if (part)
+        {
+            Debug.Log("part" + part.UpgradeId);
+            foreach (var destiny in part.Destiny)
+            {
+                destiny.PreviousUpgradeIds = new int[originDestiny.PreviousUpgradeIds.Length + 1];
+                for (int i = 0; i < originDestiny.PreviousUpgradeIds.Length; i++)
+                {
+                    destiny.PreviousUpgradeIds[i] = originDestiny.PreviousUpgradeIds[i];
+                }
+                destiny.PreviousUpgradeIds[originDestiny.PreviousUpgradeIds.Length] = part.UpgradeId;
+                RefreshPrevUIdDataForAllChilds(destiny);
+            }
+        }
+        else
+        {
+            Utils.DestroyWithChildren(originDestiny.Part.gameObject);
+            MuzzleManager.MuzzleInstantiateOnDestiny(originDestiny);
+        }
     }
 }
