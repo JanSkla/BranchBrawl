@@ -18,6 +18,8 @@ public class Player : NetworkBehaviour
 
     [SerializeField]
     private RigBuilder _rigBuilder;
+    [SerializeField]
+    public Animator RigAnimator;
 
     public GameObject Hand;
     private NetworkVariable<ulong> _handNwId = new();
@@ -104,12 +106,14 @@ public class Player : NetworkBehaviour
     //}
     public void SetHandInOffPosition()
     {
+        RigAnimator.SetBool("RHandHold", false);
         _handIKConstraint.data.target = null;
         _rigBuilder.Build();
     }
     public void SetHandInPosition()
     {
-        _handIKConstraint.data.target = Hand.transform;
+        RigAnimator.SetBool("RHandHold", true);
+        _handIKConstraint.data.target = Hand.transform.GetChild(0);
         _rigBuilder.Build();
     }
     public void Die()

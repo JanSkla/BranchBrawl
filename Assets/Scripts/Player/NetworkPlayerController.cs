@@ -19,8 +19,6 @@ public class NetworkPlayerController : NetworkBehaviour
 
 
     [SerializeField]
-    private Animator _animator;
-    [SerializeField]
     private Rigidbody _rb;
 
 
@@ -127,7 +125,7 @@ public class NetworkPlayerController : NetworkBehaviour
         if (_isGrounded != groundCheck)
         {
             _isGrounded = groundCheck;
-            _animator.SetBool("IsGrounded", groundCheck);
+            player.RigAnimator.SetBool("IsGrounded", groundCheck);
         }
 
         if (IsLocalPlayer && !player.AreControlsDisabled)
@@ -218,9 +216,9 @@ public class NetworkPlayerController : NetworkBehaviour
         {
             Vector3 newPosition = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, _tickDeltaTime * _speed);
 
-            _animator.SetFloat("SpeedX", transform.InverseTransformPoint(newPosition).x);
-            _animator.SetFloat("SpeedY", transform.InverseTransformPoint(newPosition).y);
-            _animator.SetFloat("Speed", Vector3.Distance(transform.position, newPosition));
+            player.RigAnimator.SetFloat("SpeedX", transform.InverseTransformPoint(newPosition).x);
+            player.RigAnimator.SetFloat("SpeedY", transform.InverseTransformPoint(newPosition).y);
+            player.RigAnimator.SetFloat("Speed", Vector3.Distance(transform.position, newPosition));
 
             transform.position = newPosition;
             transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, _tickDeltaTime * _speed);
@@ -234,9 +232,9 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void HandleMovement(Vector3 moveInput, Vector3 rotationInput, float tickRate)
     {
-        _animator.SetFloat("SpeedX", moveInput.x);
-        _animator.SetFloat("SpeedY", moveInput.z);
-        _animator.SetFloat("Speed", Vector3.Distance(Vector3.zero, moveInput));
+        player.RigAnimator.SetFloat("SpeedX", moveInput.x);
+        player.RigAnimator.SetFloat("SpeedY", moveInput.z);
+        player.RigAnimator.SetFloat("Speed", Vector3.Distance(Vector3.zero, moveInput));
         var newPos = transform.TransformDirection(_speed * tickRate * moveInput);
         _rb.MovePosition(transform.position + newPos);
         var newRot = _tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0);
@@ -257,7 +255,7 @@ public class NetworkPlayerController : NetworkBehaviour
         {
             _isGrounded = false;
             GetComponent<Rigidbody>().AddForce(Vector3.up * _jumpPower, ForceMode.Impulse);
-            _animator.SetBool("IsGrounded", false);
+            player.RigAnimator.SetBool("IsGrounded", false);
         }
     }
 

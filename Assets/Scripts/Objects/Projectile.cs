@@ -14,6 +14,9 @@ public class Projectile : NetworkBehaviour
     [SerializeField]
     private Rigidbody _rb;
 
+    private bool _collided = false;
+    private bool _collidedWPlayer = false;
+
 
     void Start()
     {
@@ -29,17 +32,27 @@ public class Projectile : NetworkBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Collided" + NetworkManager.IsServer);
+
+        if (_collidedWPlayer) return;
         if (!NetworkManager.IsServer) return;
 
+        if (!_collided)
+        {
+            _collided = true;
+            StartCoroutine(nameof(DestroySelf), 3);
+        }
+
         var targetPlayer = collision.gameObject.GetComponent<Player>();
-        Debug.Log("Collided" + 1 + targetPlayer);
         if (targetPlayer.IsUnityNull()) return;
 
-        Debug.Log("Collided" + 2);
         if (Owner == targetPlayer) return;
-        Debug.Log("Collided" + 3);
 
+        _collidedWPlayer = true;
         targetPlayer.GetComponent<PlayerHealth>().Damage(DamageAmount);
+    }
+
+    private void DestroySelf()
+    {
+        Destroy(this);
     }
 }

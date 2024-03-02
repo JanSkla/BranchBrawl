@@ -275,7 +275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2612401204
+  GlobalObjectIdHash: 870725291
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -299,7 +299,6 @@ MonoBehaviour:
   _speed: 15
   _turnSpeed: 300
   _jumpPower: 250
-  _animator: {fileID: 4913937390947922116}
   _rb: {fileID: 1725099954420361255}
 --- !u!54 &1725099954420361255
 Rigidbody:
@@ -370,6 +369,7 @@ MonoBehaviour:
   _nameTag: {fileID: 2168465890358727320}
   _handIKConstraint: {fileID: 6386175892680558081}
   _rigBuilder: {fileID: 1395740257178290133}
+  RigAnimator: {fileID: 4913937390947922116}
   Hand: {fileID: 0}
   PlayerManager: {fileID: 0}
   AreControlsDisabled: 0
