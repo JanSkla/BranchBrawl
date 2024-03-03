@@ -16,9 +16,11 @@ public class UpgradeSceneManager : NetworkBehaviour
     [SerializeField]
     public GunPlaceholder GunPlaceholder;
 
-    private readonly int _selectCount = 3;
+    private static readonly int _selectCount = 3;
 
-    private List<UpgradeOption> _upgradeOptions = new();
+    private bool _optionSelected = false;
+
+    private UpgradeOption[] _upgradeOptions = new UpgradeOption[_selectCount];
 
     void Start()
     {
@@ -28,26 +30,43 @@ public class UpgradeSceneManager : NetworkBehaviour
         {
             var newUpgrade = UpgradeManager.GetRandomUpgrade();
 
-            var newCard = newUpgrade.InstantiateSelectionCard(UpgradeSelected);
+            var newCard = newUpgrade.InstantiateSelectionCard(UpgradeSelected, i);
             newCard.transform.SetParent(_upgradeSelectContainer.transform, false);
             //newCard.Button.onClick.AddListener(() => UpgradeSelected(newUpgrade.Id));
 
             var newOption = new UpgradeOption(newCard.gameObject, newUpgrade.Id);
-            _upgradeOptions.Add(newOption);
+            _upgradeOptions[i] = newOption;
         }
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
-    public void UpgradeSelected(int id)
+    public void UpgradeSelected(int idx)
     {
-        var upgrade = UpgradeManager.GetUpgradeById(id);
+        if (_optionSelected) return;
+        _optionSelected = true;
+        for (int i = 0; i < _upgradeOptions.Length; i++)
+        {
+            if (i != idx)
+            {
+                _upgradeOptions[i].UpgradeCard.GetComponent<Button>().interactable = false;
+            }
+        }
+
+        var upgrade = UpgradeManager.GetUpgradeById(_upgradeOptions[idx].UpgradeId);
         NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<UpgradeManager>().AddUpgrade(upgrade);
 
-        _upgradeSelect.SetActive(false);
+
+        //_upgradeSelect.SetActive(false);
         _gunBuilder.SetActive(true);
         GunPlaceholder.PartBuilderInv.UpdateList();
+
+        Invoke(nameof(DelayedUpgradeSelectDisable), 1);
+    }
+    private void DelayedUpgradeSelectDisable()
+    {
+        _upgradeSelect.SetActive(false);
     }
 
     private struct UpgradeOption

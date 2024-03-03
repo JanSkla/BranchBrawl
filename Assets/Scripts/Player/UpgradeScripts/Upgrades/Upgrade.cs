@@ -17,7 +17,7 @@ public abstract class Upgrade
     }
     public abstract void OnAdd(PlayerManager player);
     public abstract void OnDelete(PlayerManager player);
-    public UpgradeCard InstantiateSelectionCard(Action<int> upgradeSelected)
+    public UpgradeCard InstantiateSelectionCard(Action<int> upgradeSelected, int optionIdx)
     {
         var upgradeCardprefab = Resources.Load("Prefabs/GunUpgrades/UpgradeCard") as GameObject;
         var newCard = Object.Instantiate(upgradeCardprefab);
@@ -25,7 +25,7 @@ public abstract class Upgrade
 
         card.Image.sprite = GetImageSprite();
         card.Icon.sprite = GetIconSprite();
-        card.Button.onClick.AddListener(() => upgradeSelected.Invoke(Id));
+        card.Button.onClick.AddListener(() => upgradeSelected.Invoke(optionIdx));
         card.Name.text = Name;
         return card;
     }
