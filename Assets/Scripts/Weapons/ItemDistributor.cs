@@ -16,7 +16,10 @@ public class ItemDistributor : MonoBehaviour
 
     private void Start()
     {
-        SpawnItems();
+        if (NetworkManager.Singleton.IsServer)
+        {
+            SpawnItems();
+        }
     }
     public void SpawnItems()
     {
