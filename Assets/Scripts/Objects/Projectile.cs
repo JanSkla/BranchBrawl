@@ -39,7 +39,7 @@ public class Projectile : NetworkBehaviour
         if (!_collided)
         {
             _collided = true;
-            StartCoroutine(nameof(DestroySelf), 3);
+            Invoke(nameof(DestroySelf), 3);
         }
 
         var targetPlayer = collision.gameObject.GetComponent<Player>();
@@ -53,6 +53,6 @@ public class Projectile : NetworkBehaviour
 
     private void DestroySelf()
     {
-        Destroy(this);
+        Utils.DestroyWithChildren(gameObject);
     }
 }
