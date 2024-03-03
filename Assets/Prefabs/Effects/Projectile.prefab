@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1231619071327959481}
   - component: {fileID: 5913759574276260655}
   - component: {fileID: 4201666505622762285}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -296,6 +296,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 2659346a00849b34f89fbe61a4a85556, type: 3}
       propertyPath: m_Name
       value: PineCone
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2659346a00849b34f89fbe61a4a85556, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

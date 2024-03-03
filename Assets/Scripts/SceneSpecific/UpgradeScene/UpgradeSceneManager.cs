@@ -62,7 +62,7 @@ public class UpgradeSceneManager : NetworkBehaviour
         _gunBuilder.SetActive(true);
         GunPlaceholder.PartBuilderInv.UpdateList();
 
-        Invoke(nameof(DelayedUpgradeSelectDisable), 1);
+        Invoke(nameof(DelayedUpgradeSelectDisable), 0.5f);
     }
     private void DelayedUpgradeSelectDisable()
     {
