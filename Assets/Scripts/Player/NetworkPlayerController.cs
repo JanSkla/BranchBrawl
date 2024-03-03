@@ -83,6 +83,9 @@ public class NetworkPlayerController : NetworkBehaviour
             return;
         }
 
+        Debug.Log(calculatedState.Value.Position + " server: " + serverState.Position);
+        Debug.Log(Vector3.Distance(calculatedState.Value.Position, serverState.Position));
+
         if (Vector3.Distance(calculatedState.Value.Position, serverState.Position) < _roomForError && Mathf.Abs(calculatedState.Value.Position.y - serverState.Position.y) < _roomForError) return;
 
         TeleportPlayer(serverState);
@@ -243,8 +246,11 @@ public class NetworkPlayerController : NetworkBehaviour
             int inputbufferIndex = _inputTicks % BUFFER_SIZE;
             _inputTicks++;
 
-            Debug.Log("Tick" + _tick + " mi " + moveInput + " ri " + rotationInput + " de " + Time.deltaTime + " " + (Time.deltaTime * moveInput) );
+            //Debug.Log("Tick" + _tick + " mi " + moveInput + " ri " + rotationInput + " de " + Time.deltaTime + " " + (Time.deltaTime * moveInput) );
+            Debug.Log(_tick + "//" + transform.position + " a " + transform.rotation);
             HandleMovement(moveInput, rotationInput, Time.deltaTime);
+            Debug.Log(_tick + "//" + moveInput + " a " + rotationInput + "///" + Time.deltaTime);
+            Debug.Log(_tick + "//" + transform.position + " a " + transform.rotation);
             //MovePlayerRequestServerRpc(_tick, moveInput, rotationInput, Time.deltaTime, bufferIndex);
 
             //transform.position = ServerTransformState.Value.Position;
@@ -293,10 +299,10 @@ public class NetworkPlayerController : NetworkBehaviour
         player.RigAnimator.SetFloat("SpeedX", moveInput.x);
         player.RigAnimator.SetFloat("SpeedY", moveInput.z);
         player.RigAnimator.SetFloat("Speed", Vector3.Distance(Vector3.zero, moveInput));
-        var newPos = transform.TransformDirection(_speed * tickRate * moveInput);
-        _rb.MovePosition(transform.position + newPos);
+        //var newPos = transform.TransformDirection(_speed * tickRate * moveInput);
+        //_rb.MovePosition(transform.position + newPos);
         var newRot = tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0);
-        //transform.Translate(_speed * _tickRate * moveInput);
+        transform.Translate(_speed * tickRate * moveInput);
         transform.Rotate(newRot);
 
         _rotationX -= rotationInput.x * _turnSpeed * _tickRate;
@@ -397,21 +403,28 @@ public class NetworkPlayerController : NetworkBehaviour
         //Debug.Log("aa"+inputStates);
 
 
-        Vector3 movementInput = new(0, 0);
-        Vector3 rotationInput = new(0, 0);
-        float totalDeltaTime = 0f;
+        //Vector3 movementInput = new(0, 0);
+        //Vector3 rotationInput = new(0, 0);
+        //float totalDeltaTime = 0f;
 
         foreach (var inputState in inputStates)
         {
 
-            var mi = inputState.movementInput * inputState.DeltaTime;
-            var ri = inputState.rotationInput * inputState.DeltaTime;
+            Debug.Log(tick + "//" + transform.position + " a " + transform.rotation);
 
-            movementInput = movementInput + mi;
-            rotationInput = rotationInput + ri;
-            //    movementInput += (inputState.movementInput * inputState.DeltaTime);
-            //    rotationInput += (inputState.rotationInput * inputState.DeltaTime);
-            totalDeltaTime += inputState.DeltaTime;
+            HandleMovement(inputState.movementInput, inputState.rotationInput, inputState.DeltaTime);
+
+            Debug.Log(tick + "//" + inputState.movementInput + " a " + inputState.rotationInput +"///"+ inputState.DeltaTime);
+            Debug.Log(tick + "//" + transform.position + " a " + transform.rotation);
+
+            //var mi = inputState.movementInput * inputState.DeltaTime;
+            //var ri = inputState.rotationInput * inputState.DeltaTime;
+
+            //movementInput = movementInput + mi;
+            //rotationInput = rotationInput + ri;
+            ////    movementInput += (inputState.movementInput * inputState.DeltaTime);
+            ////    rotationInput += (inputState.rotationInput * inputState.DeltaTime);
+            //totalDeltaTime += inputState.DeltaTime;
 
 
            // Debug.Log( "Tick"+tick+" "+ movementInput + " " + mi + " " + inputState.DeltaTime + " " + inputState.movementInput);
@@ -419,7 +432,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
         //Debug.Log("aaa " + movementInput + " s " + rotationInput + " " + inputStates[0].DeltaTime + " " + inputStates[0].movementInput + "" + totalDeltaTime + " " + _tickRate);
 
-        HandleMovement(movementInput *2, rotationInput, 1);
+        //HandleMovement(movementInput *2, rotationInput, 1);
 
         TransformState state = new TransformState()
         {
