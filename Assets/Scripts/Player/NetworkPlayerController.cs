@@ -299,10 +299,11 @@ public class NetworkPlayerController : NetworkBehaviour
         player.RigAnimator.SetFloat("SpeedX", moveInput.x);
         player.RigAnimator.SetFloat("SpeedY", moveInput.z);
         player.RigAnimator.SetFloat("Speed", Vector3.Distance(Vector3.zero, moveInput));
+
+        transform.Translate(_speed * tickRate * moveInput);
         //var newPos = transform.TransformDirection(_speed * tickRate * moveInput);
         //_rb.MovePosition(transform.position + newPos);
         var newRot = tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0);
-        transform.Translate(_speed * tickRate * moveInput);
         transform.Rotate(newRot);
 
         _rotationX -= rotationInput.x * _turnSpeed * _tickRate;
