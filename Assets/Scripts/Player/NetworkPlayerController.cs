@@ -16,7 +16,7 @@ public class NetworkPlayerController : NetworkBehaviour
     [SerializeField]
     private float _jumpPower = 1;
 
-    private float _roomForError = 0.6f;
+    private float _roomForError = 2f;
 
 
     [SerializeField]
@@ -52,7 +52,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        //NetworkManager.CustomMessagingManager.RegisterNamedMessageHandler(_messageName, RecieveMovePlayerRequestOnServer);
+        NetworkManager.CustomMessagingManager.RegisterNamedMessageHandler(_messageName, RecieveMovePlayerRequestOnServer);
         ServerTransformState.OnValueChanged += OnServerStateChanged;
 
         player = GetComponent<Player>();
@@ -83,7 +83,7 @@ public class NetworkPlayerController : NetworkBehaviour
             return;
         }
 
-        if (Vector3.Distance(calculatedState.Value.Position, serverState.Position) < _roomForError && Mathf.Abs(calculatedState.Value.Position.y - serverState.Position.y) < 1) return;
+        if (Vector3.Distance(calculatedState.Value.Position, serverState.Position) < _roomForError && Mathf.Abs(calculatedState.Value.Position.y - serverState.Position.y) < _roomForError) return;
 
         TeleportPlayer(serverState);
 
@@ -167,7 +167,8 @@ public class NetworkPlayerController : NetworkBehaviour
                     if(inputState.Tick == _tick)
                         inputs.Add(inputState);
                 }
-                MovePlayerRequestServerRpc(_tick, inputs.ToArray());
+                if (inputs.Count() > 0)
+                    SendMovePlayerRequestToServer(_tick, inputs.ToArray());
 
                 int transformbufferIndex = _tick % BUFFER_SIZE;
 
@@ -220,8 +221,6 @@ public class NetworkPlayerController : NetworkBehaviour
     }
     private void ProcessLocalPlayerMovement(Vector3 moveInput, Vector3 rotationInput)
     {
-        int inputbufferIndex = _inputTicks % BUFFER_SIZE;
-        _inputTicks++;
 
         if (NetworkManager.IsServer)
         {
@@ -239,22 +238,30 @@ public class NetworkPlayerController : NetworkBehaviour
         }
         else
         {
+            if (moveInput == Vector3.zero && rotationInput == Vector3.zero) return;
+
+            int inputbufferIndex = _inputTicks % BUFFER_SIZE;
+            _inputTicks++;
+
+            Debug.Log("Tick" + _tick + " mi " + moveInput + " ri " + rotationInput + " de " + Time.deltaTime + " " + (Time.deltaTime * moveInput) );
             HandleMovement(moveInput, rotationInput, Time.deltaTime);
             //MovePlayerRequestServerRpc(_tick, moveInput, rotationInput, Time.deltaTime, bufferIndex);
 
             //transform.position = ServerTransformState.Value.Position;
             //transform.rotation = ServerTransformState.Value.Rotation;
+
+
+            InputState inputState = new()
+            {
+                Tick = _tick,
+                movementInput = moveInput,
+                rotationInput = rotationInput,
+                DeltaTime = Time.deltaTime,
+            };
+
+            _inputStates[inputbufferIndex] = inputState;
         }
 
-        InputState inputState = new()
-        {
-            Tick = _tick,
-            movementInput = moveInput,
-            rotationInput = rotationInput,
-            DeltaTime = Time.deltaTime,
-        };
-
-        _inputStates[inputbufferIndex] = inputState;
 
         ///UpdateTick();
         //_tickDeltaTime -= _tickRate;
@@ -288,7 +295,7 @@ public class NetworkPlayerController : NetworkBehaviour
         player.RigAnimator.SetFloat("Speed", Vector3.Distance(Vector3.zero, moveInput));
         var newPos = transform.TransformDirection(_speed * tickRate * moveInput);
         _rb.MovePosition(transform.position + newPos);
-        var newRot = _tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0);
+        var newRot = tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0);
         //transform.Translate(_speed * _tickRate * moveInput);
         transform.Rotate(newRot);
 
@@ -340,24 +347,30 @@ public class NetworkPlayerController : NetworkBehaviour
     //    ServerTransformState.Value = state;
     //}
 
-    [ServerRpc(RequireOwnership = false)]
-    private void MovePlayerRequestServerRpc(int tick, InputState[] inputStates)
-    {
-        foreach (var inputState in inputStates)
-        {
-            HandleMovement(inputState.movementInput, inputState.rotationInput, inputState.DeltaTime);
-        }
+    //[ServerRpc(RequireOwnership = false)]
+    //private void MovePlayerRequestServerRpc(int tick, InputState[] inputStates)
+    //{
+    //    Vector3 movementInput = new(0, 0);
+    //    Vector3 rotationInput = new(0, 0);
 
-        TransformState state = new TransformState()
-        {
-            Tick = tick,
-            Position = transform.position,
-            Rotation = transform.rotation,
-            Facing = player.Head.transform.rotation
-        };
+    //    foreach (var inputState in inputStates)
+    //    {
+    //        movementInput += inputState.movementInput * inputState.DeltaTime;
+    //        rotationInput += inputState.rotationInput * inputState.DeltaTime;
+    //    }
 
-        ServerTransformState.Value = state;
-    }
+    //    HandleMovement(movementInput, rotationInput, _tickRate);
+
+    //    TransformState state = new TransformState()
+    //    {
+    //        Tick = tick,
+    //        Position = transform.position,
+    //        Rotation = transform.rotation,
+    //        Facing = player.Head.transform.rotation
+    //    };
+
+    //    ServerTransformState.Value = state;
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     private void JumpServerRPC()
@@ -369,23 +382,65 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         get { return player.IsLocalPlayer; }
     }
-    //private string _messageName = "SendMovePlayerRequestToServer";
+    private string _messageName = "SendMovePlayerRequestToServer";
 
-    //private void RecieveMovePlayerRequestOnServer(ulong senderId, FastBufferReader messagePayload)
-    //{
-    //    var recieveMessageContent = messagePayload.Serialize();
-    //    Debug.Log(recieveMessageContent);
-    //    Debug.Log(recieveMessageContent.json);
-    //}
-    //public void SendMovePlayerRequestToServer(int tick, InputState[] message)
-    //{
-    //    //Write
-    //    var writeSize = FastBufferWriter.GetWriteSize(message) + FastBufferWriter.GetWriteSize(tick); //Get size of bytes to allocate network buffer
-    //    using FastBufferWriter writer = new FastBufferWriter(writeSize, Allocator.Temp);
+    private void RecieveMovePlayerRequestOnServer(ulong senderId, FastBufferReader messagePayload)
+    {
+        var recieveMessageContent = messagePayload.Serialize();
+        Debug.Log(recieveMessageContent);
+        Debug.Log(recieveMessageContent.json);
 
-    //    writer.WriteValueSafe(message); //Write to 
-    //    writer.WriteValueSafe(tick); //Write to buffer
-    //    NetworkManager.Singleton.CustomMessagingManager.SendNamedMessage(_messageName, NetworkManager.ServerClientId, writer,
-    //        NetworkDelivery.ReliableFragmentedSequenced);
-    //}
+        messagePayload.ReadValueSafe(out InputState[] inputStates);
+        messagePayload.ReadValueSafe(out int tick);
+
+        //Debug.Log("a"+tick);
+        //Debug.Log("aa"+inputStates);
+
+
+        Vector3 movementInput = new(0, 0);
+        Vector3 rotationInput = new(0, 0);
+        float totalDeltaTime = 0f;
+
+        foreach (var inputState in inputStates)
+        {
+
+            var mi = inputState.movementInput * inputState.DeltaTime;
+            var ri = inputState.rotationInput * inputState.DeltaTime;
+
+            movementInput = movementInput + mi;
+            rotationInput = rotationInput + ri;
+            //    movementInput += (inputState.movementInput * inputState.DeltaTime);
+            //    rotationInput += (inputState.rotationInput * inputState.DeltaTime);
+            totalDeltaTime += inputState.DeltaTime;
+
+
+           // Debug.Log( "Tick"+tick+" "+ movementInput + " " + mi + " " + inputState.DeltaTime + " " + inputState.movementInput);
+        }
+
+        //Debug.Log("aaa " + movementInput + " s " + rotationInput + " " + inputStates[0].DeltaTime + " " + inputStates[0].movementInput + "" + totalDeltaTime + " " + _tickRate);
+
+        HandleMovement(movementInput *2, rotationInput, 1);
+
+        TransformState state = new TransformState()
+        {
+            Tick = tick,
+            Position = transform.position,
+            Rotation = transform.rotation,
+            Facing = player.Head.transform.rotation
+        };
+
+        ServerTransformState.Value = state;
+
+    }
+    public void SendMovePlayerRequestToServer(int tick, InputState[] message)
+    {
+        //Write
+        var writeSize = FastBufferWriter.GetWriteSize(message) + FastBufferWriter.GetWriteSize(tick); //Get size of bytes to allocate network buffer
+        using FastBufferWriter writer = new FastBufferWriter(writeSize, Allocator.Temp);
+
+        writer.WriteValueSafe(message); //Write to 
+        writer.WriteValueSafe(tick); //Write to buffer
+        NetworkManager.Singleton.CustomMessagingManager.SendNamedMessage(_messageName, NetworkManager.ServerClientId, writer,
+            NetworkDelivery.ReliableFragmentedSequenced);
+    }
 }
