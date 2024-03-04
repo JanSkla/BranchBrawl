@@ -311,9 +311,7 @@ public class NetworkPlayerController : NetworkBehaviour
         {
 
             Vector3 sideAmount = _speed * tickRate * moveInput;
-
-
-
+            sideAmount += Vector3.ClampMagnitude(sideAmount * 100, _fwdCollisionLimit.localPosition.magnitude);
             if (Physics.Raycast(transform.position, transform.TransformDirection(sideAmount), out RaycastHit forwardHit, sideAmount.magnitude))
             {
                 sideAmount = transform.InverseTransformPoint(forwardHit.point);
@@ -330,6 +328,10 @@ public class NetworkPlayerController : NetworkBehaviour
             Debug.DrawLine(transform.position, transform.TransformPoint(totalAmount), Color.green, 1);
 
             totalAmount -= _downCollisionLimit.localPosition;
+            totalAmount -= Vector3.ClampMagnitude(sideAmount * 100, _fwdCollisionLimit.localPosition.magnitude);
+            Debug.Log(Vector3.ClampMagnitude(sideAmount * 100, _fwdCollisionLimit.localPosition.magnitude));
+            Debug.Log(_fwdCollisionLimit.localPosition.magnitude);
+            Debug.Log(sideAmount * 100);
             Debug.DrawLine(transform.position, transform.TransformPoint(totalAmount), Color.yellow, 1);
             //totalAmount -= sideAmount.normalized;
 
