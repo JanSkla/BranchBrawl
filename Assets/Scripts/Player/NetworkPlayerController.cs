@@ -335,7 +335,8 @@ public class NetworkPlayerController : NetworkBehaviour
             Debug.DrawLine(transform.position, transform.TransformPoint(totalAmount), Color.yellow, 1);
             //totalAmount -= sideAmount.normalized;
 
-            transform.position = transform.TransformPoint(totalAmount);
+            transform.Translate(totalAmount);
+            //transform.position = transform.TransformPoint(totalAmount);
         }
         //var newPos = transform.TransformDirection(_speed * tickRate * moveInput);
         //_rb.MovePosition(transform.position + newPos);
