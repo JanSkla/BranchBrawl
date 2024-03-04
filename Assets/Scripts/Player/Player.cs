@@ -93,7 +93,7 @@ public class Player : NetworkBehaviour
 
         }
         _nameTag.text = PlayerManager.gameObject.GetComponent<PlayerManager>().PlayerName.Value.ToString();
-        Utils.ChangeLayerWithChildren(_nameTag.gameObject, IsLocalPlayer ? 8 : 6);
+        Utils.ChangeLayerWithChildren(gameObject, IsLocalPlayer ? 8 : 6);
     }
 
     //public override void OnNetworkDespawn()

@@ -22,6 +22,10 @@ public class NetworkPlayerController : NetworkBehaviour
     [SerializeField]
     private Rigidbody _rb;
 
+    [SerializeField]
+    private Transform _downCollisionLimit;
+    [SerializeField]
+    private Transform _fwdCollisionLimit;
 
     private float _terrainColliderHeight = 0f;
 
@@ -190,7 +194,7 @@ public class NetworkPlayerController : NetworkBehaviour
                 _tickDeltaTime -= _tickRate;
             }
 
-            if (player.AreControlsDisabled) return;
+            //REMOVEif (player.AreControlsDisabled) return;
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 HandleJump();
@@ -224,6 +228,7 @@ public class NetworkPlayerController : NetworkBehaviour
     }
     private void ProcessLocalPlayerMovement(Vector3 moveInput, Vector3 rotationInput)
     {
+        if (moveInput == Vector3.zero && rotationInput == Vector3.zero) return;
 
         if (NetworkManager.IsServer)
         {
@@ -241,7 +246,6 @@ public class NetworkPlayerController : NetworkBehaviour
         }
         else
         {
-            if (moveInput == Vector3.zero && rotationInput == Vector3.zero) return;
 
             int inputbufferIndex = _inputTicks % BUFFER_SIZE;
             _inputTicks++;
@@ -300,7 +304,37 @@ public class NetworkPlayerController : NetworkBehaviour
         player.RigAnimator.SetFloat("SpeedY", moveInput.z);
         player.RigAnimator.SetFloat("Speed", Vector3.Distance(Vector3.zero, moveInput));
 
-        transform.Translate(_speed * tickRate * moveInput);
+        //_rb.position = _rb.position + transform.TransformDirection(_speed * 50 * tickRate * moveInput);
+        //_rb.velocity = new Vector3(transform.TransformDirection(_speed * 50 * tickRate * moveInput).x, _rb.velocity.y, transform.TransformDirection(_speed * 50 * tickRate * moveInput).z);
+
+        if(moveInput != Vector3.zero)
+        {
+
+            Vector3 sideAmount = _speed * tickRate * moveInput;
+
+
+
+            if (Physics.Raycast(transform.position, transform.TransformDirection(sideAmount), out RaycastHit forwardHit, sideAmount.magnitude))
+            {
+                sideAmount = transform.InverseTransformPoint(forwardHit.point);
+            }
+            Debug.DrawLine(transform.position, transform.TransformPoint(sideAmount), Color.red, 1);
+
+
+            Vector3 totalAmount = sideAmount + _downCollisionLimit.localPosition;
+
+            if (Physics.Raycast(transform.TransformPoint(sideAmount), Vector3.down, out RaycastHit downwardsHit, Mathf.Abs(_downCollisionLimit.localPosition.y)))
+            {
+                totalAmount = transform.InverseTransformPoint(downwardsHit.point);
+            }
+            Debug.DrawLine(transform.position, transform.TransformPoint(totalAmount), Color.green, 1);
+
+            totalAmount -= _downCollisionLimit.localPosition;
+            Debug.DrawLine(transform.position, transform.TransformPoint(totalAmount), Color.yellow, 1);
+            //totalAmount -= sideAmount.normalized;
+
+            transform.position = transform.TransformPoint(totalAmount);
+        }
         //var newPos = transform.TransformDirection(_speed * tickRate * moveInput);
         //_rb.MovePosition(transform.position + newPos);
         var newRot = tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0);
