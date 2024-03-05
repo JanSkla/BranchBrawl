@@ -14,7 +14,7 @@ public class NetworkPlayerController : NetworkBehaviour
     [SerializeField]
     private float _turnSpeed = 150;
     [SerializeField]
-    private float _jumpPower = 1;
+    private float _jumpPower;
 
     private float _roomForError = 2f;
 
@@ -146,11 +146,14 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         _tickDeltaTime += Time.deltaTime;
 
-        bool groundCheck = GroundCheck();
-        if (_isGrounded != groundCheck)
+        if (!_isGrounded)
         {
-            _isGrounded = groundCheck;
-            player.RigAnimator.SetBool("IsGrounded", groundCheck);
+            bool groundCheck = GroundCheck();
+            if (groundCheck)
+            {
+                _isGrounded = groundCheck;
+                player.RigAnimator.SetBool("IsGrounded", groundCheck);
+            }
         }
 
         if (IsLocalPlayer)
@@ -290,7 +293,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
             transform.position = newPosition;
             transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, _tickDeltaTime * _speed);
-            Quaternion facing = Quaternion.Lerp(player.Head.transform.rotation, ServerTransformState.Value.Facing, _tickDeltaTime * _speed);
+            Quaternion facing = Quaternion.Lerp(player.Head.transform.rotation, ServerTransformState.Value.Facing, _tickDeltaTime * _speed); 
             player.Head.transform.rotation = facing;
             player.Hand.transform.rotation = facing;
         }
@@ -356,7 +359,7 @@ public class NetworkPlayerController : NetworkBehaviour
         if (_isGrounded)
         {
             _isGrounded = false;
-            GetComponent<Rigidbody>().AddForce(Vector3.up * _jumpPower, ForceMode.Impulse);
+            _rb.velocity = new(_rb.velocity.x, _jumpPower, _rb.velocity.z);
             player.RigAnimator.SetBool("IsGrounded", false);
         }
     }

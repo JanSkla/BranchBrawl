@@ -331,7 +331,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 15
   _turnSpeed: 300
-  _jumpPower: 250
+  _jumpPower: 5
   _rb: {fileID: 1725099954420361255}
   _downCollisionLimit: {fileID: 7927383713562820165}
   _fwdCollisionLimit: {fileID: 5286551332941197177}
