@@ -182,24 +182,26 @@ public class GunBaseSaveData : INetworkSerializable
             }
         }
 
-        public GPart Spawn(Transform parentTransfrom)
+        public GPart Spawn(GDestiny parentDestiny)
         {
             GUpgrade gUpgrade = (UpgradeManager.GetUpgradeById(UpgradeId) as UpgradeWithPart).InstantiatePrefab().GetComponent<GUpgrade>();
             gUpgrade.NetworkObject.AutoObjectParentSync = false;
-            gUpgrade.transform.SetParent(parentTransfrom, false);
+            gUpgrade.transform.SetParent(parentDestiny.PositionPoint.transform, false);
 
+            
             //get previous upgrade parts
-            var prevPart = PreviousPart;
-            List<int> prevIds = new List<int>();
-            while (prevPart != null)
+            int[] prevIds = new int[parentDestiny.PreviousUpgradeIds.Length + 1];
+
+
+            for (int i = 0; i < parentDestiny.PreviousUpgradeIds.Length; i++)
             {
-                prevIds.Add(PreviousPart.UpgradeId);
-                prevPart = prevPart.PreviousPart;
+                prevIds[i] = parentDestiny.PreviousUpgradeIds[i];
             }
+            prevIds[parentDestiny.PreviousUpgradeIds.Length] = UpgradeId;
 
             for (int i = 0; i < ChildGBCDs.Length; i++)
             {
-                gUpgrade.Destiny[i].PreviousUpgradeIds = prevIds.ToArray();
+                gUpgrade.Destiny[i].PreviousUpgradeIds = prevIds;
                 GBDSpawnShared(ChildGBCDs[i], gUpgrade.Destiny[i]);
             }
             return gUpgrade;
@@ -225,11 +227,21 @@ public class GunBaseSaveData : INetworkSerializable
                 Debug.LogError("Neco je zle");
             }
 
-                
+            //get previous upgrade parts
+            int[] prevIds = new int[parentDestiny.PreviousUpgradeIds.Length + 1];
+
+
+            for (int i = 0; i < parentDestiny.PreviousUpgradeIds.Length; i++)
+            {
+                prevIds[i] = parentDestiny.PreviousUpgradeIds[i];
+            }
+            prevIds[parentDestiny.PreviousUpgradeIds.Length] = UpgradeId;
+
             //gUpgrade.NetworkObject.TrySetParent(parentTransfrom, false);
 
             for (int i = 0; i < ChildGBCDs.Length; i++)
             {
+                gUpgrade.Destiny[i].PreviousUpgradeIds = prevIds;
                 GBDNetworkSpawnShared(ChildGBCDs[i], gUpgrade.Destiny[i]);
             }
             return gUpgrade;
@@ -257,7 +269,7 @@ public class GunBaseSaveData : INetworkSerializable
     {
         if (!childData.IsUnityNull())
         {
-            desitny.Part = childData.Spawn(desitny.PositionPoint.transform);
+            desitny.Part = childData.Spawn(desitny);
         }
         else
         {

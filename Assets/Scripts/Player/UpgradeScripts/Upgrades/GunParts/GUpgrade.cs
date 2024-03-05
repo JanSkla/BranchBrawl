@@ -75,17 +75,17 @@ public abstract class GUpgrade : GPart
         else return;
 
 
-        Debug.Log(parentDest);
-        int[] previousUpgradeIds = new int[parentDest.PreviousUpgradeIds.Length + 1];
-        for (int i = 0; i < parentDest.PreviousUpgradeIds.Length; i++)
-        {
-            previousUpgradeIds[i] = parentDest.PreviousUpgradeIds[i];
-        }
-        previousUpgradeIds[parentDest.PreviousUpgradeIds.Length] = gUpgrade.UpgradeId;
-        foreach (GDestiny dest in gUpgrade.Destiny)
-        {
-            dest.PreviousUpgradeIds = previousUpgradeIds;
-        }
+        //Debug.Log(parentDest);
+        //int[] previousUpgradeIds = new int[parentDest.PreviousUpgradeIds.Length + 1];
+        //for (int i = 0; i < parentDest.PreviousUpgradeIds.Length; i++)
+        //{
+        //    previousUpgradeIds[i] = parentDest.PreviousUpgradeIds[i];
+        //}
+        //previousUpgradeIds[parentDest.PreviousUpgradeIds.Length] = gUpgrade.UpgradeId;
+        //foreach (GDestiny dest in gUpgrade.Destiny)
+        //{
+        //    dest.PreviousUpgradeIds = previousUpgradeIds;
+        //}
     }
 
     public void NetworkAddParentOnDestiny(int destinyIndex, ulong childNwId)
@@ -188,14 +188,11 @@ public abstract class GUpgrade : GPart
     }
     private static void RefreshPrevUIdDataForAllChilds(GDestiny originDestiny)
     {
-        Debug.Log(originDestiny);
-        Debug.Log(originDestiny.Part);
-        Debug.Log(originDestiny.Part.GetComponent<GUpgrade>());
+        if (!originDestiny.Part) return;
         var part = originDestiny.Part.GetComponent<GUpgrade>();
 
         if (part)
         {
-            Debug.Log("part" + part.UpgradeId);
             foreach (var destiny in part.Destiny)
             {
                 destiny.PreviousUpgradeIds = new int[originDestiny.PreviousUpgradeIds.Length + 1];

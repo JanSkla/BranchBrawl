@@ -18,7 +18,12 @@ public class ItemDistributor : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            SpawnItems();
+            var gameManager = GameObject.Find("GameManager(Clone)").GetComponent<GameManager>();
+            if (gameManager)
+            {
+                if (gameManager.RoundsList[gameManager.CurrentRoundListIndex] == (int)RoundType.FirstCombat)
+                    SpawnItems();
+            }
         }
     }
     public void SpawnItems()
