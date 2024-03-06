@@ -15,6 +15,8 @@ public class GameManager : NetworkBehaviour
 
     public int CurrentRoundListIndex = 0;
     private bool _currentRoundActive = false;
+
+    private NetworkData _networkDataManager;
     void Awake()
     {
         if (NetworkManager.IsServer)
@@ -83,7 +85,10 @@ public class GameManager : NetworkBehaviour
     {
         if (!NetworkManager.IsServer) return;
 
-        NetworkManager.Singleton.SceneManager.LoadScene("CombatRound", LoadSceneMode.Single);
+        if(!_networkDataManager)
+            _networkDataManager = GameObject.Find("NetworkDataManager(Clone)").GetComponent<NetworkData>();
+
+        NetworkManager.Singleton.SceneManager.LoadScene(_networkDataManager.CombatRoundSceneName, LoadSceneMode.Single);
     }
     private void StartUpgradeRound()
     {

@@ -197,7 +197,7 @@ public class NetworkPlayerController : NetworkBehaviour
                 _tickDeltaTime -= _tickRate;
             }
 
-            //REMOVEif (player.AreControlsDisabled) return;
+            if (player.AreControlsDisabled) return;
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 HandleJump();
@@ -332,9 +332,9 @@ public class NetworkPlayerController : NetworkBehaviour
 
             totalAmount -= _downCollisionLimit.localPosition;
             totalAmount -= Vector3.ClampMagnitude(sideAmount * 100, _fwdCollisionLimit.localPosition.magnitude);
-            Debug.Log(Vector3.ClampMagnitude(sideAmount * 100, _fwdCollisionLimit.localPosition.magnitude));
-            Debug.Log(_fwdCollisionLimit.localPosition.magnitude);
-            Debug.Log(sideAmount * 100);
+            //Debug.Log(Vector3.ClampMagnitude(sideAmount * 100, _fwdCollisionLimit.localPosition.magnitude));
+            //Debug.Log(_fwdCollisionLimit.localPosition.magnitude);
+            //Debug.Log(sideAmount * 100);
             Debug.DrawLine(transform.position, transform.TransformPoint(totalAmount), Color.yellow, 1);
             //totalAmount -= sideAmount.normalized;
 
@@ -451,12 +451,12 @@ public class NetworkPlayerController : NetworkBehaviour
         foreach (var inputState in inputStates)
         {
 
-            Debug.Log(tick + "//" + transform.position + " a " + transform.rotation);
+            //Debug.Log(tick + "//" + transform.position + " a " + transform.rotation);
 
             HandleMovement(inputState.movementInput, inputState.rotationInput, inputState.DeltaTime);
 
-            Debug.Log(tick + "//" + inputState.movementInput + " a " + inputState.rotationInput +"///"+ inputState.DeltaTime);
-            Debug.Log(tick + "//" + transform.position + " a " + transform.rotation);
+            //Debug.Log(tick + "//" + inputState.movementInput + " a " + inputState.rotationInput +"///"+ inputState.DeltaTime);
+            //Debug.Log(tick + "//" + transform.position + " a " + transform.rotation);
 
             //var mi = inputState.movementInput * inputState.DeltaTime;
             //var ri = inputState.rotationInput * inputState.DeltaTime;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Rendering;
 using static UnityEngine.GraphicsBuffer;
 
 public class GFireMuzzle : GMuzzle
@@ -97,7 +98,7 @@ public class GFireMuzzle : GMuzzle
     {
         RaycastHit hit;
         Vector3 pointOfInterest = _muzzle.transform.position + _muzzle.transform.forward * 100;
-        if (Physics.Raycast(_muzzle.transform.position, transform.forward * 100, out hit, 100, 8))
+        if (Physics.Raycast(_muzzle.transform.position, transform.forward * 100, out hit, 100))
         {
             pointOfInterest = hit.point;
             Debug.Log("hit" + hit.point);
@@ -116,32 +117,46 @@ public class GFireMuzzle : GMuzzle
             //TODO not optimal, couroutine<? FIX NEEDED
 
             SetFireClientRpc(target.GetComponent<NetworkObject>().NetworkObjectId, true);
-            if(target.IsLocalPlayer)
+            Debug.Log("lopcalplayer");
+            if (target.GetComponent<LocalPlayer>().enabled)
                 target.GetComponent<LocalPlayer>().InGameUI.FireEffectScreen.SetActive(true);
-            for (int i = 1; i < duration; i++)
-            {
-                Invoke(nameof(Burn), i);
-            }
-            Invoke(nameof(LastBurn), duration);
-            void Burn()
-            {
-                target.GetComponent<PlayerHealth>().Damage(3);
-            }
-            void LastBurn()
-            {
-                target.GetComponent<PlayerHealth>().Damage(3);
-                if (target.IsLocalPlayer)
-                    target.GetComponent<LocalPlayer>().InGameUI.FireEffectScreen.SetActive(false);
-                SetFireClientRpc(target.GetComponent<NetworkObject>().NetworkObjectId, false);
-            }
+            Debug.Log("lopcalplayer2");
+
+            object[] parms = new object[2] { target, duration };
+
+            StartCoroutine(nameof(SetOnFireEnumerable), parms);
+        }
+    }
+    private IEnumerator SetOnFireEnumerable(object[] parms)
+    {
+        Debug.Log("FireStarted");
+        Player target = (Player)parms[0];
+        int duration = (int)parms[1];
+
+        for (int i = 0; i < duration; i++)
+        {
+            yield return new WaitForSeconds(1);
+            Burn();
+            Debug.Log("Burned");
+        }
+
+        if (target.IsLocalPlayer)
+            target.GetComponent<LocalPlayer>().InGameUI.FireEffectScreen.SetActive(false);
+        SetFireClientRpc(target.GetComponent<NetworkObject>().NetworkObjectId, false);
+
+        void Burn()
+        {
+            target.GetComponent<PlayerHealth>().Damage(3);
         }
     }
     [ClientRpc]
     private void SetFireClientRpc(ulong targetPlayerNwId, bool isOnFire)
     {
-        var target = NetworkManager.SpawnManager.SpawnedObjects[targetPlayerNwId].GetComponent<Player>();
+        var target = NetworkManager.SpawnManager.SpawnedObjects[targetPlayerNwId].GetComponent<LocalPlayer>();
 
-        if (target.IsLocalPlayer)
-            target.GetComponent<LocalPlayer>().InGameUI.FireEffectScreen.SetActive(isOnFire);
+        Debug.Log("SetOnFire");
+
+        if (target.enabled)
+            target.InGameUI.FireEffectScreen.SetActive(isOnFire);
     }
 }

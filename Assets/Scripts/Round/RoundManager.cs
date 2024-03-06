@@ -116,10 +116,10 @@ public class RoundManager : NetworkBehaviour
             _alivePlayerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
             SetAlivePlayerCountClientRpc(AlivePlayerCount);
         }
-        else
-        {
-            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.AreControlsDisabled = true;
-        }
+        //else
+        //{
+        //    NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.AreControlsDisabled = true;
+        //}
         _waitingForOthersScreen.SetActive(false);
     }
     private void GameSetRunning()

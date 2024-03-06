@@ -80,4 +80,8 @@ public class MPLobby : NetworkBehaviour
 
         _playerStandPlacehodlerManager.RerenderCurrentPlayers(list);
     }
+    public void SetCombatSceneMapName(string sceneName)
+    {
+        _networkDataManager.CombatRoundSceneName = sceneName;
+    }
 }

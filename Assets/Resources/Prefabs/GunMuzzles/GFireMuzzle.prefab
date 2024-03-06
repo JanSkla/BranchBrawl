@@ -236,7 +236,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 4ee93900f85cf874ebc4ee8ecfe0aaa9, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: dc5e5eeeb0648c64b9ec321aee6345d1, type: 2}
+      objectReference: {fileID: 2100000, guid: dcacec2cc8521c1449112296b29b4c87, type: 2}
     - target: {fileID: 919132149155446097, guid: 4ee93900f85cf874ebc4ee8ecfe0aaa9, type: 3}
       propertyPath: m_Name
       value: GMuzzle

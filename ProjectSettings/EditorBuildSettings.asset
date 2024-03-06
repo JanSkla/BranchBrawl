@@ -29,5 +29,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CombatRound.unity
     guid: 66860a14a00c6f8479ddfa088f8170c5
+  - enabled: 1
+    path: Assets/Scenes/TestCombatRound.unity
+    guid: 21c6df173dccee943b835094bdc2ad1d
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -26,9 +27,11 @@ public class UpgradeSceneManager : NetworkBehaviour
     {
         _upgradeSelect.SetActive(true);
 
+        var upgrades = UpgradeManager.GetRandomSetOfNonrepeatingUpgrades(_selectCount);
+
         for (int i = 0; i < _selectCount; i++)
         {
-            var newUpgrade = UpgradeManager.GetRandomUpgrade();
+            var newUpgrade = upgrades[i];
 
             var newCard = newUpgrade.InstantiateSelectionCard(UpgradeSelected, i);
             newCard.transform.SetParent(_upgradeSelectContainer.transform, false);

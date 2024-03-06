@@ -27,8 +27,9 @@ public class GameUI : NetworkBehaviour
     [SerializeField]
     private GameObject _deathBackdrop;
     [SerializeField]
-    public HealthDisplayText HealthDiplay;
-
+    public HealthDisplayText HealthDisplay;
+    [SerializeField]
+    public Animator DamageHueAnimator;
     //Over
     [SerializeField]
     public TextMeshProUGUI PlacementText;

@@ -31,6 +31,12 @@ public class PlayerHealth : NetworkBehaviour
     {
         if (!IsALive()) return;
         Health.Value -= amount;
+
+        var localPlayer = GetComponent<LocalPlayer>();
+        if (localPlayer.enabled)
+        {
+            localPlayer.InGameUI.Game.GetComponent<GameUI>().DamageHueAnimator.SetTrigger("WasDamaged");
+        }
     }
 
     private void Heal(int amount)

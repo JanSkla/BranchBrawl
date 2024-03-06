@@ -22,20 +22,27 @@ public class GConeMuzzle : GMuzzle
 
     public override void Shoot(ShootData shot, Player owner) //TODO precalculateShot
     {
-        if (!_muzzle) Debug.LogError("No muzzle assigned");
-        Debug.Log("Shoots successfully");
+        if (IsServer || IsHost)
+        {
+            if (!_muzzle) Debug.LogError("No muzzle assigned");
+            Debug.Log("Shoots successfully");
 
-        Projectile projectile = Instantiate(_projectilePrefab.gameObject).GetComponent<Projectile>();
-        projectile.transform.position = _muzzle.transform.position;
-        projectile.transform.rotation = _muzzle.transform.rotation;
+            Projectile projectile = Instantiate(_projectilePrefab);
+            projectile.transform.position = _muzzle.transform.position;
+            projectile.transform.rotation = _muzzle.transform.rotation;
 
-        projectile.GetComponent<NetworkObject>().Spawn();
-        projectile.Owner = owner;
-        projectile.DamageAmount = shot.Amount;
-        projectile.ApplyForce(_muzzle.transform.forward);
+            projectile.GetComponent<NetworkObject>().Spawn();
+            projectile.Owner = owner;
+            projectile.DamageAmount = shot.Amount;
+            projectile.ApplyForce(_muzzle.transform.forward);
 
-        ShootSendNetworkRpc(shot);
-        ShotVisual(shot);
+            ShootSendNetworkRpc(shot);
+            ShotVisual(shot);
+        }
+        else
+        {
+            ShootSendNetworkRpc(shot);
+        }
     }
     private void ShootSendNetworkRpc(ShootData shootData)
     {
@@ -52,7 +59,7 @@ public class GConeMuzzle : GMuzzle
     [ServerRpc(RequireOwnership = false)]
     private void ShootServerRpc(ShootData shootData, ServerRpcParams serverRpcParams = default)
     {
-        SimulatedShoot(shootData);
+        Shoot(shootData, NetworkManager.ConnectedClients[serverRpcParams.Receive.SenderClientId].PlayerObject.GetComponent<PlayerManager>().PlayerObject);
 
         //wont call origin client
         ulong[] ignoreClients = { serverRpcParams.Receive.SenderClientId };
@@ -79,7 +86,7 @@ public class GConeMuzzle : GMuzzle
     private void ShotVisual(ShootData shootData)
     {
         //_shotIndicator.SetActive(true);
-        StartCoroutine(nameof(HideShotVisual), 1);
+        //StartCoroutine(nameof(HideShotVisual), 1);
         Debug.Log("shoootts");
     }
     private void HideShotVisual()

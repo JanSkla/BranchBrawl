@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4116591136295636426}
   - component: {fileID: 5946643492492846993}
   - component: {fileID: 4997086827252699035}
+  - component: {fileID: 5920585191183825861}
   m_Layer: 0
   m_Name: GConeMuzzle
   m_TagString: Untagged
@@ -69,11 +70,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 333decf6b6471044b87b2ab5d184eb80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _partOutline: {fileID: 0}
-  _totalOutline: {fileID: 0}
+  _partOutline: {fileID: 5920585191183825861}
+  _totalOutline: {fileID: 5920585191183825861}
   _muzzle: {fileID: 7072128863992936949}
   _projectilePrefab: {fileID: 4684245826652075352, guid: 93f9958002fc18b45a02a7cee1a94c25, type: 3}
-  _shotIndicator: {fileID: 0}
 --- !u!65 &4997086827252699035
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -95,6 +95,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0048189, y: 1.0573602, z: 1.8268479}
   m_Center: {x: -0.017487513, y: 0.02868002, z: 0.54519325}
+--- !u!114 &5920585191183825861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731975460167684099}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 4.04
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1001 &209152915291935052
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public class NetworkData : NetworkBehaviour
 {
     public NetworkVariable<FixedString32Bytes> JoinCode;
     public NetworkList<ulong> PlayerObjectNwIds = new();
+    public string CombatRoundSceneName = "CombatRound";
 
     [SerializeField]
     private GameObject _gameManagerPrefab;

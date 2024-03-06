@@ -11,7 +11,8 @@ public static class MuzzleManager
     {
         "GMuzzle",
         "GConeMuzzle",
-        "GFireMuzzle"
+        "GFireMuzzle",
+        "GFireConeMuzzle"
     };
 
 
@@ -67,12 +68,17 @@ public static class MuzzleManager
         {
             Debug.Log("a" + i);
         }
-        if (upgradeIds.Contains(5))
+        if (upgradeIds.Contains((int)Upgrades.GFireEnhancer))
         {
-            return InstantiateGMuzzle(2); //TODO
+            if (upgradeIds.Contains((int)Upgrades.GConeEnhancer))
+            {
+                return InstantiateGMuzzle(3);
+            }
+            return InstantiateGMuzzle(2);
         }
-         {
-            return InstantiateGMuzzle(1); //TODO
+        if (upgradeIds.Contains((int)Upgrades.GConeEnhancer))
+        {
+            return InstantiateGMuzzle(1);
         }
         return InstantiateGMuzzle(0);
     }

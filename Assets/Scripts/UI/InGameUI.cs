@@ -41,7 +41,7 @@ public class InGameUI : MonoBehaviour
         if (CurrentPlayer.IsUnityNull()) return;
         var gameUI = Game.GetComponent<GameUI>();
         if (gameUI.IsUnityNull()) return;
-        gameUI.HealthDiplay.ConnectHealthToPlayer(CurrentPlayer);
+        gameUI.HealthDisplay.ConnectHealthToPlayer(CurrentPlayer);
     }
     void Start()
     {

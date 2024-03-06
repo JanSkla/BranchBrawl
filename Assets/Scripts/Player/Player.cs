@@ -30,7 +30,7 @@ public class Player : NetworkBehaviour
 
     private bool _isAlive = true;
     //movement restrictors
-    public bool AreControlsDisabled = false;
+    public bool AreControlsDisabled = true;
     public bool IsAlive
     {
         get { return _isAlive; }
