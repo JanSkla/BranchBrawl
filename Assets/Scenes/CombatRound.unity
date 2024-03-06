@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 2969.0305, g: 1988.888, b: 1615.0803, a: 1}
+  m_IndirectSpecularColor: {r: 3012.0125, g: 1991.5776, b: 1556.542, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -49023,12 +49023,12 @@ GameObject:
   - component: {fileID: 1906900796}
   - component: {fileID: 1906900795}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: WeaponSpawnVisualizer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1906900794
 Transform:
   m_ObjectHideFlags: 0
