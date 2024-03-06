@@ -54,6 +54,7 @@ public class PlayerHealth : NetworkBehaviour
 
     private void Die()
     {
+        GetComponent<Player>().RigAnimator.SetBool("IsDead", true);
         GetComponent<Player>().IsAlive = false;
     }
 

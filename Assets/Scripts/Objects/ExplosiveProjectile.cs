@@ -13,8 +13,7 @@ public class ExplosiveProjectile : Projectile
     private GameObject _explosionVisualisation;
 
     private bool _collided = false;
-
-
+    private float _deltaTime = 0;
     private void OnCollisionEnter(Collision collision)
     {
         if (_collided) return;
@@ -45,12 +44,6 @@ public class ExplosiveProjectile : Projectile
                 health.Damage(DamageAmount);
             }
         }
-        Invoke(nameof(DestroySelf), 2);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawSphere(transform.position,
-          _radius);
+        Invoke(nameof(DestroySelf), 1);
     }
 }
