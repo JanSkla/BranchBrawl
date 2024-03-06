@@ -11,7 +11,7 @@ public class GBase : GPart
 
     public GDestiny Destiny;
 
-    private static ShootData _shotData = new() { Amount = 40, Type = ShootType.Bullet };
+    private static ShootData _shotData = new() { Amount = 10, Type = ShootType.Bullet };
 
 
     private float _timeSinceLastShot = 0f;

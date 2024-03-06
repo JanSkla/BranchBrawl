@@ -7,6 +7,7 @@ using UnityEngine.Animations.Rigging;
 
 public class Player : NetworkBehaviour
 {
+
     [SerializeField]
     private GameObject handPrefab;
     [SerializeField]

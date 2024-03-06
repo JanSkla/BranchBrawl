@@ -22,6 +22,10 @@ public class InGameUI : MonoBehaviour
     [SerializeField]
     private GameObject _tab;
 
+    [SerializeField]
+    public GameObject FireEffectScreen;
+
+
     private Player _currentPlayer;
     public Player CurrentPlayer
     {

@@ -8,6 +8,7 @@ public class CursorTracker : MonoBehaviour
     private Material _material;
     void Update()
     {
-        _material.SetVector("_MousePosition", Input.mousePosition);
+        if(_material)
+            _material.SetVector("_MousePosition", Input.mousePosition);
     }
 }

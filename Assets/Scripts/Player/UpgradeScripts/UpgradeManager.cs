@@ -11,6 +11,7 @@ public class UpgradeManager : MonoBehaviour
         //new UpgradeGEmptyEnhancer(2),
         new UpgradeGChargeEnhancer(3),
         new UpgradeGConeEnhancer(4),
+        new UpgradeGFireEnhancer(5),
     };
 
     public static Upgrade GetUpgradeById(int id)

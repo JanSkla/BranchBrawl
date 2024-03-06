@@ -10,7 +10,8 @@ public static class MuzzleManager
     private static string[] _muzzleTypes = new string[]
     {
         "GMuzzle",
-        "GConeMuzzle"
+        "GConeMuzzle",
+        "GFireMuzzle"
     };
 
 
@@ -39,11 +40,11 @@ public static class MuzzleManager
 
         GPart parentGO = parentDestiny.PositionPoint.Parent;
 
-        if (parentGO.GetComponent<GBase>() != null)
+        if (parentGO.GetComponent<GBase>())
         {
             parentGO.GetComponent<GBase>().NetworkAddParentOnDestiny(gMuzzle.NetworkObjectId);
         }
-        else if (parentGO.GetComponent<GUpgrade>() != null)
+        else if (parentGO.GetComponent<GUpgrade>())
         {
             parentGO.GetComponent<GUpgrade>().NetworkAddParentOnDestiny(parentDestiny.PositionPoint.DestinyIndex, gMuzzle.NetworkObjectId);
         }
@@ -66,8 +67,11 @@ public static class MuzzleManager
         {
             Debug.Log("a" + i);
         }
-        if (upgradeIds.Contains(4))
+        if (upgradeIds.Contains(5))
         {
+            return InstantiateGMuzzle(2); //TODO
+        }
+         {
             return InstantiateGMuzzle(1); //TODO
         }
         return InstantiateGMuzzle(0);
