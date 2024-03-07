@@ -254,10 +254,10 @@ public class NetworkPlayerController : NetworkBehaviour
             _inputTicks++;
 
             //Debug.Log("Tick" + _tick + " mi " + moveInput + " ri " + rotationInput + " de " + Time.deltaTime + " " + (Time.deltaTime * moveInput) );
-            Debug.Log(_tick + "//" + transform.position + " a " + transform.rotation);
+            //Debug.Log(_tick + "//" + transform.position + " a " + transform.rotation);
             HandleMovement(moveInput, rotationInput, Time.deltaTime);
-            Debug.Log(_tick + "//" + moveInput + " a " + rotationInput + "///" + Time.deltaTime);
-            Debug.Log(_tick + "//" + transform.position + " a " + transform.rotation);
+            //Debug.Log(_tick + "//" + moveInput + " a " + rotationInput + "///" + Time.deltaTime);
+            //Debug.Log(_tick + "//" + transform.position + " a " + transform.rotation);
             //MovePlayerRequestServerRpc(_tick, moveInput, rotationInput, Time.deltaTime, bufferIndex);
 
             //transform.position = ServerTransformState.Value.Position;
@@ -314,7 +314,10 @@ public class NetworkPlayerController : NetworkBehaviour
         {
 
             Vector3 sideAmount = _speed * tickRate * moveInput;
-            sideAmount += Vector3.ClampMagnitude(sideAmount * 100, _fwdCollisionLimit.localPosition.magnitude);
+
+            Vector3 sideLimitOffset = Vector3.ClampMagnitude(sideAmount * 100, _fwdCollisionLimit.localPosition.magnitude);
+
+            sideAmount += sideLimitOffset;
             if (Physics.Raycast(transform.position, transform.TransformDirection(sideAmount), out RaycastHit forwardHit, sideAmount.magnitude))
             {
                 sideAmount = transform.InverseTransformPoint(forwardHit.point);
@@ -331,7 +334,7 @@ public class NetworkPlayerController : NetworkBehaviour
             Debug.DrawLine(transform.position, transform.TransformPoint(totalAmount), Color.green, 1);
 
             totalAmount -= _downCollisionLimit.localPosition;
-            totalAmount -= Vector3.ClampMagnitude(sideAmount * 100, _fwdCollisionLimit.localPosition.magnitude);
+            totalAmount -= sideLimitOffset;
             //Debug.Log(Vector3.ClampMagnitude(sideAmount * 100, _fwdCollisionLimit.localPosition.magnitude));
             //Debug.Log(_fwdCollisionLimit.localPosition.magnitude);
             //Debug.Log(sideAmount * 100);
