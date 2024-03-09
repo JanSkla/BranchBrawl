@@ -301,7 +301,7 @@ public class NetworkPlayerController : NetworkBehaviour
         UpdateTick();
     }
 
-    private void HandleMovement(Vector3 moveInput, Vector3 rotationInput, float tickRate)
+    private void HandleMovement(Vector3 moveInput, Vector3 rotationInput, float deltaMultiplier)
     {
         player.RigAnimator.SetFloat("SpeedX", moveInput.x);
         player.RigAnimator.SetFloat("SpeedY", moveInput.z);
@@ -313,7 +313,7 @@ public class NetworkPlayerController : NetworkBehaviour
         if(moveInput != Vector3.zero)
         {
 
-            Vector3 sideAmount = _speed * tickRate * moveInput;
+            Vector3 sideAmount = _speed * deltaMultiplier * moveInput;
 
             Vector3 sideLimitOffset = Vector3.ClampMagnitude(sideAmount * 100, _fwdCollisionLimit.localPosition.magnitude);
 
@@ -344,15 +344,18 @@ public class NetworkPlayerController : NetworkBehaviour
             transform.Translate(totalAmount);
             //transform.position = transform.TransformPoint(totalAmount);
         }
-        //var newPos = transform.TransformDirection(_speed * tickRate * moveInput);
-        //_rb.MovePosition(transform.position + newPos);
-        var newRot = tickRate * _turnSpeed * new Vector3(0, rotationInput.y, 0);
-        transform.Rotate(newRot);
+        if (rotationInput != Vector3.zero)
+        {
+            //var newPos = transform.TransformDirection(_speed * tickRate * moveInput);
+            //_rb.MovePosition(transform.position + newPos);
+            var newRot = deltaMultiplier * _turnSpeed * new Vector3(0, rotationInput.y, 0);
+            transform.Rotate(newRot);
 
-        _rotationX -= rotationInput.x * _turnSpeed * _tickRate;
-        _rotationX = Mathf.Clamp(_rotationX, -90, 90);
-        player.Head.transform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
-        player.Hand.transform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
+            _rotationX -= rotationInput.x * _turnSpeed * _tickRate;
+            _rotationX = Mathf.Clamp(_rotationX, -90, 90);
+            player.Head.transform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
+            player.Hand.transform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
+        }
         //transform.Rotate(new Vector3(0, rotationInput.y, 0) * _turnSpeed * _tickRate);
         //player.Head.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
         //player.Hand.transform.Rotate(new Vector3(-rotationInput.x, 0, 0) * _turnSpeed * _tickRate);
