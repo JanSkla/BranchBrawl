@@ -16,11 +16,16 @@ public class ExplosiveProjectile : Projectile
     private float _deltaTime = 0;
     private void OnCollisionEnter(Collision collision)
     {
+        if (!NetworkManager.IsServer) return;
+
+        var plr = collision.gameObject.GetComponent<Player>();
+
+        if (plr && Owner == plr) return;
+
         if (_collided) return;
 
         _collided = true;
 
-        if (!NetworkManager.IsServer) return;
 
         Collider[] hits = Physics.OverlapSphere(
           transform.position,
@@ -30,8 +35,9 @@ public class ExplosiveProjectile : Projectile
 
         _rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
         _rb.isKinematic = true;
-        Debug.Log(LayerMask.NameToLayer("Player"));
+
         _explosionVisualisation.SetActive(true);
+        EnableExplosionVisualClientRpc();
 
         foreach (var hit in hits)
         {
@@ -45,5 +51,11 @@ public class ExplosiveProjectile : Projectile
             }
         }
         Invoke(nameof(DestroySelf), 1);
+    }
+
+    [ClientRpc]
+    private void EnableExplosionVisualClientRpc()
+    {
+        _explosionVisualisation.SetActive(true);
     }
 }

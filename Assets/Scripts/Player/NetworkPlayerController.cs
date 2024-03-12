@@ -26,6 +26,8 @@ public class NetworkPlayerController : NetworkBehaviour
     private Transform _downCollisionLimit;
     [SerializeField]
     private Transform _fwdCollisionLimit;
+    [SerializeField]
+    private LayerMask _layersToAffectMovement;
 
     private float _terrainColliderHeight = 0f;
 
@@ -177,8 +179,7 @@ public class NetworkPlayerController : NetworkBehaviour
                     if(inputState.Tick == _tick)
                         inputs.Add(inputState);
                 }
-                if (inputs.Count() > 0)
-                    SendMovePlayerRequestToServer(_tick, inputs.ToArray());
+                SendMovePlayerRequestToServer(_tick, inputs.ToArray());
 
                 int transformbufferIndex = _tick % BUFFER_SIZE;
 
@@ -226,7 +227,12 @@ public class NetworkPlayerController : NetworkBehaviour
         }
         else
         {
-            ProcessSimulatedPlayerMovement();
+            if (!NetworkManager.IsServer)
+            {
+                ProcessSimulatedPlayerMovement();
+            }
+
+            UpdateTick();
         }
     }
     private void ProcessLocalPlayerMovement(Vector3 moveInput, Vector3 rotationInput)
@@ -283,22 +289,17 @@ public class NetworkPlayerController : NetworkBehaviour
 
     private void ProcessSimulatedPlayerMovement()
     {
-        if (!NetworkManager.IsServer)
-        {
-            Vector3 newPosition = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, _tickDeltaTime * _speed);
+        Vector3 newPosition = Vector3.Lerp(transform.position, ServerTransformState.Value.Position, _tickDeltaTime * _speed);
 
-            player.RigAnimator.SetFloat("SpeedX", transform.InverseTransformPoint(newPosition).x);
-            player.RigAnimator.SetFloat("SpeedY", transform.InverseTransformPoint(newPosition).y);
-            player.RigAnimator.SetFloat("Speed", Vector3.Distance(transform.position, newPosition));
+        player.RigAnimator.SetFloat("SpeedX", transform.InverseTransformPoint(newPosition).x);
+        player.RigAnimator.SetFloat("SpeedY", transform.InverseTransformPoint(newPosition).y);
+        player.RigAnimator.SetFloat("Speed", Vector3.Distance(transform.position, newPosition));
 
-            transform.position = newPosition;
-            transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, _tickDeltaTime * _speed);
-            Quaternion facing = Quaternion.Lerp(player.Head.transform.rotation, ServerTransformState.Value.Facing, _tickDeltaTime * _speed); 
-            player.Head.transform.rotation = facing;
-            player.Hand.transform.rotation = facing;
-        }
-
-        UpdateTick();
+        transform.position = newPosition;
+        transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, _tickDeltaTime * _speed);
+        Quaternion facing = Quaternion.Lerp(player.Head.transform.rotation, ServerTransformState.Value.Facing, _tickDeltaTime * _speed); 
+        player.Head.transform.rotation = facing;
+        player.Hand.transform.rotation = facing;
     }
 
     private void HandleMovement(Vector3 moveInput, Vector3 rotationInput, float deltaMultiplier)
@@ -318,7 +319,7 @@ public class NetworkPlayerController : NetworkBehaviour
             Vector3 sideLimitOffset = Vector3.ClampMagnitude(sideAmount * 100, _fwdCollisionLimit.localPosition.magnitude);
 
             sideAmount += sideLimitOffset;
-            if (Physics.Raycast(transform.position, transform.TransformDirection(sideAmount), out RaycastHit forwardHit, sideAmount.magnitude))
+            if (Physics.Raycast(transform.position, transform.TransformDirection(sideAmount), out RaycastHit forwardHit, sideAmount.magnitude, _layersToAffectMovement))
             {
                 sideAmount = transform.InverseTransformPoint(forwardHit.point);
             }
@@ -327,7 +328,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
             Vector3 totalAmount = sideAmount + _downCollisionLimit.localPosition;
 
-            if (Physics.Raycast(transform.TransformPoint(sideAmount), Vector3.down, out RaycastHit downwardsHit, Mathf.Abs(_downCollisionLimit.localPosition.y)))
+            if (Physics.Raycast(transform.TransformPoint(sideAmount), Vector3.down, out RaycastHit downwardsHit, Mathf.Abs(_downCollisionLimit.localPosition.y), _layersToAffectMovement))
             {
                 totalAmount = transform.InverseTransformPoint(downwardsHit.point);
             }

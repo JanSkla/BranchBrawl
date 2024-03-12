@@ -109,5 +109,4 @@ public class InGameUI : MonoBehaviour
         NetworkManager.Singleton.Shutdown();
         SceneManager.LoadScene("Menu");
     }
-
 }
