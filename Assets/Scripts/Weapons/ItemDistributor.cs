@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Netcode.Components;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ItemDistributor : MonoBehaviour
 {
-    [SerializeField]
-    GameObject _itemToSpawn;
     [SerializeField]
     Texture2D _itemSpawnHeatmap;
     [SerializeField]
@@ -45,13 +45,39 @@ public class ItemDistributor : MonoBehaviour
             {
                 //Drop to ground lvl
                 Physics.Raycast(new Vector3(pos.x, transform.position.y, pos.y), Vector3.down, out RaycastHit hit, 500, LayerMask.GetMask("Terrain"));
-                var obj = Instantiate(_itemToSpawn);
-                obj.transform.position = new(hit.point.x, hit.point.y + 1, hit.point.z);
-                obj.transform.rotation = Random.rotation;
 
-                obj.GetComponent<NetworkObject>().Spawn();
-                obj.GetComponent<NetworkObject>().DestroyWithScene = true;
+                SpawnPickableGunObject(new(hit.point.x, hit.point.y + 1, hit.point.z));
+
+                //var obj = Instantiate(_itemToSpawn);
+                //obj.transform.position = new(hit.point.x, hit.point.y + 1, hit.point.z);
+                //obj.transform.rotation = Random.rotation;
+
+                //obj.GetComponent<NetworkObject>().Spawn();
+                //obj.GetComponent<NetworkObject>().DestroyWithScene = true;
             }
         }
+    }
+    private GameObject SpawnPickableGunObject(Vector3 spawnPos)
+    {
+        GunBaseSaveData gunScheme = new GunBaseSaveData("");
+
+        var gun = gunScheme.NetworkSpawn();
+
+        gun.transform.position = spawnPos;
+        gun.transform.rotation = Random.rotation;
+
+        var rb = gun.AddComponent<Rigidbody>();
+        gun.AddComponent<NetworkTransform>();
+        gun.AddComponent<NetworkRigidbody>();
+
+        var collider = gun.AddComponent<BoxCollider>();
+        collider.size = new(1f,2f,3.5f);
+        collider.center = new(0f, 0f, 1f);
+
+        gun.gameObject.layer = LayerMask.NameToLayer("Pickable");
+
+        rb.isKinematic = false;
+
+        return gun.gameObject;
     }
 }

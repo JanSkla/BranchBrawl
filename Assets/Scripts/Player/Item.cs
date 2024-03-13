@@ -8,6 +8,7 @@ public struct Item : INetworkSerializable
     public int Id;
     public ulong NetworkObjectId;
     public Vector3 PositionOffset;
+
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         if (serializer.IsReader)

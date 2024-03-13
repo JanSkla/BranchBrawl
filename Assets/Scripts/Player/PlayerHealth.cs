@@ -8,7 +8,7 @@ public class PlayerHealth : NetworkBehaviour
     [SerializeField]
     private static int maxHealth = 100;
 
-    public NetworkVariable<int> Health = new NetworkVariable<int>(maxHealth);
+    public NetworkVariable<int> Health = new(maxHealth);
 
     public override void OnNetworkSpawn()
     {
@@ -21,6 +21,11 @@ public class PlayerHealth : NetworkBehaviour
 
     private void OnServerHealthChange(int _prevHealth, int newHealth)
     {
+        var localPlayer = GetComponent<LocalPlayer>();
+        if (localPlayer.enabled)
+        {
+            localPlayer.InGameUI.Game.GetComponent<GameUI>().DamageHueAnimator.SetTrigger("WasDamaged");
+        }
         if (newHealth <= 0)
         {
             Die();
@@ -31,12 +36,6 @@ public class PlayerHealth : NetworkBehaviour
     {
         if (!IsALive()) return;
         Health.Value -= amount;
-
-        var localPlayer = GetComponent<LocalPlayer>();
-        if (localPlayer.enabled)
-        {
-            localPlayer.InGameUI.Game.GetComponent<GameUI>().DamageHueAnimator.SetTrigger("WasDamaged");
-        }
     }
 
     private void Heal(int amount)

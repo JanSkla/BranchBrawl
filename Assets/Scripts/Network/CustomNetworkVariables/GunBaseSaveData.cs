@@ -17,6 +17,11 @@ public class GunBaseSaveData : INetworkSerializable
         get { return _childGBCD; }
     }
 
+    public GunBaseSaveData(string gbcdText)
+    {
+        _childGBCD = ParseText(gbcdText, this);
+    }
+
     //Save from gBase gameobject
     public GunBaseSaveData(GBase gBase)
     {
@@ -24,6 +29,15 @@ public class GunBaseSaveData : INetworkSerializable
 
         _childGBCD = new GunBaseChildData(gBase.Destiny.Part as GUpgrade);
     }
+
+    //testing purposes 1 // "1{1{,,},1{,,},}," -- in text
+
+    public GunBaseSaveData(GunBaseChildData chPrefab)
+    {
+        _childGBCD = chPrefab;
+    }
+    //Has no upgrades
+    public GunBaseSaveData() { }
 
     public GBase Spawn()
     {
@@ -59,7 +73,6 @@ public class GunBaseSaveData : INetworkSerializable
         }
         else
         {
-            //to string, fomrat: "1{101{1{11}11{111,11111},1}"
             string serializeText = ParseToText(_childGBCD);
             //~
 
@@ -154,15 +167,6 @@ public class GunBaseSaveData : INetworkSerializable
             output += "}";
         }
     }
-
-    //testing purposes 1 // "1{1{,,},1{,,},}," -- in text
-
-    public GunBaseSaveData(GunBaseChildData chPrefab)
-    {
-        _childGBCD = chPrefab;
-    }
-    //Has no upgrades
-    public GunBaseSaveData() { }
 
     public class GunBaseChildData
     {

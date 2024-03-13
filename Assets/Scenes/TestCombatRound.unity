@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 3029.9658, g: 1991.4106, b: 1532.0305, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -634,7 +634,7 @@ GameObject:
   - component: {fileID: 272200599}
   - component: {fileID: 272200598}
   - component: {fileID: 272200597}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -791,7 +791,7 @@ GameObject:
   - component: {fileID: 332981549}
   - component: {fileID: 332981548}
   - component: {fileID: 332981547}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -903,7 +903,7 @@ GameObject:
   - component: {fileID: 395894093}
   - component: {fileID: 395894092}
   - component: {fileID: 395894091}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1201,7 +1201,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27b0188a0262c314abd2231576eb53f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemToSpawn: {fileID: 7421779764365721748, guid: 67989fc2795fe2647a26ce6d0ef6eb43, type: 3}
   _itemSpawnHeatmap: {fileID: 2800000, guid: 49b6b4032ec386241aa72d33c878ec35, type: 3}
   _bottomLeft: {fileID: 2001583515}
   _topRight: {fileID: 1686735460}
@@ -1774,7 +1773,7 @@ GameObject:
   - component: {fileID: 721297885}
   - component: {fileID: 721297884}
   - component: {fileID: 721297883}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1943,7 +1942,7 @@ GameObject:
   - component: {fileID: 836263131}
   - component: {fileID: 836263130}
   - component: {fileID: 836263129}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2488,7 +2487,7 @@ GameObject:
   - component: {fileID: 1045828122}
   - component: {fileID: 1045828121}
   - component: {fileID: 1045828120}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2741,6 +2740,10 @@ PrefabInstance:
       value: border
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b89bfa0a73765a5438ffe2ce001d2a6a, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b89bfa0a73765a5438ffe2ce001d2a6a, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -2924,7 +2927,7 @@ GameObject:
   - component: {fileID: 1683295220}
   - component: {fileID: 1683295219}
   - component: {fileID: 1683295218}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3170,7 +3173,7 @@ GameObject:
   - component: {fileID: 1785938912}
   - component: {fileID: 1785938911}
   - component: {fileID: 1785938910}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3277,7 +3280,7 @@ GameObject:
   - component: {fileID: 1789267967}
   - component: {fileID: 1789267966}
   - component: {fileID: 1789267965}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3920,7 +3923,7 @@ GameObject:
   - component: {fileID: 2070092803}
   - component: {fileID: 2070092802}
   - component: {fileID: 2070092801}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
