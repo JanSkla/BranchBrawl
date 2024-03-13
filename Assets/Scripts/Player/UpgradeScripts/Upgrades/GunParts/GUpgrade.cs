@@ -96,10 +96,10 @@ public abstract class GUpgrade : GPart
         _childOnDestinies.Add(chod);
     }
 
-    public void ReplacePart(UpgradeWithPart guPrefab, bool isNetwork = false)
+    public void ReplacePart(UpgradeWithPart uwp, bool isNetwork = false)
     {
         Debug.Log("ReplacePart");
-        GUpgrade gu = guPrefab.InstantiatePrefab();
+        GUpgrade gu = uwp.InstantiatePrefab();
 
         GPoint gp = transform.parent.GetComponent<GPoint>();
 
