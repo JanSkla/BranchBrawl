@@ -90,7 +90,7 @@ public class PlayerManager : NetworkBehaviour
         PlayerObject = Instantiate(playerPrefab).GetComponent<Player>(); ;
         PlayerObject.transform.position = spawnPosition;
         PlayerObject.GetComponent<Player>().PlayerManager = this;
-        PlayerObject.GetComponent<NetworkObject>().Spawn();
+        PlayerObject.GetComponent<NetworkObject>().Spawn(true);
         _playerObjectNwId.Value = PlayerObject.GetComponent<NetworkObject>().NetworkObjectId;
         //_player.GetComponent<NetworkObject>().TrySetParent(transform);
     }

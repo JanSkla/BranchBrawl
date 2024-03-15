@@ -41,7 +41,7 @@ public class GameManager : NetworkBehaviour
             nwClients[(ulong)i].PlayerObject.GetComponent<PlayerManager>().SpawnPlayerGunManager();
             PlayersGameData.Add(new PlayerGameData()
             {
-                PMNwId = nwClients[(ulong)i].PlayerObject.GetComponent<NetworkObject>().NetworkObjectId,
+                ClientId = nwClients[(ulong)i].ClientId,
                 Crowns = 0
             });
         }

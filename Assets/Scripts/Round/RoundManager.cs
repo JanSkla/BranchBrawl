@@ -141,13 +141,13 @@ public class RoundManager : NetworkBehaviour
         var enumerator = _gameManager.PlayersGameData.GetEnumerator();
         while (enumerator.MoveNext())
         {
-            var player = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enumerator.Current.PMNwId].GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>();
+            var player = NetworkManager.Singleton.ConnectedClients[enumerator.Current.ClientId].PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>();
 
             if (player.IsAlive)
             {
                 _gameManager.PlayersGameData.Add(new PlayerGameData()
                 {
-                    PMNwId = enumerator.Current.PMNwId,
+                    ClientId = enumerator.Current.ClientId,
                     Crowns = enumerator.Current.Crowns + 1,
                 });
                 _gameManager.PlayersGameData.Remove(enumerator.Current);
@@ -206,11 +206,12 @@ public class RoundManager : NetworkBehaviour
                 var enumerator = _gameManager.PlayersGameData.GetEnumerator();
                 while (enumerator.MoveNext())
                 {
-                    var client = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enumerator.Current.PMNwId];
+                    var client = NetworkManager.Singleton.ConnectedClients[enumerator.Current.ClientId].PlayerObject;
                     var player = client.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>();
 
                     var pgm = client.GetComponent<PlayerManager>().PlayerGunManager;
                     var pi = player.GetComponent<PlayerInventory>();
+                    if (pi.EquippedItem.Value.NetworkObjectId == 0) continue;
                     var equippedObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[pi.EquippedItem.Value.NetworkObjectId];
                     Debug.Log(equippedObject);
                     var equippedGBase = equippedObject.GetComponent<GBase>();
@@ -226,7 +227,7 @@ public class RoundManager : NetworkBehaviour
                         }
                     }
 
-                    client.GetComponent<PlayerManager>().DespawnPlayerObject();
+                    //client.GetComponent<PlayerManager>().DespawnPlayerObject();
                 }
             }
             GameObject.Find("GameManager(Clone)").GetComponent<GameManager>().CurrentRoundFinished();

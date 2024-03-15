@@ -40,7 +40,7 @@ public class WinnerSceneManager : MonoBehaviour
         for (int i = 0; i < sortedList.Count; i++)
         {
             var data = sortedList[i];
-            var pm = NetworkManager.Singleton.SpawnManager.SpawnedObjects[data.PMNwId].GetComponent<PlayerManager>();
+            var pm = NetworkManager.Singleton.ConnectedClients[data.ClientId].PlayerObject.GetComponent<PlayerManager>();
             AddRow(i + 1 + ". " + pm.PlayerName.Value.ToString(), data.Crowns);
         }
     }

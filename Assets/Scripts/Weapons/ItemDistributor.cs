@@ -98,10 +98,7 @@ public class ItemDistributor : NetworkBehaviour
     [ClientRpc]
     private void SpawnPickableGunObjClientRpc(ulong gunNwId, Vector3 pos, Quaternion rotation)
     {
-        Debug.Log("eNwId:" + gunNwId);
         if (NetworkManager.Singleton.IsHost) return;
-
-        Debug.Log("NwId:" + gunNwId);
 
         var gun = NetworkManager.Singleton.SpawnManager.SpawnedObjects[gunNwId];
         gun.transform.position = pos;
