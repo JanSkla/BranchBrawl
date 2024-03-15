@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -140,8 +141,9 @@ public class RoundManager : NetworkBehaviour
         var enumerator = _gameManager.PlayersGameData.GetEnumerator();
         while (enumerator.MoveNext())
         {
-            Debug.Log(NetworkManager.Singleton.SpawnManager.SpawnedObjects[enumerator.Current.PMNwId].GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>().IsAlive);
-            if (NetworkManager.Singleton.SpawnManager.SpawnedObjects[enumerator.Current.PMNwId].GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>().IsAlive)
+            var player = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enumerator.Current.PMNwId].GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>();
+
+            if (player.IsAlive)
             {
                 _gameManager.PlayersGameData.Add(new PlayerGameData()
                 {
@@ -149,8 +151,18 @@ public class RoundManager : NetworkBehaviour
                     Crowns = enumerator.Current.Crowns + 1,
                 });
                 _gameManager.PlayersGameData.Remove(enumerator.Current);
-                break;
+                //break;
             }
+
+            //var pgm = player.GetComponent<PlayerGunManager>();
+            //var pi = player.GetComponent<PlayerInventory>();
+            //var equippedObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[pi.EquippedItem.Value.NetworkObjectId];
+            //Debug.Log(equippedObject);
+            //var equippedGBase = equippedObject.GetComponent<GBase>();
+            //if (equippedGBase)
+            //{
+            //    pgm.GunCurrentData.Value = new(equippedGBase);
+            //}
         }
         //~
 
@@ -189,9 +201,33 @@ public class RoundManager : NetworkBehaviour
     {
         if (NetworkManager.IsServer)
         {
-            foreach (var client in NetworkManager.Singleton.ConnectedClients)
+            if(_gameManager.CurrentRound == RoundType.FirstCombat)
             {
-                client.Value.PlayerObject.GetComponent<PlayerManager>().DespawnPlayerObject();
+                var enumerator = _gameManager.PlayersGameData.GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    var client = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enumerator.Current.PMNwId];
+                    var player = client.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>();
+
+                    var pgm = client.GetComponent<PlayerManager>().PlayerGunManager;
+                    var pi = player.GetComponent<PlayerInventory>();
+                    var equippedObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[pi.EquippedItem.Value.NetworkObjectId];
+                    Debug.Log(equippedObject);
+                    var equippedGBase = equippedObject.GetComponent<GBase>();
+                    if (equippedGBase)
+                    {
+                        Debug.Log(pgm);
+                        pgm.GunCurrentData.Value = new(equippedGBase);
+
+                        var upgrade = equippedGBase.Destiny.Part.GetComponent<GUpgrade>();
+                        if (!upgrade.IsUnityNull())
+                        {
+                            pgm.AddGUpgrade(upgrade.UpgradeId, true); 
+                        }
+                    }
+
+                    client.GetComponent<PlayerManager>().DespawnPlayerObject();
+                }
             }
             GameObject.Find("GameManager(Clone)").GetComponent<GameManager>().CurrentRoundFinished();
         }

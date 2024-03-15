@@ -106,8 +106,16 @@ public class HostJoinMenu : MonoBehaviour
 
     IEnumerator Example_ConfigureTransportAndStartNgoAsHost()
     {
-        var serverRelayUtilityTask = AllocateRelayServerAndGetJoinCode(m_MaxConnections, loadingView, _networkDataManagerPrefab);
+        Task<RelayServerData> serverRelayUtilityTask = null;
+        try
+        {
+            serverRelayUtilityTask = AllocateRelayServerAndGetJoinCode(m_MaxConnections, loadingView, _networkDataManagerPrefab);
 
+        }
+        catch
+        {
+            loadingView.SetActive(false);
+        }
         while (!serverRelayUtilityTask.IsCompleted)
         {
             yield return null;

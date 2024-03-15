@@ -40,12 +40,13 @@ public class PlayerGunManager : NetworkBehaviour
     {
         return _gUpgradeInv.Find(e => e.UpgradeId == upgradeId);
     }
-    public void AddGUpgrade(int upgradeId)
+    public void AddGUpgrade(int upgradeId, bool isUsed = false)
     {
         var findSimiliar = FindGUpgradeDataByUpId(upgradeId);
         if (findSimiliar != null)
         {
             findSimiliar.TotalCount++;
+            if(isUsed) findSimiliar.UsedCount++;
         }
         else
         {
@@ -53,7 +54,7 @@ public class PlayerGunManager : NetworkBehaviour
             {
                 UpgradeId = upgradeId,
                 TotalCount = 1,
-                UsedCount = 0
+                UsedCount = isUsed ? 1 : 0
             });
         }
     }

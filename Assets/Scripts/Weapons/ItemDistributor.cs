@@ -67,8 +67,14 @@ public class ItemDistributor : NetworkBehaviour
 
     private void SpawnPickableGunObject(Vector3 spawnPos)
     {
+        string gunSpawnString = "";
 
-        GunBaseSaveData gunScheme = new GunBaseSaveData("");
+        if(Random.Range(0,10) == 0)
+        {
+            gunSpawnString = "" + (int)Upgrades.G2Splitter + "{,}";
+        }
+
+        GunBaseSaveData gunScheme = new(gunSpawnString);
 
         var gun = gunScheme.NetworkSpawn();
 

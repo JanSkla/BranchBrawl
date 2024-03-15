@@ -15,6 +15,10 @@ public class GameManager : NetworkBehaviour
 
     public int CurrentRoundListIndex = 0;
     private bool _currentRoundActive = false;
+    public RoundType CurrentRound
+    {
+        get { return (RoundType)RoundsList[CurrentRoundListIndex]; }
+    }
 
     private NetworkData _networkDataManager;
     void Awake()
@@ -129,6 +133,7 @@ public class GameManager : NetworkBehaviour
             nwClients[(ulong)i].PlayerObject.GetComponent<PlayerManager>().DespawnPlayerGunManager();
         }
     }
+
 }
 public enum RoundType
 {
