@@ -66,9 +66,9 @@ public class ItemDistributor : MonoBehaviour
         gun.transform.position = spawnPos;
         gun.transform.rotation = Random.rotation;
 
+        SpawnPickableGunObjClientRpc(gun.NetworkObjectId, spawnPos, gun.transform.rotation);
+
         var rb = gun.AddComponent<Rigidbody>();
-        gun.AddComponent<NetworkTransform>();
-        gun.AddComponent<NetworkRigidbody>();
 
         var collider = gun.AddComponent<BoxCollider>();
         collider.size = new(1f,2f,3.5f);
@@ -79,5 +79,22 @@ public class ItemDistributor : MonoBehaviour
         rb.isKinematic = false;
 
         return gun.gameObject;
+    }
+    [ClientRpc]
+    private void SpawnPickableGunObjClientRpc(ulong gunNwId, Vector3 pos, Quaternion rotation)
+    {
+        var gun = NetworkManager.Singleton.SpawnManager.SpawnedObjects[gunNwId];
+        gun.transform.position = pos;
+        gun.transform.rotation = rotation;
+
+        var rb = gun.AddComponent<Rigidbody>();
+
+        var collider = gun.AddComponent<BoxCollider>();
+        collider.size = new(1f, 2f, 3.5f);
+        collider.center = new(0f, 0f, 1f);
+
+        gun.gameObject.layer = LayerMask.NameToLayer("Pickable");
+
+        rb.isKinematic = false;
     }
 }
