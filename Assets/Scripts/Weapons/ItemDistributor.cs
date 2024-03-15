@@ -5,16 +5,23 @@ using Unity.Netcode.Components;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class ItemDistributor : MonoBehaviour
+public class ItemDistributor : NetworkBehaviour
 {
     [SerializeField]
-    Texture2D _itemSpawnHeatmap;
+    private Texture2D _itemSpawnHeatmap;
     [SerializeField]
-    Transform _bottomLeft;
+    private Transform _bottomLeft;
     [SerializeField]
-    Transform _topRight;
+    private Transform _topRight;
+
+    private RoundManager _roundManager;
 
     private void Start()
+    {
+        _roundManager = GameObject.Find("RoundManager").GetComponent<RoundManager>();
+        _roundManager.AllPlayersLoaded += SpawnItems;
+    }
+    public void SpawnItems()
     {
         if (NetworkManager.Singleton.IsServer)
         {
@@ -22,11 +29,11 @@ public class ItemDistributor : MonoBehaviour
             if (gameManager)
             {
                 if (gameManager.RoundsList[gameManager.CurrentRoundListIndex] == (int)RoundType.FirstCombat)
-                    SpawnItems();
+                    LocalSpawnItems();
             }
         }
     }
-    public void SpawnItems()
+    private void LocalSpawnItems()
     {
         Vector2 bottomLeft = new(_bottomLeft.position.x, _bottomLeft.position.z);
         Vector2 topRight = new(_topRight.position.x, _topRight.position.z);
@@ -57,8 +64,10 @@ public class ItemDistributor : MonoBehaviour
             }
         }
     }
-    private GameObject SpawnPickableGunObject(Vector3 spawnPos)
+
+    private void SpawnPickableGunObject(Vector3 spawnPos)
     {
+
         GunBaseSaveData gunScheme = new GunBaseSaveData("");
 
         var gun = gunScheme.NetworkSpawn();
@@ -69,6 +78,8 @@ public class ItemDistributor : MonoBehaviour
         SpawnPickableGunObjClientRpc(gun.NetworkObjectId, spawnPos, gun.transform.rotation);
 
         var rb = gun.AddComponent<Rigidbody>();
+        //gun.AddComponent<NetworkTransform>();
+        //gun.AddComponent<NetworkRigidbody>();
 
         var collider = gun.AddComponent<BoxCollider>();
         collider.size = new(1f,2f,3.5f);
@@ -77,12 +88,15 @@ public class ItemDistributor : MonoBehaviour
         gun.gameObject.layer = LayerMask.NameToLayer("Pickable");
 
         rb.isKinematic = false;
-
-        return gun.gameObject;
     }
     [ClientRpc]
     private void SpawnPickableGunObjClientRpc(ulong gunNwId, Vector3 pos, Quaternion rotation)
     {
+        Debug.Log("eNwId:" + gunNwId);
+        if (NetworkManager.Singleton.IsHost) return;
+
+        Debug.Log("NwId:" + gunNwId);
+
         var gun = NetworkManager.Singleton.SpawnManager.SpawnedObjects[gunNwId];
         gun.transform.position = pos;
         gun.transform.rotation = rotation;

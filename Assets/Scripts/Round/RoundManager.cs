@@ -26,6 +26,8 @@ public class RoundManager : NetworkBehaviour
     private int _alivePlayerCount;
 
     private int _clientsLoaded;
+    public Action AllPlayersLoaded;
+
     public int AlivePlayerCount
     {
         get { return _alivePlayerCount; }
@@ -79,13 +81,14 @@ public class RoundManager : NetworkBehaviour
         _clientsLoaded++;
         if (_clientsLoaded >= NetworkManager.Singleton.ConnectedClients.Count)
         {
-            EveryoneLoadedClientRPC();
+            AllPlayersLoadedClientRPC();
         }
     }
 
     [ClientRpc]
-    private void EveryoneLoadedClientRPC()
+    private void AllPlayersLoadedClientRPC()
     {
+        AllPlayersLoaded.Invoke();
         StartCountdown();
     }
     public void StartCountdown()

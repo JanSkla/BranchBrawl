@@ -98,7 +98,7 @@ public class PlayerInventory : NetworkBehaviour
 
             while (equipGO.transform.parent != null)
             {
-                equipGO = equipGO.transform.parent.gameObject; //TADY POKRACUJ ZITRA
+                equipGO = equipGO.transform.parent.gameObject;
             }
 
             Transform handTransform = player.Hand.transform;
