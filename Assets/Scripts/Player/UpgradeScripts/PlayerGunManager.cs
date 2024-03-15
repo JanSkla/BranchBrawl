@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class PlayerGunManager : NetworkBehaviour
 {
+    //local only
     private readonly List<GUpgradeData> _gUpgradeInv = new();
 
     //private GunBaseSaveData _gunCurrentData;

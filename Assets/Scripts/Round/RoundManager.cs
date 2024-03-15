@@ -220,10 +220,14 @@ public class RoundManager : NetworkBehaviour
                         Debug.Log(pgm);
                         pgm.GunCurrentData.Value = new(equippedGBase);
 
-                        var upgrade = equippedGBase.Destiny.Part.GetComponent<GUpgrade>();
-                        if (!upgrade.IsUnityNull())
+                        var gunString = GunBaseSaveData.ParseToText(pgm.GunCurrentData.Value.Child);
+
+                        for (int i = 0; i < gunString.Length; i++)
                         {
-                            pgm.AddGUpgrade(upgrade.UpgradeId, true); 
+                            if (char.IsNumber(gunString[i]))
+                            {
+                                AddUsedUpgradeClientRpc(gunString[i] - '0', pgm.NetworkObjectId);
+                            }
                         }
                     }
 
@@ -232,6 +236,14 @@ public class RoundManager : NetworkBehaviour
             }
             GameObject.Find("GameManager(Clone)").GetComponent<GameManager>().CurrentRoundFinished();
         }
+    }
+
+    [ClientRpc]
+    private void AddUsedUpgradeClientRpc(int upgrade, ulong pgmNwId)
+    {
+        var pgm = NetworkManager.Singleton.SpawnManager.SpawnedObjects[pgmNwId];
+
+        pgm.GetComponent<PlayerGunManager>().AddGUpgrade(upgrade, true);
     }
 
     [ClientRpc]
