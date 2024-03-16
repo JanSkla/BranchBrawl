@@ -18,9 +18,9 @@ public class GFireMuzzle : GMuzzle
 
         HitData hitData = new();
 
-        Vector3 playerCameraPos = NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<PlayerCamera>().FpsCam.transform.position;
+        //Vector3 playerCameraPos = NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<PlayerCamera>().FpsCam.transform.position;
 
-        if (Physics.Raycast(playerCameraPos, _muzzle.transform.forward, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Player")))
+        if (Physics.Raycast(_muzzle.transform.position, _muzzle.transform.forward, out RaycastHit hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("LocalPlayer"))))
         {
             hitData.IsHit = true;
             GameObject hitTarget = hit.collider.gameObject;
@@ -30,19 +30,21 @@ public class GFireMuzzle : GMuzzle
                 hitTarget = hitTarget.transform.parent.gameObject;
             }
 
-            hitData.HitNwID = hitTarget.GetComponent<NetworkObject>().NetworkObjectId;
-            Debug.DrawRay(playerCameraPos, transform.forward * hit.distance, Color.green, 1);
-
-            if (IsServer)
+            if (hitTarget.GetComponent<PlayerHealth>())
             {
-                hitTarget.GetComponent<PlayerHealth>().Damage(shot.Amount);
-                SetOnFire(hitTarget.GetComponent<Player>());
+                hitData.HitNwID = hitTarget.GetComponent<NetworkObject>().NetworkObjectId;
+                Debug.DrawRay(_muzzle.transform.position, transform.forward * hit.distance, Color.green, 1);
+
+                if (IsServer)
+                {
+                    hitTarget.GetComponent<PlayerHealth>().Damage(shot.Amount);
+                }
             }
         }
         else
         {
             hitData.IsHit = false;
-            Debug.DrawRay(playerCameraPos, transform.forward * 100, Color.red, 1);
+            Debug.DrawRay(_muzzle.transform.position, transform.forward * 100, Color.red, 1);
         }
         ShootSendNetworkRpc(shot, hitData);
         ShotVisual(shot);
@@ -98,6 +100,7 @@ public class GFireMuzzle : GMuzzle
     {
         RaycastHit hit;
         Vector3 pointOfInterest = _muzzle.transform.position + _muzzle.transform.forward * 100;
+
         if (Physics.Raycast(_muzzle.transform.position, transform.forward * 100, out hit, 100))
         {
             pointOfInterest = hit.point;

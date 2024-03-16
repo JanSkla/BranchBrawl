@@ -115,7 +115,7 @@ public class RoundManager : NetworkBehaviour
 
                     StartCoroutine(EquipInitItem(gun, client));
                 }
-                NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.AreControlsDisabled = true;
+                //NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.AreControlsDisabled = true;
             }
             _alivePlayerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
             SetAlivePlayerCountClientRpc(AlivePlayerCount);
@@ -139,6 +139,9 @@ public class RoundManager : NetworkBehaviour
         if (!NetworkManager.IsServer) return;
 
         var enumerator = _gameManager.PlayersGameData.GetEnumerator();
+
+        Debug.Log(_gameManager.PlayersGameData[0]);
+
         while (enumerator.MoveNext())
         {
             var player = NetworkManager.Singleton.ConnectedClients[enumerator.Current.ClientId].PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<Player>();
@@ -149,9 +152,10 @@ public class RoundManager : NetworkBehaviour
                 {
                     ClientId = enumerator.Current.ClientId,
                     Crowns = enumerator.Current.Crowns + 1,
+                    PlayerName = enumerator.Current.PlayerName
                 });
                 _gameManager.PlayersGameData.Remove(enumerator.Current);
-                //break;
+                break;
             }
 
             //var pgm = player.GetComponent<PlayerGunManager>();

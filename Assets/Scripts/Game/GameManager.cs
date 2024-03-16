@@ -42,7 +42,8 @@ public class GameManager : NetworkBehaviour
             PlayersGameData.Add(new PlayerGameData()
             {
                 ClientId = nwClients[(ulong)i].ClientId,
-                Crowns = 0
+                Crowns = 0,
+                PlayerName = nwClients[(ulong)i].PlayerObject.GetComponent<PlayerManager>().PlayerName.Value
             });
         }
 

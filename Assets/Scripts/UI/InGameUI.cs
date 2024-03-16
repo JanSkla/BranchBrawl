@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class InGameUI : MonoBehaviour
 {
     public bool HideCursorWhenExitingMenu;
-    public bool AllowControlsWhenExitingMenu;
+    public bool AllowControlsWhenExitingMenu = false;
 
     [SerializeField]
     public GameObject Game;
@@ -88,9 +88,9 @@ public class InGameUI : MonoBehaviour
         _menu.SetActive(visible);
         if (visible)
         {
-                CurrentPlayer.AreControlsDisabled = true;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
+            CurrentPlayer.AreControlsDisabled = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
         else
         {

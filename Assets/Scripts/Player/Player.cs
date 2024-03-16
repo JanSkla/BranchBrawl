@@ -1,9 +1,12 @@
 
 using TMPro;
+using Unity.Burst.CompilerServices;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.XR;
+using static UnityEngine.GraphicsBuffer;
 
 public class Player : NetworkBehaviour
 {
@@ -49,7 +52,20 @@ public class Player : NetworkBehaviour
             }
         }
     }
+    //private void Update()
+    //{
+    //    Physics.Raycast(GetComponent<PlayerCamera>().FpsCam.transform.position, Vector3.forward, out var hit, Mathf.Infinity);
 
+    //    Debug.Log("cam "+GetComponent<PlayerCamera>().FpsCam.transform.position);
+    //    Debug.Log(hit.point);
+
+    //    Debug.DrawLine(Hand.transform.position, hit.point, Color.cyan);
+
+    //    Debug.Log(hit.point);
+
+    //    var hitPoint = Hand.transform.InverseTransformPoint(hit.point);
+    //    Hand.transform.localRotation = Quaternion.LookRotation(hitPoint.normalized);
+    //}
     public override void OnNetworkSpawn()
     {
         var igui = GameObject.Find("InGameUI");

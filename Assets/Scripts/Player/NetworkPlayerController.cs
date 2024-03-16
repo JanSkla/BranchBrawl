@@ -89,10 +89,10 @@ public class NetworkPlayerController : NetworkBehaviour
             return;
         }
 
-        Debug.Log(calculatedState.Value.Position + " server: " + serverState.Position);
-        Debug.Log(Vector3.Distance(calculatedState.Value.Position, serverState.Position));
+        //Debug.Log(calculatedState.Value.Position + " server: " + serverState.Position);
+        //Debug.Log(Vector3.Distance(calculatedState.Value.Position, serverState.Position));
 
-        if (Vector3.Distance(calculatedState.Value.Position, serverState.Position) < _roomForError && Mathf.Abs(calculatedState.Value.Position.y - serverState.Position.y) < _roomForError) return;
+        if (Mathf.Abs(calculatedState.Value.Position.x - serverState.Position.x) < _roomForError && Mathf.Abs(calculatedState.Value.Position.z - serverState.Position.z) < _roomForError) return;
 
         TeleportPlayer(serverState);
 
@@ -217,7 +217,7 @@ public class NetworkPlayerController : NetworkBehaviour
                 float verticalInput = Input.GetAxis("Vertical");
 
                 Vector3 moveInput = new(horizontalInput, 0, verticalInput);
-
+            
                 float mouseX = Input.GetAxis("Mouse X");
                 float mouseY = Input.GetAxis("Mouse Y");
 
@@ -363,7 +363,7 @@ public class NetworkPlayerController : NetworkBehaviour
     }
     private void HandleJump()
     {
-        if (_isGrounded)
+        if (_isGrounded && _rb.velocity.y < 1)
         {
             _isGrounded = false;
             _rb.velocity = new(_rb.velocity.x, _jumpPower, _rb.velocity.z);

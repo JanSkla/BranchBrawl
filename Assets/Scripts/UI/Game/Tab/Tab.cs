@@ -35,9 +35,8 @@ public class Tab : MonoBehaviour
         Debug.Log("sda");
         for (int i = 0; i < sortedList.Count; i++)
         {
-            var data = sortedList[i];
-            var pm = NetworkManager.Singleton.ConnectedClients[data.ClientId].PlayerObject.GetComponent<PlayerManager>();
-            AddRow(pm.PlayerName.Value.ToString(), data.Crowns);
+            var data = sortedList[i];;
+            AddRow(data.PlayerName.ToString(), data.Crowns);
         }
         Debug.Log("sda");
     }
