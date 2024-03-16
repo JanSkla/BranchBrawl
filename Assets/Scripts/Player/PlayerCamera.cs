@@ -19,10 +19,12 @@ public class PlayerCamera : NetworkBehaviour
     [SerializeField]
     private float _pickupRange;
 
-    void Start()
+    public bool IsEnabled = true;
+
+    public override void OnNetworkSpawn()
     {
         _player = GetComponent<Player>();
-        if (_player.IsLocalPlayer)
+        if (IsEnabled && _player.IsLocalPlayer)
         {
             CreateCamera();
             OnGameStart();
@@ -31,6 +33,7 @@ public class PlayerCamera : NetworkBehaviour
 
     void Update()
     {
+        if (!IsEnabled) return;
         if (FpsCam && _inGameUI)
         {
             RaycastHit hit = new();

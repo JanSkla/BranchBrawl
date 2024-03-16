@@ -308,7 +308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2612401204
+  GlobalObjectIdHash: 870725291
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -453,6 +453,7 @@ MonoBehaviour:
   FirstPersonCameraPrefab: {fileID: 1793215923367635377, guid: 167ab319e1654734b84c1593dfd4d884, type: 3}
   FpsCam: {fileID: 0}
   _pickupRange: 8
+  IsEnabled: 1
 --- !u!1 &6140167783625179258
 GameObject:
   m_ObjectHideFlags: 0

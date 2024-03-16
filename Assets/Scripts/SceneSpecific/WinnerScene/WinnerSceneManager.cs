@@ -14,6 +14,9 @@ public class WinnerSceneManager : MonoBehaviour
     private GameObject _winnerList;
 
     [SerializeField]
+    private Transform _winnerSpawnPosition;
+
+    [SerializeField]
     private GameObject _tabRowPrefab;
     void Start()
     {
@@ -42,6 +45,11 @@ public class WinnerSceneManager : MonoBehaviour
             var data = sortedList[i];
             var pm = NetworkManager.Singleton.ConnectedClients[data.ClientId].PlayerObject.GetComponent<PlayerManager>();
             AddRow(i + 1 + ". " + pm.PlayerName.Value.ToString(), data.Crowns);
+        }
+
+        if (NetworkManager.Singleton.IsServer)
+        {
+            NetworkManager.Singleton.ConnectedClients[sortedList[0].ClientId].PlayerObject.GetComponent<PlayerManager>().SpawnPlayerObject(_winnerSpawnPosition.position, false, false);
         }
     }
 

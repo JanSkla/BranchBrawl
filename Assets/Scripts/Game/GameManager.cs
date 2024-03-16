@@ -56,6 +56,8 @@ public class GameManager : NetworkBehaviour
     {
         if (!NetworkManager.IsServer) return;
 
+        LoadWinnerScene(); //REMOVE
+
         bool isWin = false;
 
         foreach (var PGD in PlayersGameData)
