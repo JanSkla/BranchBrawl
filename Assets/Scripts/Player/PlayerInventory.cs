@@ -63,10 +63,10 @@ public class PlayerInventory : NetworkBehaviour
                     }
                     else
                     {
-                        //while (pickableObject.transform.parent != null)
-                        //{
-                        //    pickableObject = pickableObject.transform.parent.gameObject;
-                        //}
+                        while (pickableObject.transform.parent != null)
+                        {
+                            pickableObject = pickableObject.transform.parent.gameObject;
+                        }
 
                         EquipItem(new Item()
                         {
@@ -168,11 +168,6 @@ public class PlayerInventory : NetworkBehaviour
         {
             GameObject n = GetNetworkObject(newItem.NetworkObjectId).gameObject;
 
-            if (n.CompareTag("Stick") && n.transform.parent.gameObject)
-            {
-                n = n.transform.parent.gameObject;
-            }
-
             if (n.GetComponent<NetworkTransform>())
                 n.GetComponent<NetworkTransform>().enabled = false;
 
@@ -241,6 +236,11 @@ public class PlayerInventory : NetworkBehaviour
         {
             player.GetComponent<PlayerShoot>().shootInput -= unequippedGO.GetComponent<Gun>().Shoot;
         }
+        else if (unequippedGO.GetComponent<GBase>())
+        {
+            player.GetComponent<PlayerShoot>().shootInput -= unequippedGO.GetComponent<GBase>().Shoot;
+            Debug.Log("Shot unassigned");
+        }
 
         if (unequippedGO.CompareTag("Stick") && unequippedGO.transform.parent.gameObject)
         {
@@ -251,6 +251,10 @@ public class PlayerInventory : NetworkBehaviour
 
         Utils.ChangeLayerWithChildren(unequippedGO, changeLayer);
 
-        unequippedGO.GetComponent<Rigidbody>().isKinematic = false;
+        var rb = unequippedGO.GetComponent<Rigidbody>();
+        if (rb)
+        {
+            rb.isKinematic = false;
+        }
     }
 }

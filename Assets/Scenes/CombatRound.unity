@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 3029.1938, g: 1990.9016, b: 1531.7771, a: 1}
+  m_IndirectSpecularColor: {r: 2989.9114, g: 1992.8772, b: 1592.8206, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -11785,6 +11785,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 506056511}
+  - component: {fileID: 506056512}
   - component: {fileID: 506056510}
   m_Layer: 0
   m_Name: WeaponSpawn
@@ -11805,7 +11806,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27b0188a0262c314abd2231576eb53f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemToSpawn: {fileID: 7421779764365721748, guid: 67989fc2795fe2647a26ce6d0ef6eb43, type: 3}
   _itemSpawnHeatmap: {fileID: 2800000, guid: 49b6b4032ec386241aa72d33c878ec35, type: 3}
   _bottomLeft: {fileID: 2001583515}
   _topRight: {fileID: 1686735460}
@@ -11827,6 +11827,27 @@ Transform:
   - {fileID: 1906900794}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &506056512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 506056509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1285814182
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &508167980
 PrefabInstance:
   m_ObjectHideFlags: 0
