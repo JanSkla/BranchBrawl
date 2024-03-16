@@ -85,17 +85,22 @@ public class PlayerManager : NetworkBehaviour
         }
     }
     //PO
-    public void SpawnPlayerObject(Vector3 spawnPosition, bool areControlsDisabled = true, bool withCamera = true)
+    public void SpawnPlayerObject(Vector3 spawnPosition, Quaternion rotation = new(), bool areControlsDisabled = true, bool withCamera = true)
     {
         PlayerObject = Instantiate(playerPrefab).GetComponent<Player>();
         PlayerObject.transform.position = spawnPosition;
+        PlayerObject.transform.rotation = rotation;
         PlayerObject.PlayerManager = this;
-        PlayerObject.AreControlsDisabled = areControlsDisabled;
-        PlayerObject.GetComponent<PlayerCamera>().IsEnabled = withCamera;
+        PlayerObject.GetComponent<PlayerCamera>().IsEnabled.Value = withCamera;
         PlayerObject.GetComponent<NetworkObject>().Spawn(true);
         _playerObjectNwId.Value = PlayerObject.GetComponent<NetworkObject>().NetworkObjectId;
-        //_player.GetComponent<NetworkObject>().TrySetParent(transform);
-
+        //_player.GetComponent<NetworkObject>().TrySetParent(transform
+        Invoke(nameof(SetControlsDisabledClientRpc), 1);
+    }
+    [ClientRpc]
+    private void SetControlsDisabledClientRpc()
+    {
+        PlayerObject.AreControlsDisabled = false;
     }
     public void DespawnPlayerObject()
     {

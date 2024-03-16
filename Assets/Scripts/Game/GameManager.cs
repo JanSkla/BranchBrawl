@@ -56,7 +56,7 @@ public class GameManager : NetworkBehaviour
     {
         if (!NetworkManager.IsServer) return;
 
-       // LoadWinnerScene(); //REMOVE
+        LoadWinnerScene(); //REMOVE
 
         bool isWin = false;
 

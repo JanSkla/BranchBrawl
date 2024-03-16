@@ -342,6 +342,8 @@ public class NetworkPlayerController : NetworkBehaviour
             Debug.DrawLine(transform.position, transform.TransformPoint(totalAmount), Color.yellow, 1);
             //totalAmount -= sideAmount.normalized;
 
+            if (totalAmount.y > Mathf.Sqrt( totalAmount.x * totalAmount.x + totalAmount.z * totalAmount.z)) return;
+
             transform.Translate(totalAmount);
             //transform.position = transform.TransformPoint(totalAmount);
         }
