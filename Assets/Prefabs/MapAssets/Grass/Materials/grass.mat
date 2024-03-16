@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-4981607193977049685
+--- !u!114 &-5193395518657203479
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -23,13 +23,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Grass_001_COLOR
-  m_Shader: {fileID: -6465566751694194690, guid: 08903ff485ee2a142b1455464ea16f50, type: 3}
+  m_Name: grass
+  m_Shader: {fileID: -6465566751694194690, guid: 402352ee10130634985dd4b1c0084732, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _DISABLE_SSR_TRANSPARENT
+  m_ValidKeywords: []
   m_InvalidKeywords:
+  - _DISABLE_SSR_TRANSPARENT
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -52,7 +52,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseColorMap:
-        m_Texture: {fileID: 2800000, guid: 2632629917e67344dbfa041f14effc1e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7ece55b57c622774caf11a3f5a990e99, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BentNormalMap:
@@ -88,7 +88,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 2632629917e67344dbfa041f14effc1e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7ece55b57c622774caf11a3f5a990e99, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskMap:
@@ -103,48 +103,8 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_10926b5e743842b28c2fdc5b4874966a_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 551f680ae04564f4db66d7979547a91d, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_25b257264ba14e36b0872be3cc42c119_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 58606bbeb1275044482ca77712457e69, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_261e8c76188343c8b39e1994d0f72551_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 31ffd3279544a2840a7b800f620c9335, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_377cb4e7f1464d99bd010c568e968f4f_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 19cbb5b0b32044a409275c7aab59daf5, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_3b4b5c35017449189f89fd9d840a843e_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 9cbaa71b297393a48bb1b05fdfbd5818, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_43023074193b4fb2aa9eec4e8b62032e_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 6b6697cd8ca53754f8acc00f2740e341, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_78cbf54c634a40ea9d89bc0b14e9a6bd_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: c7762bea4d04a0c48a7a9374bfa8a797, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_b7d999f93b4b4370bfe815c954a3b7c9_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 5b23d0c5da976944d953e5b668c9a0fc, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_d5a2dafa342d41dc9911812ccd723616_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 0a81ebaaaf74c2e479b7569b3fa59f42, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_edb49557ed284485abc300938e804ece_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 82f28b80f22905d479873da85339922c, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_ff7ad504378344908a126a4f312b1f4f_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 44cf7fcf46b682f4a80fa1571a02df9d, type: 3}
+    - _SampleTexture2D_2a7de0304454412a9060da0cf736bd9f_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 7ece55b57c622774caf11a3f5a990e99, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecularColorMap:
