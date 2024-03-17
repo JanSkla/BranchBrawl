@@ -296,10 +296,13 @@ public class NetworkPlayerController : NetworkBehaviour
         player.RigAnimator.SetFloat("Speed", Vector3.Distance(transform.position, newPosition));
 
         transform.position = newPosition;
-        transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, _tickDeltaTime * _speed);
-        Quaternion facing = Quaternion.Lerp(player.Head.transform.rotation, ServerTransformState.Value.Facing, _tickDeltaTime * _speed); 
-        player.Head.transform.rotation = facing;
-        player.Hand.transform.rotation = facing;
+        if(_tickDeltaTime != 0)
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, ServerTransformState.Value.Rotation, _tickDeltaTime * _speed);
+            Quaternion facing = Quaternion.Lerp(player.Head.transform.rotation, ServerTransformState.Value.Facing, _tickDeltaTime * _speed);
+            player.Head.transform.rotation = facing;
+            player.Hand.transform.rotation = facing;
+        }
     }
 
     private void HandleMovement(Vector3 moveInput, Vector3 rotationInput, float deltaMultiplier)

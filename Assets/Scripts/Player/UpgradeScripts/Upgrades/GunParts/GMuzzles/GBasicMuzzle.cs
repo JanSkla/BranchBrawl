@@ -16,12 +16,12 @@ public class GBasicMuzzle : GMuzzle
         if (!_muzzle) Debug.LogError("No muzzle assigned");
 
         HitData hitData = new();
+        hitData.IsHit = false;
 
         //Vector3 playerCameraPos = NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<PlayerCamera>().FpsCam.transform.position;
 
         if (Physics.Raycast(_muzzle.transform.position, _muzzle.transform.forward, out RaycastHit hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("LocalPlayer"))))
         {
-            hitData.IsHit = true;
             GameObject hitTarget = hit.collider.gameObject;
 
             while (hitTarget.transform.parent != null)
@@ -31,6 +31,7 @@ public class GBasicMuzzle : GMuzzle
 
             if (hitTarget.GetComponent<PlayerHealth>())
             {
+                hitData.IsHit = true;
                 hitData.HitNwID = hitTarget.GetComponent<NetworkObject>().NetworkObjectId;
                 Debug.DrawRay(_muzzle.transform.position, transform.forward * hit.distance, Color.green, 1);
 
@@ -42,7 +43,6 @@ public class GBasicMuzzle : GMuzzle
         }
         else
         {
-            hitData.IsHit = false;
             Debug.DrawRay(_muzzle.transform.position, transform.forward * 100, Color.red, 1);
         }
         ShootSendNetworkRpc(shot, hitData);

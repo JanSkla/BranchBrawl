@@ -17,12 +17,12 @@ public class GFireMuzzle : GMuzzle
         if (!_muzzle) Debug.LogError("No muzzle assigned");
 
         HitData hitData = new();
+        hitData.IsHit = false;
 
         //Vector3 playerCameraPos = NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<PlayerCamera>().FpsCam.transform.position;
 
         if (Physics.Raycast(_muzzle.transform.position, _muzzle.transform.forward, out RaycastHit hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("LocalPlayer"))))
         {
-            hitData.IsHit = true;
             GameObject hitTarget = hit.collider.gameObject;
 
             while (hitTarget.transform.parent != null)
@@ -32,18 +32,19 @@ public class GFireMuzzle : GMuzzle
 
             if (hitTarget.GetComponent<PlayerHealth>())
             {
+                hitData.IsHit = true;
                 hitData.HitNwID = hitTarget.GetComponent<NetworkObject>().NetworkObjectId;
                 Debug.DrawRay(_muzzle.transform.position, transform.forward * hit.distance, Color.green, 1);
 
                 if (IsServer)
                 {
                     hitTarget.GetComponent<PlayerHealth>().Damage(shot.Amount);
+                    SetOnFire(hitTarget.GetComponent<Player>());
                 }
             }
         }
         else
         {
-            hitData.IsHit = false;
             Debug.DrawRay(_muzzle.transform.position, transform.forward * 100, Color.red, 1);
         }
         ShootSendNetworkRpc(shot, hitData);
@@ -64,11 +65,14 @@ public class GFireMuzzle : GMuzzle
     [ServerRpc(RequireOwnership = false)]
     private void ShootServerRpc(ShootData shootData, HitData hit, ServerRpcParams serverRpcParams = default)
     {
+        Debug.LogError("ShootServerRpc" + hit.IsHit);
         if (hit.IsHit)
         {
             GameObject hitTargetGO = GetNetworkObject(hit.HitNwID).gameObject;
+            Debug.LogError("hitTargetGO" + hitTargetGO);
             hitTargetGO.GetComponent<PlayerHealth>().Damage(shootData.Amount);
             SetOnFire(hitTargetGO.GetComponent<Player>());
+            Debug.LogError("SetOnFire" + hitTargetGO.GetComponent<Player>());
         }
 
         SimulatedShoot(shootData);
@@ -115,11 +119,11 @@ public class GFireMuzzle : GMuzzle
 
     private void SetOnFire(Player target, int duration = 4)
     {
+        Debug.Log("target.NetworkObjectId" + target.NetworkObjectId);
         if (NetworkManager.Singleton.IsServer)
         {
-            //TODO not optimal, couroutine<? FIX NEEDED
 
-            SetFireClientRpc(target.GetComponent<NetworkObject>().NetworkObjectId, true);
+            SetFireClientRpc(target.NetworkObjectId, true);
             Debug.Log("lopcalplayer");
             if (target.GetComponent<LocalPlayer>().enabled)
                 target.GetComponent<LocalPlayer>().InGameUI.FireEffectScreen.SetActive(true);
