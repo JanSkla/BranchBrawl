@@ -342,9 +342,11 @@ public class NetworkPlayerController : NetworkBehaviour
             Debug.DrawLine(transform.position, transform.TransformPoint(totalAmount), Color.yellow, 1);
             //totalAmount -= sideAmount.normalized;
 
-            if (totalAmount.y > Mathf.Sqrt( totalAmount.x * totalAmount.x + totalAmount.z * totalAmount.z)) return;
+            if (0.5 * totalAmount.y < Mathf.Sqrt(totalAmount.x * totalAmount.x + totalAmount.z * totalAmount.z))
+            {
+                transform.Translate(totalAmount);
+            }
 
-            transform.Translate(totalAmount);
             //transform.position = transform.TransformPoint(totalAmount);
         }
         if (rotationInput != Vector3.zero)
