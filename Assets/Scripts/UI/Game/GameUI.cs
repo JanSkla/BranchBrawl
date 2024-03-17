@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using Color = UnityEngine.Color;
 
 public class GameUI : NetworkBehaviour
 {
@@ -22,6 +24,8 @@ public class GameUI : NetworkBehaviour
     //Running
     [SerializeField]
     private GameObject _cursor;
+    [SerializeField]
+    private GameObject _handCursor;
     [SerializeField]
     private GameObject _deathScreen;
     [SerializeField]
@@ -62,9 +66,15 @@ public class GameUI : NetworkBehaviour
         _over.SetActive(isOver);
     }
 
-    public void ChangeCursorColor(Color color)
+    public void ChangeCursorToHand()
     {
-        _cursor.GetComponent<Image>().color = color;
+        _handCursor.SetActive(true);
+        _cursor.SetActive(false);
+    }
+    public void ChangeCursorToBasic()
+    {
+        _handCursor.SetActive(false);
+        _cursor.SetActive(true);
     }
 
     public void DeathScreen(bool isAlive)

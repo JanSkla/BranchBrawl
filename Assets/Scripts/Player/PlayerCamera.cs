@@ -39,11 +39,11 @@ public class PlayerCamera : NetworkBehaviour
             RaycastHit hit = new();
             if (Physics.Raycast(FpsCam.transform.position, FpsCam.transform.TransformDirection(Vector3.forward), out hit, _pickupRange, LayerMask.GetMask("Pickable")))
             {
-                _inGameUI.GetComponent<InGameUI>().Game.GetComponent<GameUI>().ChangeCursorColor(Color.cyan);
+                _inGameUI.GetComponent<InGameUI>().Game.GetComponent<GameUI>().ChangeCursorToHand();
             }
             else
             {
-                _inGameUI.GetComponent<InGameUI>().Game.GetComponent<GameUI>().ChangeCursorColor(Color.black);
+                _inGameUI.GetComponent<InGameUI>().Game.GetComponent<GameUI>().ChangeCursorToBasic();
             }
         }
     }
