@@ -148,7 +148,7 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         _tickDeltaTime += Time.deltaTime;
 
-        if (!_isGrounded)
+        if (!_isGrounded && _rb.velocity.y < 1)
         {
             bool groundCheck = GroundCheck();
             if (groundCheck)
@@ -365,7 +365,7 @@ public class NetworkPlayerController : NetworkBehaviour
     }
     private void HandleJump()
     {
-        if (_isGrounded && _rb.velocity.y < 1)
+        if (_isGrounded)
         {
             _isGrounded = false;
             _rb.velocity = new(_rb.velocity.x, _jumpPower, _rb.velocity.z);

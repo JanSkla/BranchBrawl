@@ -18,7 +18,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: leaftop
-    second: {fileID: 2100000, guid: f42d6289d937caf41be1380c4976f3ea, type: 2}
+    second: {fileID: -876546973899608171, guid: 32cccfa36f41110498fe4bb8acc0ed40, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
