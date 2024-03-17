@@ -45,6 +45,6 @@ public class Tab : MonoBehaviour
     {
         var tabRow = Instantiate(_tabRowPrefab, _tabContainer.transform).GetComponent<TabRow>();
         tabRow.PlayerName.text = name;
-        tabRow.CrownCount.text = crowns + "x";
+        tabRow.CrownCount = crowns;
     }
 }

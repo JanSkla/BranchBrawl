@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 4610.014, g: 2945.924, b: 2169.0862, a: 1}
+  m_IndirectSpecularColor: {r: 4614.063, g: 2948.5784, b: 2170.551, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -235,6 +235,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 678958803}
     m_Modifications:
+    - target: {fileID: 3508962450562681335, guid: 2a1901567eae80a4db45de81282c4f87, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 157.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508962450562681335, guid: 2a1901567eae80a4db45de81282c4f87, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.0000076293945
+      objectReference: {fileID: 0}
     - target: {fileID: 4769719740748545696, guid: 2a1901567eae80a4db45de81282c4f87, type: 3}
       propertyPath: m_Name
       value: ReturnAllToLobbyBtn

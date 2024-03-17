@@ -56,7 +56,7 @@ public class WinnerSceneManager : MonoBehaviour
     {
         var tabRow = Instantiate(_tabRowPrefab, _winnerList.transform).GetComponent<TabRow>();
         tabRow.PlayerName.text = name;
-        tabRow.CrownCount.text = crowns + "x";
+        tabRow.CrownCount = crowns;
     }
     // Start is called before the first frame update
     public void StarNewGame()
