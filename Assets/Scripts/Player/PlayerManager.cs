@@ -95,6 +95,7 @@ public class PlayerManager : NetworkBehaviour
         PlayerObject.GetComponent<NetworkObject>().Spawn(true);
         _playerObjectNwId.Value = PlayerObject.GetComponent<NetworkObject>().NetworkObjectId;
         //_player.GetComponent<NetworkObject>().TrySetParent(transform
+        if (areControlsDisabled) return;
         Invoke(nameof(SetControlsDisabledClientRpc), 1);
     }
     [ClientRpc]
