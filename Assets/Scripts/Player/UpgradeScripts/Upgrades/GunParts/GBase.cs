@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GBase : GPart
@@ -10,7 +11,7 @@ public class GBase : GPart
 
     public GDestiny Destiny;
 
-    private static ShootData _shotData = new() { Amount = 40, Type = ShootType.Bullet };
+    private static ShootData _shotData = new() { Amount = 10, Type = ShootType.Bullet };
 
 
     private float _timeSinceLastShot = 0f;
@@ -20,12 +21,12 @@ public class GBase : GPart
         _timeSinceLastShot += Time.deltaTime;
     }
 
-    public void Shoot(bool firstShot)
+    public void Shoot(bool firstShot, Player owner)
     {
         if (!gunData.isAuto && !firstShot) return;
         if (!CanShoot() || gunData.currentAmmo <= 0) return;
 
-        Destiny.Part.Shoot(_shotData);
+        Destiny.Part.Shoot(_shotData, owner);
 
         gunData.currentAmmo--;
         _timeSinceLastShot = 0f;
@@ -67,11 +68,21 @@ public class GBase : GPart
         childNwObject.AutoObjectParentSync = false;
         childNwObject.transform.SetParent(Destiny.PositionPoint.transform, false);
         Destiny.Part = childNwObject.GetComponent<GPart>();
+        GUpgrade gUpgrade = Destiny.Part.GetComponent<GUpgrade>();
+
+        if (gUpgrade.IsUnityNull()) return;
+
+        int[] previousUpgradeIds = new int[1];
+        previousUpgradeIds[0] = gUpgrade.UpgradeId;
+        foreach (GDestiny dest in gUpgrade.Destiny)
+        {
+            dest.PreviousUpgradeIds = previousUpgradeIds;
+        }
     }
 
     public void NetworkAddParentOnDestiny(ulong childNwId)
     {
         _childsOnDesitny.Add(childNwId);
     }
-    public override void Shoot(ShootData shootData) { }
+    public override void Shoot(ShootData shootData, Player owner) { }
 }

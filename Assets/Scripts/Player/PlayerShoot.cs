@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerShoot : MonoBehaviour
 {
-    public Action<bool> shootInput; //true == first press in series
+    public Action<bool, Player> shootInput; //true == first press in series
     [SerializeField]
     private Player player;
 
@@ -16,11 +16,11 @@ public class PlayerShoot : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                shootInput.Invoke(true);
+                shootInput.Invoke(true, player);
             }
             else if (Input.GetMouseButton(0))
             {
-                shootInput.Invoke(false);
+                shootInput.Invoke(false, player);
             }
         }
     }

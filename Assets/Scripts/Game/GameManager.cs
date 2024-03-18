@@ -15,6 +15,12 @@ public class GameManager : NetworkBehaviour
 
     public int CurrentRoundListIndex = 0;
     private bool _currentRoundActive = false;
+    public RoundType CurrentRound
+    {
+        get { return (RoundType)RoundsList[CurrentRoundListIndex]; }
+    }
+
+    private NetworkData _networkDataManager;
     void Awake()
     {
         if (NetworkManager.IsServer)
@@ -35,8 +41,9 @@ public class GameManager : NetworkBehaviour
             nwClients[(ulong)i].PlayerObject.GetComponent<PlayerManager>().SpawnPlayerGunManager();
             PlayersGameData.Add(new PlayerGameData()
             {
-                PMNwId = nwClients[(ulong)i].PlayerObject.GetComponent<NetworkObject>().NetworkObjectId,
-                Crowns = 0
+                ClientId = nwClients[(ulong)i].ClientId,
+                Crowns = 0,
+                PlayerName = nwClients[(ulong)i].PlayerObject.GetComponent<PlayerManager>().PlayerName.Value
             });
         }
 
@@ -48,6 +55,8 @@ public class GameManager : NetworkBehaviour
     private void StartCurrentRound()
     {
         if (!NetworkManager.IsServer) return;
+
+        //LoadWinnerScene(); //REMOVE
 
         bool isWin = false;
 
@@ -83,7 +92,10 @@ public class GameManager : NetworkBehaviour
     {
         if (!NetworkManager.IsServer) return;
 
-        NetworkManager.Singleton.SceneManager.LoadScene("CombatRound", LoadSceneMode.Single);
+        if(!_networkDataManager)
+            _networkDataManager = GameObject.Find("NetworkDataManager(Clone)").GetComponent<NetworkData>();
+
+        NetworkManager.Singleton.SceneManager.LoadScene(_networkDataManager.CombatRoundSceneName, LoadSceneMode.Single);
     }
     private void StartUpgradeRound()
     {
@@ -124,6 +136,7 @@ public class GameManager : NetworkBehaviour
             nwClients[(ulong)i].PlayerObject.GetComponent<PlayerManager>().DespawnPlayerGunManager();
         }
     }
+
 }
 public enum RoundType
 {

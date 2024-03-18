@@ -24,7 +24,7 @@ public class PlayerStandPlacehodlerManager : MonoBehaviour
     {
         foreach (Transform child in transform)
         {
-            Tools.DestroyWithChildren(child.gameObject);
+            Utils.DestroyWithChildren(child.gameObject);
             _playerStands.Clear();
         }
 

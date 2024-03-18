@@ -1,0 +1,61 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class ExplosiveProjectile : Projectile
+{
+    //public NetworkVariable<ulong> OwnerNwId;
+    [SerializeField]
+    private float _radius;
+    [SerializeField]
+    private GameObject _explosionVisualisation;
+
+    private bool _collided = false;
+    private float _deltaTime = 0;
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!NetworkManager.IsServer) return;
+
+        var plr = collision.gameObject.GetComponent<Player>();
+
+        if (plr && Owner == plr) return;
+
+        if (_collided) return;
+
+        _collided = true;
+
+
+        Collider[] hits = Physics.OverlapSphere(
+          transform.position,
+          _radius
+          //LayerMask.NameToLayer("Player")
+          );
+
+        _rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        _rb.isKinematic = true;
+
+        _explosionVisualisation.SetActive(true);
+        EnableExplosionVisualClientRpc();
+
+        foreach (var hit in hits)
+        {
+            Debug.Log(hit.name);
+
+            var player = hit.GetComponent<Player>();
+            if (player)
+            {
+                var health = player.GetComponent<PlayerHealth>();
+                health.Damage(DamageAmount);
+            }
+        }
+        Invoke(nameof(DestroySelf), 1);
+    }
+
+    [ClientRpc]
+    private void EnableExplosionVisualClientRpc()
+    {
+        _explosionVisualisation.SetActive(true);
+    }
+}

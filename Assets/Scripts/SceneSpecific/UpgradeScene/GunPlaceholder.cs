@@ -29,64 +29,68 @@ public class GunPlaceholder : MonoBehaviour
 
     public void ReplacePart()
     {
-        if (HoveredPart && PartBuilderInv.Selected && HoveredPart.GetComponent<GUpgrade>())
+        if (HoveredPart && PartBuilderInv.Selected)
         {
-            UpgradeWithPart uwp = UpgradeManager.GetUpgradeById(PartBuilderInv.Selected.UpgradeId) as UpgradeWithPart;
-
-            GUpgrade hoveredGU = HoveredPart.GetComponent<GUpgrade>();
-
-            int hoverGUID = hoveredGU.UpgradeId;
-            var localPlayerGunManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager;
-
-            GUpgradeData gudNew = localPlayerGunManager.FindGUpgradeDataByUpId(PartBuilderInv.Selected.UpgradeId);
-            GUpgradeData gudOld = localPlayerGunManager.FindGUpgradeDataByUpId(hoverGUID);
-
-
-
-            if (gudNew == null ||
-                !(gudNew.UsedCount < gudNew.TotalCount) ||
-                gudOld == null// ||
-                              //!(gudOld.UsedCount > 0) REMOVE
-                )
-            {
-                Debug.Log("one of requested are not in list!");
-                return;
-            }
-            localPlayerGunManager.UseGUpgrade(PartBuilderInv.Selected.UpgradeId); //increase used count for the used
-            localPlayerGunManager.UnuseGUpgrade(hoverGUID); //decrease used count for the unused
-
-            PartBuilderInv.UpdateList();
-
-            hoveredGU.ReplacePart(uwp);
-
-            PartBuilderInv.Selected.SetSelected(false);
-        }
-
-        if (HoveredPart && PartBuilderInv.Selected && HoveredPart.GetComponent<GMuzzle>())
-        {
-            UpgradeWithPart uwp = UpgradeManager.GetUpgradeById(PartBuilderInv.Selected.UpgradeId) as UpgradeWithPart;
-            GMuzzle hoveredGM = HoveredPart.GetComponent<GMuzzle>();
 
             var localPlayerGunManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager;
-            GUpgradeData gudNew = localPlayerGunManager.FindGUpgradeDataByUpId(PartBuilderInv.Selected.UpgradeId);
-
-            if (gudNew == null ||
-                !(gudNew.UsedCount < gudNew.TotalCount)
-                )
+            if (HoveredPart.GetComponent<GUpgrade>())
             {
-                Debug.Log("one of requested are not in list!");
-                return;
+                UpgradeWithPart uwp = UpgradeManager.GetUpgradeById(PartBuilderInv.Selected.UpgradeId) as UpgradeWithPart;
+
+                GUpgrade hoveredGU = HoveredPart.GetComponent<GUpgrade>();
+
+                int hoverGUID = hoveredGU.UpgradeId;
+
+                GUpgradeData gudNew = localPlayerGunManager.FindGUpgradeDataByUpId(PartBuilderInv.Selected.UpgradeId);
+                GUpgradeData gudOld = localPlayerGunManager.FindGUpgradeDataByUpId(hoverGUID);
+
+
+
+                if (gudNew == null ||
+                    !(gudNew.UsedCount < gudNew.TotalCount) ||
+                    gudOld == null// ||
+                                  //!(gudOld.UsedCount > 0) REMOVE
+                    )
+                {
+                    Debug.Log("one of requested are not in list!");
+                    return;
+                }
+                //localPlayerGunManager.UnuseGUpgrade(hoverGUID); //decrease used count for the unused
+                localPlayerGunManager.UseGUpgrade(PartBuilderInv.Selected.UpgradeId); //increase used count for the used
+
+
+                hoveredGU.ReplacePart(uwp);
             }
 
+            if (HoveredPart.GetComponent<GMuzzle>())
+            {
+                UpgradeWithPart uwp = UpgradeManager.GetUpgradeById(PartBuilderInv.Selected.UpgradeId) as UpgradeWithPart;
+                GMuzzle hoveredGM = HoveredPart.GetComponent<GMuzzle>();
+                GUpgradeData gudNew = localPlayerGunManager.FindGUpgradeDataByUpId(PartBuilderInv.Selected.UpgradeId);
 
-            hoveredGM.ReplaceMuzzle(uwp);
+                if (gudNew == null ||
+                    !(gudNew.UsedCount < gudNew.TotalCount)
+                    )
+                {
+                    Debug.Log("one of requested are not in list!");
+                    return;
+                }
 
-            localPlayerGunManager.UseGUpgrade(PartBuilderInv.Selected.UpgradeId); //increase used count for the used
+
+                hoveredGM.ReplaceMuzzle(uwp);
+
+                localPlayerGunManager.UseGUpgrade(PartBuilderInv.Selected.UpgradeId); //increase used count for the used
+
+            }
+
+            var selectedUpgrade = localPlayerGunManager.FindGUpgradeDataByUpId(PartBuilderInv.Selected.UpgradeId);
+            if(selectedUpgrade.TotalCount <= selectedUpgrade.UsedCount)
+            {
+                PartBuilderInv.Selected = null;
+                CursorHandler.Default();
+            }
 
             PartBuilderInv.UpdateList();
-
-            PartBuilderInv.Selected.SetSelected(false);
-            IsDelete = false;
         }
     }
 
@@ -103,7 +107,27 @@ public class GunPlaceholder : MonoBehaviour
             CursorHandler.Default();
         }
 
-        _deleteBtn.GetComponent<Image>().color = IsDelete ? Color.gray : Color.white;
+        var deleteBtnImage = _deleteBtn.GetComponent<Image>();
+        if (deleteBtnImage)
+            _deleteBtn.GetComponent<Image>().color = IsDelete ? Color.gray : Color.white;
+    }
+
+    public void InvPartClicked(PartBuilderInvChild invPart)
+    {
+        if (PartBuilderInv.Selected == invPart)
+        {
+            PartBuilderInv.Selected = null;
+            CursorHandler.Default();
+        }
+        else
+        {
+            if (IsDelete)
+            {
+                ToggleDelete();
+            }
+            PartBuilderInv.Selected = invPart;
+            CursorHandler.Hand();
+        }
     }
 
     public void GunPartLogAsText()

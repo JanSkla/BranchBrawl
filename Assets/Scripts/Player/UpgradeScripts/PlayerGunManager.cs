@@ -8,9 +8,7 @@ using UnityEngine;
 
 public class PlayerGunManager : NetworkBehaviour
 {
-    private static string _muzzlePrefab = "Prefabs/GunParts/GMuzzle";
-
-
+    //local only
     private readonly List<GUpgradeData> _gUpgradeInv = new();
 
     //private GunBaseSaveData _gunCurrentData;
@@ -24,15 +22,15 @@ public class PlayerGunManager : NetworkBehaviour
     //    new GunBaseChildData(2, new GunBaseChildData[1])
     //}))); // "1{1{,,},1{,,},}" -- in text //REMOVE
 
-    private void Start()
-    {
-        AddGUpgrade(1);  //REMOVE
-        AddGUpgrade(2);
-        //Debug.Log(GunBaseSaveData.ParseToText(new GunBaseSaveData().Child));
-        //Debug.Log(GunBaseSaveData.ParseToText(GunBaseSaveData.ParseText(GunBaseSaveData.ParseToText(new GunBaseSaveData().Child))));
-        //Debug.Log("original" + GunBaseSaveData.ParseToText(GunCurrentData.Value.Child));
-        //Debug.Log("new" + GunBaseSaveData.ParseToText(GunBaseSaveData.ParseText(GunBaseSaveData.ParseToText(GunCurrentData.Value.Child))));
-    }
+    //private void Start()
+    //{
+    //    AddGUpgrade(1);  //REMOVE
+    //    AddGUpgrade(2);
+    //    //Debug.Log(GunBaseSaveData.ParseToText(new GunBaseSaveData().Child));
+    //    //Debug.Log(GunBaseSaveData.ParseToText(GunBaseSaveData.ParseText(GunBaseSaveData.ParseToText(new GunBaseSaveData().Child))));
+    //    //Debug.Log("original" + GunBaseSaveData.ParseToText(GunCurrentData.Value.Child));
+    //    //Debug.Log("new" + GunBaseSaveData.ParseToText(GunBaseSaveData.ParseText(GunBaseSaveData.ParseToText(GunCurrentData.Value.Child))));
+    //}
 
     public IEnumerable<GUpgradeData> GUpgradeInv
     {
@@ -43,12 +41,13 @@ public class PlayerGunManager : NetworkBehaviour
     {
         return _gUpgradeInv.Find(e => e.UpgradeId == upgradeId);
     }
-    public void AddGUpgrade(int upgradeId)
+    public void AddGUpgrade(int upgradeId, bool isUsed = false)
     {
         var findSimiliar = FindGUpgradeDataByUpId(upgradeId);
         if (findSimiliar != null)
         {
             findSimiliar.TotalCount++;
+            if(isUsed) findSimiliar.UsedCount++;
         }
         else
         {
@@ -56,7 +55,7 @@ public class PlayerGunManager : NetworkBehaviour
             {
                 UpgradeId = upgradeId,
                 TotalCount = 1,
-                UsedCount = 0
+                UsedCount = isUsed ? 1 : 0
             });
         }
     }
@@ -83,20 +82,22 @@ public class PlayerGunManager : NetworkBehaviour
         var findSimiliar = FindGUpgradeDataByUpId(upgradeId);
         if (findSimiliar != null)
         {
-            if (findSimiliar.UsedCount < findSimiliar.TotalCount)
-            {
-                findSimiliar.UsedCount++;
-                return true;
-            }
-            else
-            {
-                Debug.Log("Can't use more than in inventory");
-                return false;
-            }
+            findSimiliar.UsedCount++;
+            return true;
+            //if (findSimiliar.UsedCount < findSimiliar.TotalCount)
+            //{
+            //    findSimiliar.UsedCount++;
+            //    return true;
+            //}
+            //else
+            //{
+            //    Debug.Log("Can't use more than in inventory");
+            //    return false;
+            //}
         }
         else
         {
-            Debug.Log("GUpgradeData type does not exist in the list");
+            Debug.LogWarning("GUpgradeData type does not exist in the list");
             return false;
         }
     }
@@ -105,62 +106,23 @@ public class PlayerGunManager : NetworkBehaviour
         var findSimiliar = FindGUpgradeDataByUpId(upgradeId);
         if (findSimiliar != null)
         {
-            if (findSimiliar.UsedCount > 0)
-            {
-                findSimiliar.UsedCount--;
-                return true;
-            }
-            else
-            {
-                Debug.Log("Can't unuse less than in inventory");
-                return false;
-            }
+            findSimiliar.UsedCount--;
+            return true;
+            //if (findSimiliar.UsedCount > 0)
+            //{
+            //    findSimiliar.UsedCount--;
+            //    return true;
+            //}
+            //else
+            //{
+            //    Debug.Log("Can't unuse less than in inventory");
+            //    return false;
+            //}
         }
         else
         {
-            Debug.Log("GUpgradeData type does not exist in the list");
+            Debug.LogWarning("GUpgradeData type does not exist in the list");
             return false;
         }
-    }
-
-    public static GMuzzle InstantiateGMuzzle()
-    {
-        GMuzzle go = Resources.Load(_muzzlePrefab).GetComponent<GMuzzle>();
-        return Instantiate(go);
-    }
-
-    public static void MuzzleInstantiateOnDestiny(GDestiny desitny)
-    {
-        GMuzzle gMuzzle = InstantiateGMuzzle();
-
-        gMuzzle.NetworkObject.AutoObjectParentSync = false;
-        gMuzzle.transform.SetParent(desitny.PositionPoint.transform, false);
-
-        desitny.Part = gMuzzle;
-    }
-    public static void NetworkMuzzleInstantiateOnDestiny(GDestiny parentDestiny)
-    {
-        GMuzzle gMuzzle = InstantiateGMuzzle();
-
-        gMuzzle.NetworkObject.Spawn(true);
-
-        GameObject parentGO = parentDestiny.PositionPoint.Parent;
-
-        if (parentGO.GetComponent<GBase>() != null)
-        {
-            parentDestiny.PositionPoint.Parent.GetComponent<GBase>().NetworkAddParentOnDestiny(gMuzzle.NetworkObjectId);
-        }
-        else if (parentGO.GetComponent<GUpgrade>() != null)
-        {
-            parentDestiny.PositionPoint.Parent.GetComponent<GUpgrade>().NetworkAddParentOnDestiny(parentDestiny.PositionPoint.DestinyIndex, gMuzzle.NetworkObjectId);
-        }
-        else
-        {
-            Debug.LogError("Neco je zle");
-        }
-
-        //gMuzzle.NetworkObject.TrySetParent(desitny.PositionPoint.transform, false);
-
-        parentDestiny.Part = gMuzzle;
     }
 }

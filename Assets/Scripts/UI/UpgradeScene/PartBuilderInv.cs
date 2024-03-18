@@ -9,6 +9,9 @@ public class PartBuilderInv : MonoBehaviour
     public PartBuilderInvChild Selected; //NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager.FindGUpgradeDataByUpId();
 
     [SerializeField]
+    public GunPlaceholder GunPlaceholder;
+
+    [SerializeField]
     private GameObject _listObject;
     [SerializeField]
     private GameObject _childPrefab;
@@ -20,6 +23,9 @@ public class PartBuilderInv : MonoBehaviour
 
     public void UpdateList()
     {
+        int selectedId = 0;
+        if (Selected != null)
+            selectedId = Selected.UpgradeId;
         foreach (Transform child in _listObject.transform)
         {
             DestroyRecursive(child);
@@ -30,10 +36,15 @@ public class PartBuilderInv : MonoBehaviour
         {
             var newObj = Instantiate(_childPrefab);
             newObj.transform.SetParent(_listObject.transform);
+            newObj.transform.localScale = Vector3.one;
             PartBuilderInvChild p = newObj.GetComponent<PartBuilderInvChild>();
 
             p.PartBuilderInv = this;
             p.SetGUpgradeData(listObj);
+            if(selectedId != 0 && p.UpgradeId == selectedId)
+            {
+                Selected = p;
+            }
         }
     }
     private void DestroyRecursive(Transform obj)

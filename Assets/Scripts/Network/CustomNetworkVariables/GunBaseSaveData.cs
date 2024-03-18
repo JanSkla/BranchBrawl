@@ -10,11 +10,16 @@ public class GunBaseSaveData : INetworkSerializable
 {
     private static string _basePrefab = "Prefabs/GunParts/GBase";
 
-    private GunBaseChildData _childPrefab;
+    private GunBaseChildData _childGBCD;
 
     public GunBaseChildData Child
     {
-        get { return _childPrefab; }
+        get { return _childGBCD; }
+    }
+
+    public GunBaseSaveData(string gbcdText)
+    {
+        _childGBCD = ParseText(gbcdText, this);
     }
 
     //Save from gBase gameobject
@@ -22,8 +27,17 @@ public class GunBaseSaveData : INetworkSerializable
     {
         if (!gBase.Destiny.Part.GetType().IsSubclassOf(typeof(GUpgrade))) return;
 
-        _childPrefab = new GunBaseChildData(gBase.Destiny.Part as GUpgrade);
+        _childGBCD = new GunBaseChildData(gBase.Destiny.Part as GUpgrade);
     }
+
+    //testing purposes 1 // "1{1{,,},1{,,},}," -- in text
+
+    public GunBaseSaveData(GunBaseChildData chPrefab)
+    {
+        _childGBCD = chPrefab;
+    }
+    //Has no upgrades
+    public GunBaseSaveData() { }
 
     public GBase Spawn()
     {
@@ -31,7 +45,7 @@ public class GunBaseSaveData : INetworkSerializable
         GBase gBase = Object.Instantiate(gBasePrefab).GetComponent<GBase>();
         gBase.NetworkObject.AutoObjectParentSync = false;
 
-        GBDSpawnShared(_childPrefab, gBase.Destiny);
+        GBDSpawnShared(_childGBCD, gBase.Destiny);
 
         return gBase;
     }
@@ -42,7 +56,7 @@ public class GunBaseSaveData : INetworkSerializable
 
         gBase.NetworkObject.Spawn(true);
 
-        GBDNetworkSpawnShared(_childPrefab, gBase.Destiny);
+        GBDNetworkSpawnShared(_childGBCD, gBase.Destiny);
 
         return gBase;
     }
@@ -54,13 +68,12 @@ public class GunBaseSaveData : INetworkSerializable
             reader.ReadValueSafe(out string serializeText);
 
             //from string to GBSD
-            _childPrefab = ParseText(serializeText);
+            _childGBCD = ParseText(serializeText, this);
             //~
         }
         else
         {
-            //to string, fomrat: "1{101{1{11}11{111,11111},1}"
-            string serializeText = ParseToText(_childPrefab);
+            string serializeText = ParseToText(_childGBCD);
             //~
 
             var writer = serializer.GetFastBufferWriter();
@@ -68,11 +81,14 @@ public class GunBaseSaveData : INetworkSerializable
         }
     }
 
-    public static GunBaseChildData ParseText(string text)
+    public static GunBaseChildData ParseText(string text, GunBaseSaveData parent)
     {
         if (text.IndexOf("{") == -1) return null;
 
-        return RecursiveAssignGBCD(text);
+        var val = RecursiveAssignGBCD(text);
+        val.PreviousPart = null;
+
+        return val; 
 
         GunBaseChildData RecursiveAssignGBCD(string textInner)
         {
@@ -82,7 +98,7 @@ public class GunBaseSaveData : INetworkSerializable
             int arrSize = (UpgradeManager.GetUpgradeById(upId) as UpgradeWithPart).GetBranchCount();
             (int from, int to)[] parts = new (int from, int to)[arrSize];
 
-            GunBaseChildData output = new(upId, new GunBaseChildData[arrSize]);
+            GunBaseChildData output = new(upId, new GunBaseChildData[arrSize], parent);
 
             textInner = textInner[(textInner.IndexOf("{") + 1)..textInner.LastIndexOf("}")];
 
@@ -118,7 +134,8 @@ public class GunBaseSaveData : INetworkSerializable
 
                 if (shortenedText.IndexOf("{") == -1) continue;
 
-                output.ChildPrefabs[i] = RecursiveAssignGBCD(shortenedText);
+                output.ChildGBCDs[i] = RecursiveAssignGBCD(shortenedText);
+                output.ChildGBCDs[i].PreviousPart = output;
             }
 
             return output;
@@ -139,11 +156,11 @@ public class GunBaseSaveData : INetworkSerializable
         {
             output += gbcdInner.UpgradeId.ToString();
             output += "{";
-            for (int i = 0; i < gbcdInner.ChildPrefabs.Length; i++)
+            for (int i = 0; i < gbcdInner.ChildGBCDs.Length; i++)
             {
-                if (gbcdInner.ChildPrefabs[i] != null)
+                if (gbcdInner.ChildGBCDs[i] != null)
                 {
-                    RecursiveAssingText(gbcdInner.ChildPrefabs[i]);
+                    RecursiveAssingText(gbcdInner.ChildGBCDs[i]);
                 }
                 output += ",";
             }
@@ -151,41 +168,45 @@ public class GunBaseSaveData : INetworkSerializable
         }
     }
 
-    //testing purposes 1 // "1{1{,,},1{,,},}," -- in text
-
-    public GunBaseSaveData(GunBaseChildData chPrefab)
-    {
-        _childPrefab = chPrefab;
-    }
-    //Has no upgrades
-    public GunBaseSaveData() { }
-
     public class GunBaseChildData
     {
+        public GunBaseChildData? PreviousPart;
         public int UpgradeId;
-        public GunBaseChildData[] ChildPrefabs;
+        public GunBaseChildData[] ChildGBCDs;
         public GunBaseChildData(GUpgrade gUpgrade)
         {
             UpgradeId = gUpgrade.UpgradeId;
-            ChildPrefabs = new GunBaseChildData[gUpgrade.Destiny.Length];
+            ChildGBCDs = new GunBaseChildData[gUpgrade.Destiny.Length];
 
             for (int i = 0; i < gUpgrade.Destiny.Length; i++)
             {
                 if (!gUpgrade.Destiny[i].Part.GetType().IsSubclassOf(typeof(GUpgrade))) continue;
 
-                ChildPrefabs[i] = new GunBaseChildData(gUpgrade.Destiny[i].Part as GUpgrade);
+                ChildGBCDs[i] = new GunBaseChildData(gUpgrade.Destiny[i].Part as GUpgrade);
             }
         }
 
-        public GPart Spawn(Transform parentTransfrom)
+        public GPart Spawn(GDestiny parentDestiny)
         {
             GUpgrade gUpgrade = (UpgradeManager.GetUpgradeById(UpgradeId) as UpgradeWithPart).InstantiatePrefab().GetComponent<GUpgrade>();
             gUpgrade.NetworkObject.AutoObjectParentSync = false;
-            gUpgrade.transform.SetParent(parentTransfrom, false);
+            gUpgrade.transform.SetParent(parentDestiny.PositionPoint.transform, false);
 
-            for (int i = 0; i < ChildPrefabs.Length; i++)
+            
+            //get previous upgrade parts
+            int[] prevIds = new int[parentDestiny.PreviousUpgradeIds.Length + 1];
+
+
+            for (int i = 0; i < parentDestiny.PreviousUpgradeIds.Length; i++)
             {
-                GBDSpawnShared(ChildPrefabs[i], gUpgrade.Destiny[i]);
+                prevIds[i] = parentDestiny.PreviousUpgradeIds[i];
+            }
+            prevIds[parentDestiny.PreviousUpgradeIds.Length] = UpgradeId;
+
+            for (int i = 0; i < ChildGBCDs.Length; i++)
+            {
+                gUpgrade.Destiny[i].PreviousUpgradeIds = prevIds;
+                GBDSpawnShared(ChildGBCDs[i], gUpgrade.Destiny[i]);
             }
             return gUpgrade;
         }
@@ -195,7 +216,7 @@ public class GunBaseSaveData : INetworkSerializable
 
             gUpgrade.NetworkObject.Spawn(true);
 
-            GameObject parentGO = parentDestiny.PositionPoint.Parent;
+            GameObject parentGO = parentDestiny.PositionPoint.Parent.gameObject;
 
             if(parentGO.GetComponent<GBase>() != null)
             {
@@ -210,21 +231,40 @@ public class GunBaseSaveData : INetworkSerializable
                 Debug.LogError("Neco je zle");
             }
 
-                
+            //get previous upgrade parts
+            int[] prevIds = new int[parentDestiny.PreviousUpgradeIds.Length + 1];
+
+
+            for (int i = 0; i < parentDestiny.PreviousUpgradeIds.Length; i++)
+            {
+                prevIds[i] = parentDestiny.PreviousUpgradeIds[i];
+            }
+            prevIds[parentDestiny.PreviousUpgradeIds.Length] = UpgradeId;
+
             //gUpgrade.NetworkObject.TrySetParent(parentTransfrom, false);
 
-            for (int i = 0; i < ChildPrefabs.Length; i++)
+            for (int i = 0; i < ChildGBCDs.Length; i++)
             {
-                GBDNetworkSpawnShared(ChildPrefabs[i], gUpgrade.Destiny[i]);
+                gUpgrade.Destiny[i].PreviousUpgradeIds = prevIds;
+                GBDNetworkSpawnShared(ChildGBCDs[i], gUpgrade.Destiny[i]);
             }
             return gUpgrade;
         }
         //testing purposes
 
-        public GunBaseChildData(int upgradeId, GunBaseChildData[] chPrefab)
+        public GunBaseChildData(int upgradeId, GunBaseChildData[] chGBCD, GunBaseSaveData parent)
         {
             UpgradeId = upgradeId;
-            ChildPrefabs = chPrefab;
+            ChildGBCDs = chGBCD;
+            PreviousPart = null;
+        }
+        //testing purposes
+
+        public GunBaseChildData(int upgradeId, GunBaseChildData[] chGBCD, GunBaseChildData parent)
+        {
+            UpgradeId = upgradeId;
+            ChildGBCDs = chGBCD;
+            PreviousPart = parent;
         }
     }
 
@@ -233,11 +273,11 @@ public class GunBaseSaveData : INetworkSerializable
     {
         if (!childData.IsUnityNull())
         {
-            desitny.Part = childData.Spawn(desitny.PositionPoint.transform);
+            desitny.Part = childData.Spawn(desitny);
         }
         else
         {
-            MuzzleInstantiateOnDestiny(desitny);
+            MuzzleManager.MuzzleInstantiateOnDestiny(desitny);
         }
     }
     private static void GBDNetworkSpawnShared(GunBaseChildData childData, GDestiny desitny)
@@ -248,7 +288,7 @@ public class GunBaseSaveData : INetworkSerializable
         }
         else
         {
-            NetworkMuzzleInstantiateOnDestiny(desitny);
+            MuzzleManager.NetworkMuzzleInstantiateOnDestiny(desitny);
         }
     }
 }

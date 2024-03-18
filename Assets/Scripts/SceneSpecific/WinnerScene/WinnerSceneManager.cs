@@ -14,6 +14,9 @@ public class WinnerSceneManager : MonoBehaviour
     private GameObject _winnerList;
 
     [SerializeField]
+    private Transform _winnerSpawnPosition;
+
+    [SerializeField]
     private GameObject _tabRowPrefab;
     void Start()
     {
@@ -40,8 +43,12 @@ public class WinnerSceneManager : MonoBehaviour
         for (int i = 0; i < sortedList.Count; i++)
         {
             var data = sortedList[i];
-            var pm = NetworkManager.Singleton.SpawnManager.SpawnedObjects[data.PMNwId].GetComponent<PlayerManager>();
-            AddRow(i + 1 + ". " + pm.PlayerName.Value.ToString(), data.Crowns);
+            AddRow(i + 1 + ". " + data.PlayerName, data.Crowns);
+        }
+
+        if (NetworkManager.Singleton.IsServer)
+        {
+            NetworkManager.Singleton.ConnectedClients[sortedList[0].ClientId].PlayerObject.GetComponent<PlayerManager>().SpawnPlayerObject(_winnerSpawnPosition.position, Quaternion.LookRotation(Vector3.back), false, false);
         }
     }
 
@@ -49,7 +56,7 @@ public class WinnerSceneManager : MonoBehaviour
     {
         var tabRow = Instantiate(_tabRowPrefab, _winnerList.transform).GetComponent<TabRow>();
         tabRow.PlayerName.text = name;
-        tabRow.CrownCount.text = crowns + "x";
+        tabRow.CrownCount = crowns;
     }
     // Start is called before the first frame update
     public void StarNewGame()

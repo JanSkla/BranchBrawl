@@ -13,13 +13,12 @@ public class HealthDisplayText : MonoBehaviour
 
     void Start()
     {
-        Invoke(nameof(DelayedStart), 0.5f);
         _healthDisplay.gameObject.SetActive(false);
     }
-    private void DelayedStart()
+    public void ConnectHealthToPlayer(Player player)
     {
         _healthDisplay.gameObject.SetActive(true);
-        var health = _inGameUI.GetComponent<InGameUI>().CurrentPlayer.GetComponent<PlayerHealth>().Health;
+        var health = player.GetComponent<PlayerHealth>().Health;
         health.OnValueChanged += UpdateDisplay;
         UpdateDisplay(0, health.Value);
     }

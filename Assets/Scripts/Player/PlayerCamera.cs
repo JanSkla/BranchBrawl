@@ -10,20 +10,21 @@ public class PlayerCamera : NetworkBehaviour
     [SerializeField]
     private GameObject FirstPersonCameraPrefab;
 
-    private Vector3 CameraOffset = new(1.5f, 0.3f, -3.0f);
-
     private GameObject _inGameUI;
     private Player _player;
 
     public GameObject FpsCam;
+    private GameObject _cameraGO;
 
     [SerializeField]
     private float _pickupRange;
 
-    void Start()
+    public NetworkVariable<bool> IsEnabled = new(true);
+
+    public override void OnNetworkSpawn()
     {
         _player = GetComponent<Player>();
-        if (_player.IsLocalPlayer)
+        if (IsEnabled.Value && _player.IsLocalPlayer)
         {
             CreateCamera();
             OnGameStart();
@@ -32,16 +33,17 @@ public class PlayerCamera : NetworkBehaviour
 
     void Update()
     {
+        if (!IsEnabled.Value) return;
         if (FpsCam && _inGameUI)
         {
             RaycastHit hit = new();
             if (Physics.Raycast(FpsCam.transform.position, FpsCam.transform.TransformDirection(Vector3.forward), out hit, _pickupRange, LayerMask.GetMask("Pickable")))
             {
-                _inGameUI.GetComponent<InGameUI>().Game.GetComponent<GameUI>().ChangeCursorColor(Color.cyan);
+                _inGameUI.GetComponent<InGameUI>().Game.GetComponent<GameUI>().ChangeCursorToHand();
             }
             else
             {
-                _inGameUI.GetComponent<InGameUI>().Game.GetComponent<GameUI>().ChangeCursorColor(Color.black);
+                _inGameUI.GetComponent<InGameUI>().Game.GetComponent<GameUI>().ChangeCursorToBasic();
             }
         }
     }
@@ -58,9 +60,9 @@ public class PlayerCamera : NetworkBehaviour
 
     public void CreateCamera()
     {
-        FpsCam = Instantiate(FirstPersonCameraPrefab);
-        FpsCam.transform.SetParent(_player.Head.transform);
-        FpsCam.transform.localPosition = CameraOffset;
+        _cameraGO = Instantiate(FirstPersonCameraPrefab);
+        FpsCam = _cameraGO.transform.GetChild(0).gameObject;
+        _cameraGO.transform.SetParent(_player.Head.transform, false);
     }
     public void OnGameStart()
     {
@@ -73,12 +75,12 @@ public class PlayerCamera : NetworkBehaviour
 
     private void DisableFirstCamera()
     {
-        FpsCam.SetActive(false);
+        _cameraGO.SetActive(false);
     }
 
     private void EnableFirstCamera()
     {
-        FpsCam.SetActive(true);
+        _cameraGO.SetActive(true);
     }
 
     private void FindInGameUI()

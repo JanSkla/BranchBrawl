@@ -15,8 +15,8 @@ MonoBehaviour:
   name: GBase
   damage: 54
   firerate: 5
-  isAuto: 1
-  currentAmmo: 249
+  isAuto: 0
+  currentAmmo: 999
   magSize: 123
   reloadTime: 1
   reloading: 0

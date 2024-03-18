@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,43 +11,65 @@ public class UpgradeSceneManager : NetworkBehaviour
     [SerializeField]
     private GameObject _upgradeSelect;
     [SerializeField]
-    private GameObject _gunBuilder;
-
+    private GameObject _upgradeSelectContainer;
     [SerializeField]
-    private GameObject _upgradeCardprefab;
+    private GameObject _gunBuilder;
+    [SerializeField]
+    public GunPlaceholder GunPlaceholder;
 
-    private int _selectCount = 3;
+    private static readonly int _selectCount = 3;
 
-    private List<UpgradeOption> _upgradeOptions = new();
+    private bool _optionSelected = false;
+
+    private UpgradeOption[] _upgradeOptions = new UpgradeOption[_selectCount];
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
         _upgradeSelect.SetActive(true);
-        _gunBuilder.SetActive(false);
+
+        var upgrades = UpgradeManager.GetRandomSetOfNonrepeatingUpgrades(_selectCount);
 
         for (int i = 0; i < _selectCount; i++)
         {
-            var newUpgrade = UpgradeManager.GetRandomUpgrade();
+            var newUpgrade = upgrades[i];
 
-            var newCard = Instantiate(_upgradeCardprefab);
-            newCard.transform.SetParent(_upgradeSelect.transform);
-            newCard.GetComponent<Button>().onClick.AddListener(() => UpgradeSelected(newUpgrade.Id));
+            var newCard = newUpgrade.InstantiateSelectionCard(UpgradeSelected, i);
+            newCard.transform.SetParent(_upgradeSelectContainer.transform, false);
+            //newCard.Button.onClick.AddListener(() => UpgradeSelected(newUpgrade.Id));
 
-            var newOption = new UpgradeOption(newCard, newUpgrade.Id);
-            _upgradeOptions.Add(newOption);
+            var newOption = new UpgradeOption(newCard.gameObject, newUpgrade.Id);
+            _upgradeOptions[i] = newOption;
         }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
-    private void UpgradeSelected(int id)
+    public void UpgradeSelected(int idx)
     {
-        var upgrade = UpgradeManager.GetUpgradeById(id);
-        Debug.Log("Selected" + upgrade.Id + ":" + id);
+        if (_optionSelected) return;
+        _optionSelected = true;
+        for (int i = 0; i < _upgradeOptions.Length; i++)
+        {
+            if (i != idx)
+            {
+                _upgradeOptions[i].UpgradeCard.GetComponent<Button>().interactable = false;
+            }
+        }
+
+        var upgrade = UpgradeManager.GetUpgradeById(_upgradeOptions[idx].UpgradeId);
         NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<UpgradeManager>().AddUpgrade(upgrade);
 
-        _upgradeSelect.SetActive(false);
+
+        //_upgradeSelect.SetActive(false);
         _gunBuilder.SetActive(true);
+        GunPlaceholder.PartBuilderInv.UpdateList();
+
+        Invoke(nameof(DelayedUpgradeSelectDisable), 0.5f);
+    }
+    private void DelayedUpgradeSelectDisable()
+    {
+        _upgradeSelect.SetActive(false);
     }
 
     private struct UpgradeOption
@@ -74,9 +98,6 @@ public class UpgradeSceneManager : NetworkBehaviour
     [ClientRpc]
     public void SaveGBDClientRPC()
     {
-        Debug.Log("aaaa");
-        Debug.Log(GameObject.Find("GunPlaceholder"));
-        Debug.Log(GameObject.Find("GunPlaceholder").transform.GetChild(0));
         GameObject gunObject = GameObject.Find("GunPlaceholder").transform.GetChild(0).gameObject;
         GBase gunBase = gunObject.GetComponent<GBase>();
         if (gunBase == null) Debug.LogError("No gbase in gunplaceholder");

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Gun
   m_EditorClassIdentifier: 
   name: Pistol
-  damage: 54
+  damage: 10
   firerate: 123
   isAuto: 0
   currentAmmo: 105

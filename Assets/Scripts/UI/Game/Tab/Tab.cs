@@ -35,9 +35,8 @@ public class Tab : MonoBehaviour
         Debug.Log("sda");
         for (int i = 0; i < sortedList.Count; i++)
         {
-            var data = sortedList[i];
-            var pm = NetworkManager.Singleton.SpawnManager.SpawnedObjects[data.PMNwId].GetComponent<PlayerManager>();
-            AddRow(pm.PlayerName.Value.ToString(), data.Crowns);
+            var data = sortedList[i];;
+            AddRow(data.PlayerName.ToString(), data.Crowns);
         }
         Debug.Log("sda");
     }
@@ -46,6 +45,6 @@ public class Tab : MonoBehaviour
     {
         var tabRow = Instantiate(_tabRowPrefab, _tabContainer.transform).GetComponent<TabRow>();
         tabRow.PlayerName.text = name;
-        tabRow.CrownCount.text = crowns + "x";
+        tabRow.CrownCount = crowns;
     }
 }

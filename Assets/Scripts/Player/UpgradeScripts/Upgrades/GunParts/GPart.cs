@@ -19,35 +19,38 @@ public abstract class GPart : NetworkBehaviour
             _totalOutline.enabled = false;
     }
 
-    public abstract void Shoot(ShootData shot);
+    public abstract void Shoot(ShootData shot, Player owner);
     public void DestroyPartRecursive()
     {
+        Debug.Log("AA");
         if (GameObject.Find("GunPlaceholder") != null)
         {
             var localPlayerGunManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerGunManager;
             AssignToInvR(GetComponent<GUpgrade>());
             void AssignToInvR(GUpgrade gu)
             {
+                Debug.Log("AAAA");
                 if (gu == null) return;
 
                 localPlayerGunManager.UnuseGUpgrade(gu.UpgradeId);
 
                 for (int i = 0; i < gu.Destiny.Length; i++)
                 {
-                    AssignToInvR(gu.Destiny[i].Part.GetComponent<GUpgrade>());
+                    if(gu.Destiny[i].Part)
+                        AssignToInvR(gu.Destiny[i].Part.GetComponent<GUpgrade>());
                 }
             }
         }
 
-        DestroyR(transform);
-        void DestroyR(Transform t)
-        {
-            foreach (Transform child in t)
-            {
-                DestroyR(child);
-            }
-            Destroy(t.gameObject);
-        }
+        Utils.DestroyWithChildren(transform.gameObject);
+        //void DestroyR(Transform t)
+        //{
+        //    foreach (Transform child in t)
+        //    {
+        //        DestroyR(child);
+        //    }
+        //    Destroy(t.gameObject);
+        //}
     }
 
     void OnMouseOver()
@@ -90,7 +93,7 @@ public abstract class GPart : NetworkBehaviour
 
                 GPoint gp = transform.parent.GetComponent<GPoint>();
 
-                GameObject parentparentGO = gp.Parent;
+                GameObject parentparentGO = gp.Parent.gameObject;
 
                 GDestiny parentGDestRef;
 
@@ -112,9 +115,9 @@ public abstract class GPart : NetworkBehaviour
                 //
 
                 if (NetworkObject.IsSpawned)
-                    PlayerGunManager.NetworkMuzzleInstantiateOnDestiny(parentGDestRef);
+                    MuzzleManager.NetworkMuzzleInstantiateOnDestiny(parentGDestRef);
                 else
-                    PlayerGunManager.MuzzleInstantiateOnDestiny(parentGDestRef);
+                    MuzzleManager.MuzzleInstantiateOnDestiny(parentGDestRef);
 
                 DestroyPartRecursive();
                 GameObject.Find("GunPlaceholder").GetComponent<GunPlaceholder>().PartBuilderInv.UpdateList();

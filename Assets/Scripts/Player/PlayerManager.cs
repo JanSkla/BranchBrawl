@@ -26,7 +26,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField]
     private GameObject playerPrefab;
 
-    public GameObject PlayerObject;
+    public Player PlayerObject;
 
     private NetworkVariable<ulong> _playerObjectNwId = new();
 
@@ -61,10 +61,17 @@ public class PlayerManager : NetworkBehaviour
         if (IsServer)
         {
             PlayerName.Value = gamerTags[Random.Range(0, gamerTags.Length)] + NetworkManager.LocalClientId;
-        }
-        if (IsClient && _playerGunManagerNwId.Value > 0)
+        } else
         {
-            PlayerGunManager = NetworkManager.SpawnManager.SpawnedObjects[_playerGunManagerNwId.Value].gameObject.GetComponent<PlayerGunManager>();
+            if(_playerObjectNwId.Value != 0)
+            {
+                PlayerObject = NetworkManager.SpawnManager.SpawnedObjects[_playerObjectNwId.Value].GetComponent<Player>();
+            }
+
+            if (_playerGunManagerNwId.Value != 0)
+            {
+                PlayerGunManager = NetworkManager.SpawnManager.SpawnedObjects[_playerGunManagerNwId.Value].gameObject.GetComponent<PlayerGunManager>();
+            }
         }
     }
 
@@ -78,13 +85,23 @@ public class PlayerManager : NetworkBehaviour
         }
     }
     //PO
-    public void SpawnPlayerObject()
+    public void SpawnPlayerObject(Vector3 spawnPosition, Quaternion rotation = new(), bool areControlsDisabled = true, bool withCamera = true)
     {
-        PlayerObject = Instantiate(playerPrefab);
-        PlayerObject.GetComponent<Player>().PlayerManager = GetComponent<NetworkObject>();
-        PlayerObject.GetComponent<NetworkObject>().Spawn();
+        PlayerObject = Instantiate(playerPrefab).GetComponent<Player>();
+        PlayerObject.transform.position = spawnPosition;
+        PlayerObject.transform.rotation = rotation;
+        PlayerObject.PlayerManager = this;
+        PlayerObject.GetComponent<PlayerCamera>().IsEnabled.Value = withCamera;
+        PlayerObject.GetComponent<NetworkObject>().Spawn(true);
         _playerObjectNwId.Value = PlayerObject.GetComponent<NetworkObject>().NetworkObjectId;
-        //_player.GetComponent<NetworkObject>().TrySetParent(transform);
+        //_player.GetComponent<NetworkObject>().TrySetParent(transform
+        if (areControlsDisabled) return;
+        Invoke(nameof(SetControlsDisabledClientRpc), 1);
+    }
+    [ClientRpc]
+    private void SetControlsDisabledClientRpc()
+    {
+        PlayerObject.AreControlsDisabled = false;
     }
     public void DespawnPlayerObject()
     {
@@ -93,7 +110,8 @@ public class PlayerManager : NetworkBehaviour
     }
     private void OnPlayerObjectNwIdChange(ulong prevId, ulong newId)
     {
-        PlayerObject = NetworkManager.SpawnManager.SpawnedObjects[newId].gameObject;
+        if(newId != 0 && NetworkManager.SpawnManager.SpawnedObjects.ContainsKey(newId))
+            PlayerObject = NetworkManager.SpawnManager.SpawnedObjects[newId].GetComponent<Player>();
     }
     //PGM
     public void SpawnPlayerGunManager()
@@ -102,9 +120,6 @@ public class PlayerManager : NetworkBehaviour
         PlayerGunManager.gameObject.GetComponent<NetworkObject>().Spawn();
         _playerGunManagerNwId.Value = PlayerGunManager.GetComponent<NetworkObject>().NetworkObjectId;
 
-        Debug.Log(PlayerGunManager);
-        Debug.Log(PlayerGunManager.GetComponent<NetworkObject>());
-        Debug.Log(PlayerGunManager.GetComponent<NetworkObject>().NetworkObjectId);
         //_player.GetComponent<NetworkObject>().TrySetParent(transform);
     }
     public void DespawnPlayerGunManager()

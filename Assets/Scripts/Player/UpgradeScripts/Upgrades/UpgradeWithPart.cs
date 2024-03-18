@@ -7,25 +7,22 @@ public abstract class UpgradeWithPart : Upgrade
 {
     protected static int _branchingCount = 1;
 
-    private string _upgradePrefabResource;
-
-    public UpgradeWithPart(int id, string upgradePrefabResource, string descripotion) : base(id, descripotion)
+    public UpgradeWithPart(int id, string name) : base(id, name)
     {
-        _upgradePrefabResource = upgradePrefabResource;
     }
     public override void OnAdd(PlayerManager pm)
     {
         pm.PlayerGunManager.AddGUpgrade(Id);
-        Debug.Log(Description + " upgrade added");
+        Debug.Log(Name + " upgrade added");
     }
     public override void OnDelete(PlayerManager pm)
     {
         pm.PlayerGunManager.RemoveGUpgrade(Id);
-        Debug.Log(Description + " upgrade deleted");
+        Debug.Log(Name + " upgrade deleted");
     }
     public GUpgrade InstantiatePrefab()
     {
-        var prefab = Resources.Load(_upgradePrefabResource) as GameObject;
+        var prefab = Resources.Load("Prefabs/GunUpgrades/" + Name) as GameObject;
         var instance = Object.Instantiate(prefab);
         GUpgrade gu = instance.GetComponent<GUpgrade>();
         gu.UpgradeId = Id;

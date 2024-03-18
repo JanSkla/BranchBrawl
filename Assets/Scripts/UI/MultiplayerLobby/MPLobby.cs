@@ -9,9 +9,11 @@ using UnityEngine.SceneManagement;
 public class MPLobby : NetworkBehaviour
 {
     [SerializeField]
-    private GameObject hostView;
+    private GameObject _loading;
     [SerializeField]
-    private GameObject clientView;
+    private GameObject _hostView;
+    [SerializeField]
+    private GameObject _clientView;
     [SerializeField]
     private TextMeshProUGUI _joinCodeDisplay;
     [SerializeField]
@@ -22,13 +24,13 @@ public class MPLobby : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
         {
-            clientView.SetActive(false);
-            hostView.SetActive(true);
+            _clientView.SetActive(false);
+            _hostView.SetActive(true);
         }
         else
         {
-            hostView.SetActive(false);
-            clientView.SetActive(true);
+            _hostView.SetActive(false);
+            _clientView.SetActive(true);
         }
         _networkDataManager = GameObject.Find("NetworkDataManager(Clone)").GetComponent<NetworkData>();
         _joinCodeDisplay.text = _networkDataManager.JoinCode.Value.ToString();
@@ -44,9 +46,17 @@ public class MPLobby : NetworkBehaviour
 
         _playerStandPlacehodlerManager.RerenderCurrentPlayers(list);
     }
+    private void OnDisable()
+    {
+        SetLoading();
+    }
     private void OnDestroy()
     {
         _networkDataManager.PlayerObjectNwIds.OnListChanged -= OnPlayerNwIdsChange;
+    }
+    public void SetLoading()
+    {
+        _loading.SetActive(true);
     }
     public void StartGame()
     {
@@ -69,5 +79,9 @@ public class MPLobby : NetworkBehaviour
         }
 
         _playerStandPlacehodlerManager.RerenderCurrentPlayers(list);
+    }
+    public void SetCombatSceneMapName(string sceneName)
+    {
+        _networkDataManager.CombatRoundSceneName = sceneName;
     }
 }

@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using Color = UnityEngine.Color;
 
 public class GameUI : NetworkBehaviour
 {
@@ -11,6 +13,8 @@ public class GameUI : NetworkBehaviour
     private InGameUI _inGameUI;
 
 
+    [SerializeField]
+    private GameObject _preGame;
     [SerializeField]
     private GameObject _running;
     [SerializeField]
@@ -21,8 +25,15 @@ public class GameUI : NetworkBehaviour
     [SerializeField]
     private GameObject _cursor;
     [SerializeField]
+    private GameObject _handCursor;
+    [SerializeField]
     private GameObject _deathScreen;
-
+    [SerializeField]
+    private GameObject _deathBackdrop;
+    [SerializeField]
+    public HealthDisplayText HealthDisplay;
+    [SerializeField]
+    public Animator DamageHueAnimator;
     //Over
     [SerializeField]
     public TextMeshProUGUI PlacementText;
@@ -32,7 +43,13 @@ public class GameUI : NetworkBehaviour
 
     private GameManager _gameManager;
 
-    private void OnEnable()
+    void Start()
+    {
+        _preGame.SetActive(true);
+        _running.SetActive(true);
+        _over.SetActive(false);
+    }
+    public void OnMenuClose()
     {
         if (_running.activeSelf)
         {
@@ -44,13 +61,20 @@ public class GameUI : NetworkBehaviour
     {
         Cursor.lockState = isOver ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = isOver;
+        _preGame.SetActive(false);
         _running.SetActive(!isOver);
         _over.SetActive(isOver);
     }
 
-    public void ChangeCursorColor(Color color)
+    public void ChangeCursorToHand()
     {
-        _cursor.GetComponent<Image>().color = color;
+        _handCursor.SetActive(true);
+        _cursor.SetActive(false);
+    }
+    public void ChangeCursorToBasic()
+    {
+        _handCursor.SetActive(false);
+        _cursor.SetActive(true);
     }
 
     public void DeathScreen(bool isAlive)
@@ -58,6 +82,7 @@ public class GameUI : NetworkBehaviour
         Cursor.lockState = !isAlive ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = !isAlive;
         _deathScreen.SetActive(!isAlive);
+        _deathBackdrop.SetActive(!isAlive);
         _cursor.SetActive(isAlive);
     }
 }

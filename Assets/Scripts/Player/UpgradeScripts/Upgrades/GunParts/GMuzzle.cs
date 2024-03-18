@@ -5,109 +5,8 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class GMuzzle : GPart
+public abstract class GMuzzle : GPart
 {
-    [SerializeField]
-    private GameObject _muzzle;
-    [SerializeField]
-    private LineRenderer _line;
-    public override void Shoot(ShootData shot) //TODO precalculateShot
-    {
-        if (!_muzzle) Debug.LogError("No muzzle assigned");
-        Debug.Log("Shoots successfully");
-
-        HitData hitData = new();
-
-        Vector3 playerCameraPos = NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<PlayerCamera>().FpsCam.transform.position;
-
-        if (Physics.Raycast(playerCameraPos, _muzzle.transform.forward, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Player")))
-        {
-            hitData.IsHit = true;
-            GameObject hitTarget = hit.collider.gameObject;
-
-            while (hitTarget.transform.parent != null)
-            {
-                hitTarget = hitTarget.transform.parent.gameObject;
-            }
-
-            hitData.HitNwID = hitTarget.GetComponent<NetworkObject>().NetworkObjectId;
-            Debug.DrawRay(playerCameraPos, transform.forward * hit.distance, Color.green, 1);
-
-            if (IsServer)
-            {
-                hitTarget.GetComponent<PlayerHealth>().Damage(shot.Amount);
-            }
-        }
-        else
-        {
-            hitData.IsHit = false;
-            Debug.DrawRay(playerCameraPos, transform.forward * 100, Color.red, 1);
-        }
-        Debug.Log("Hit" + hitData.IsHit);
-        ShootSendNetworkRpc(shot, hitData);
-        ShotVisual();
-    }
-    private void ShootSendNetworkRpc(ShootData shootData, HitData hit)
-    {
-        if (IsServer || IsHost)
-        {
-            ShootClientRpc();
-        }
-        else
-        {
-            ShootServerRpc(shootData, hit);
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void ShootServerRpc(ShootData shootData, HitData hit, ServerRpcParams serverRpcParams = default)
-    {
-        if (hit.IsHit)
-        {
-            GameObject hitTargetGO = GetNetworkObject(hit.HitNwID).gameObject;
-            hitTargetGO.GetComponent<PlayerHealth>().Damage(shootData.Amount);
-        }
-
-        SimulatedShoot();
-
-        //wont call origin client
-        ulong[] ignoreClients = { serverRpcParams.Receive.SenderClientId };
-        var clientIds = NetworkManager.ConnectedClientsIds.Except(ignoreClients);
-        ClientRpcParams clientRpcParams = new ClientRpcParams()
-        {
-            Send = new ClientRpcSendParams()
-            {
-                TargetClientIds = clientIds.ToList(),
-            }
-        };
-        ShootClientRpc(clientRpcParams);
-    }
-
-    [ClientRpc]
-    private void ShootClientRpc(ClientRpcParams clientRpcParams = default)
-    {
-        SimulatedShoot();
-    }
-    private void SimulatedShoot()
-    {
-        Debug.DrawRay(_muzzle.transform.position, transform.forward * 100, Color.blue, 1);
-        ShotVisual();
-    }
-    private void ShotVisual()
-    {
-        Debug.Log("a");
-        RaycastHit hit;
-        Vector3 pointOfInterest = _muzzle.transform.position + _muzzle.transform.forward * 100;
-        if (Physics.Raycast(_muzzle.transform.position, transform.forward * 100, out hit, 100, 8))
-        {
-            pointOfInterest = hit.point;
-            Debug.Log("hit" + hit.point);
-        }
-
-        LineRenderer line = Instantiate(_line.gameObject).GetComponent<LineRenderer>();
-        line.SetPositions(new Vector3[] { _muzzle.transform.position, pointOfInterest });
-    }
-
     public void ReplaceMuzzle(UpgradeWithPart guPrefab, bool isNetwork = false)
     {
         Debug.Log("ReplaceMuzzle");
@@ -115,7 +14,7 @@ public class GMuzzle : GPart
 
         GPoint gp = transform.parent.GetComponent<GPoint>();
 
-        GameObject parentparentGO = gp.Parent;
+        GameObject parentparentGO = gp.Parent.gameObject;
 
         GDestiny parentGDestRef;
 
@@ -144,6 +43,17 @@ public class GMuzzle : GPart
         {
             gu.NetworkObject.AutoObjectParentSync = false;
             gu.transform.SetParent(parentGDestRef.PositionPoint.transform, false);
+
+            int[] previousUpgradeIds = new int[parentGDestRef.PreviousUpgradeIds.Length + 1];
+            for (int i = 0; i < parentGDestRef.PreviousUpgradeIds.Length; i++)
+            {
+                previousUpgradeIds[i] = parentGDestRef.PreviousUpgradeIds[i];
+            }
+            previousUpgradeIds[parentGDestRef.PreviousUpgradeIds.Length] = gu.UpgradeId;
+            foreach (GDestiny dest in gu.Destiny)
+            {
+                dest.PreviousUpgradeIds = previousUpgradeIds;
+            }
         }
         parentGDestRef.Part = gu;
 
@@ -152,9 +62,9 @@ public class GMuzzle : GPart
         for (int i = 0; i < guDLength; i++) //spawn muzzle for new endings
         {
             if (isNetwork)
-                PlayerGunManager.NetworkMuzzleInstantiateOnDestiny(gu.Destiny[i]);
+                MuzzleManager.NetworkMuzzleInstantiateOnDestiny(gu.Destiny[i]);
             else
-                PlayerGunManager.MuzzleInstantiateOnDestiny(gu.Destiny[i]);
+                MuzzleManager.MuzzleInstantiateOnDestiny(gu.Destiny[i]);
         }
 
         DestroyPartRecursive();
