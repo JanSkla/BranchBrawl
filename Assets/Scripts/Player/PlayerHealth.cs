@@ -38,7 +38,7 @@ public class PlayerHealth : NetworkBehaviour
         Health.Value -= amount;
     }
 
-    private void Heal(int amount)
+    public void Heal(int amount)
     {
         int currentHealth = Health.Value;
         if (currentHealth + amount >= maxHealth)
