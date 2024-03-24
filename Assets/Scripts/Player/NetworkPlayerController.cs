@@ -266,9 +266,6 @@ public class NetworkPlayerController : NetworkBehaviour
             //Debug.Log(_tick + "//" + transform.position + " a " + transform.rotation);
             //MovePlayerRequestServerRpc(_tick, moveInput, rotationInput, Time.deltaTime, bufferIndex);
 
-            //transform.position = ServerTransformState.Value.Position;
-            //transform.rotation = ServerTransformState.Value.Rotation;
-
 
             InputState inputState = new()
             {
@@ -280,11 +277,6 @@ public class NetworkPlayerController : NetworkBehaviour
 
             _inputStates[inputbufferIndex] = inputState;
         }
-
-
-        ///UpdateTick();
-        //_tickDeltaTime -= _tickRate;
-        //_tick++;
     }
 
     private void ProcessSimulatedPlayerMovement()
@@ -359,7 +351,7 @@ public class NetworkPlayerController : NetworkBehaviour
             var newRot = deltaMultiplier * _turnSpeed * new Vector3(0, rotationInput.y, 0);
             transform.Rotate(newRot);
 
-            _rotationX -= rotationInput.x * _turnSpeed * _tickRate;
+            _rotationX -= rotationInput.x * _turnSpeed * deltaMultiplier;
             _rotationX = Mathf.Clamp(_rotationX, -90, 90);
             player.Head.transform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
             player.Hand.transform.localRotation = Quaternion.Euler(_rotationX, 0, 0);

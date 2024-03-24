@@ -21,7 +21,7 @@ public class GFireMuzzle : GMuzzle
 
         //Vector3 playerCameraPos = NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerManager>().PlayerObject.GetComponent<PlayerCamera>().FpsCam.transform.position;
 
-        if (Physics.Raycast(_muzzle.transform.position, _muzzle.transform.forward, out RaycastHit hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("LocalPlayer"))))
+        if (Physics.Raycast(_muzzle.transform.position, _muzzle.transform.forward, out RaycastHit hit, Mathf.Infinity, ~LayerMask.NameToLayer("LocalPlayer")))
         {
             GameObject hitTarget = hit.collider.gameObject;
 
