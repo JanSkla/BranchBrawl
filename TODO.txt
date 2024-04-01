@@ -1,2 +1,1 @@
-Redirect to another game round after upgrade
-Spawnable gun with upgrades over network
+hello svete?
